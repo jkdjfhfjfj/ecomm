@@ -24,7 +24,14 @@
                                     </td>
 
                                     <td>
-                                        <a href="{{ route('admin.products.reviews.index') }}?user={{ $review->user->username }}">{{ $review->user->username }}</a>
+                                        @if ($review->user)
+                                            <a href="{{ route('admin.products.reviews.index') }}?user={{ $review->user->username }}">{{ $review->user->username }}</a>
+                                        @else
+                                            {{ $review->reviewer_name ?: __('Demo customer') }}
+                                        @endif
+                                        @if ($review->is_sample)
+                                            <span class="badge badge--info">@lang('Sample data')</span>
+                                        @endif
                                     </td>
 
                                     <td>{{ $review->rating }}</td>

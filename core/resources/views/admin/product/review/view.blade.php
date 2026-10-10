@@ -16,8 +16,18 @@
 
                                 <li class="list-group-item d-flex justify-content-between">
                                     <span class="fw-semibold">@lang('Customer')</span>
-                                    <a href="{{ route('admin.users.detail', $review->user->id) }}">{{ $review->user->username }}</a>
+                                    @if ($review->user)
+                                        <a href="{{ route('admin.users.detail', $review->user->id) }}">{{ $review->user->username }}</a>
+                                    @else
+                                        <span>{{ $review->reviewer_name ?: __('Demo customer') }}</span>
+                                    @endif
                                 </li>
+
+                                @if ($review->is_sample)
+                                    <li class="list-group-item">
+                                        <span class="badge badge--info">@lang('Sample data — not customer-submitted feedback')</span>
+                                    </li>
+                                @endif
 
                                 <li class="list-group-item d-flex justify-content-between">
                                     <span class="fw-semibold">@lang('Rating')</span>
@@ -67,8 +77,11 @@
                                     <div class="product-review-list-item">
                                         <div class="product-review-list-item__header d-flex flex-wrap align-items-center justify-content-between mb-2">
                                             <div class="d-flex align-items-center gap-2">
-                                                <img class="thumb" src="{{ getAvatar(getFilePath('userProfile') . '/' . $review->user->image) }}" alt="profile image">
-                                                <h6 class="name">{{ $review->user->fullname }}</h6>
+                                                <img class="thumb" src="{{ $review->user?->image ? getAvatar(getFilePath('userProfile') . '/' . $review->user->image) : siteFavicon() }}" alt="profile image">
+                                                <h6 class="name">{{ $review->reviewer_name ?: ($review->user?->fullname ?: __('Demo customer')) }}</h6>
+                                                @if ($review->is_sample)
+                                                    <span class="badge badge--info">@lang('Sample data')</span>
+                                                @endif
                                             </div>
                                         </div>
 

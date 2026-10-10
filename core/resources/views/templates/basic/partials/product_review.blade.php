@@ -1,18 +1,29 @@
 @forelse($reviews as $item)
+    @php
+        $reviewerImage = $item->user?->image
+            ? getAvatar('assets/images/user/profile/' . $item->user->image)
+            : siteFavicon();
+        $reviewerName = $item->reviewer_name ?: ($item->user?->fullname ?: __('Customer'));
+    @endphp
     <div class="review-item d-flex flex-wrap flex-sm-nowrap">
         <div class="thumb d-none d-sm-block">
-            <img src="{{ getImage(null) }}" data-src="{{ getAvatar('assets/images/user/profile/' . $item->user->image) }}" class="lazyload" alt="@lang('review')">
+            <img src="{{ getImage(null) }}" data-src="{{ $reviewerImage }}" class="lazyload" alt="@lang('review')">
         </div>
         <div class="content">
             <div class="d-flex gap-3 align-items-start">
                 <div class="thumb d-sm-none">
-                    <img src="{{ getImage(null) }}" data-src="{{ getAvatar('assets/images/user/profile/' . $item->user->image) }}" class="lazyload" alt="@lang('review')">
+                    <img src="{{ getImage(null) }}" data-src="{{ $reviewerImage }}" class="lazyload" alt="@lang('review')">
                 </div>
 
                 <div class="w-100 entry-meta">
                     <h6 class="posted-by">
                         <span class="w-100 d-inline-flex flex-wrap align-items-center justify-content-between gap-1">
-                            <span>{{ @$item->user->fullname }} </span>
+                            <span>
+                                {{ $reviewerName }}
+                                @if ($item->is_sample)
+                                    <span class="badge badge--info ms-1">@lang('Sample data')</span>
+                                @endif
+                            </span>
                             <span class="w-auto posted-on fs-14">{{ diffForHumans($item->created_at) }}</span>
                         </span>
                     </h6>
@@ -21,7 +32,7 @@
             </div>
 
             <p class="mt-3 mt-sm-0 mb-0">
-                @php echo nl2br($item->review) @endphp
+                {!! nl2br(e($item->review)) !!}
             </p>
 
             @if (!blank($item->productReviewImage))

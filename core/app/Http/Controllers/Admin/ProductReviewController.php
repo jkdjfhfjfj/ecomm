@@ -13,14 +13,18 @@ use App\Http\Controllers\Controller;
 class ProductReviewController extends Controller {
     public function reviews(Request $request) {
         $pageTitle = "All Product Reviews";
-        $reviews   = ProductReview::searchable(['review', 'rating', 'product:name', 'user:username'])
+        $reviews   = ProductReview::searchable(['review', 'rating', 'reviewer_name', 'product:name', 'user:username'])
             ->with(['product', 'user'])
             ->whereHas('product')
-            ->whereHas('user');
+            ->where(function ($query) {
+                $query->whereHas('user')->orWhere('is_sample', true);
+            });
 
         if (request()->user) {
-            $reviews->whereHas('user', function ($q) {
-                return $q->where('username', request()->user);
+            $reviews->where(function ($query) {
+                $query->whereHas('user', function ($userQuery) {
+                    $userQuery->where('username', request()->user);
+                })->orWhere('reviewer_name', request()->user);
             });
         }
 
@@ -44,7 +48,9 @@ class ProductReviewController extends Controller {
         $reviews   = ProductReview::onlyTrashed()
             ->with(['product', 'user'])
             ->whereHas('product')
-            ->whereHas('user')
+            ->where(function ($query) {
+                $query->whereHas('user')->orWhere('is_sample', true);
+            })
             ->orderBy('id', 'DESC')
             ->paginate(getPaginate());
         return view('admin.product.review.index', compact('pageTitle', 'reviews'));
