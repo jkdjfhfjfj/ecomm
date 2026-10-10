@@ -16,14 +16,14 @@
         }
         $brand = $request->has('brand') ? explode(',', $request->brand) : [];
         $attributeValues = $request->has('attribute_values') ? explode(',', $request->attribute_values) : [];
-        $rating = $request->has('rating');
+        $rating = $request->input('rating');
     @endphp
 
     <!-- Category Section Starts Here -->
 
 
 
-    <div class="py-60">
+    <div class="py-60 storefront-listing">
         <div class="container">
 
             @if (!blank($breadcrumbs))
@@ -40,6 +40,27 @@
                         </li>
                     @endforeach
                 </ul>
+            @endif
+
+            <header class="catalog-intro">
+                <div>
+                    <span class="catalog-kicker">@lang('The collection')</span>
+                    <h1>{{ __($pageTitle ?? __('Shop all')) }}</h1>
+                    <p>@lang('Explore pieces across the collection. Refine by brand, price, and the details that matter to you.')</p>
+                </div>
+                <div class="catalog-intro-meta">
+                    <span class="catalog-total">{{ $products->total() }}</span>
+                    <span>@lang('pieces to explore')</span>
+                </div>
+            </header>
+            @if (isset($categories) && $categories->count())
+                <nav class="catalog-category-strip" aria-label="@lang('Browse categories')">
+                    @foreach ($categories as $item)
+                        <a href="{{ route('product.by.category', $item->slug) }}" class="catalog-category-pill">
+                            <span>{{ __($item->name) }}</span><span aria-hidden="true">↗</span>
+                        </a>
+                    @endforeach
+                </nav>
             @endif
 
             <div class="product-shop">

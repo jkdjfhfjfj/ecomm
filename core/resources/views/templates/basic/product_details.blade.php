@@ -1,8 +1,17 @@
 @extends('Template::layouts.master')
 
 @section('content')
-    <div class="py-60">
+    <div class="py-60 storefront-product-page">
         <div class="container">
+            <nav class="product-crumbs" aria-label="@lang('Breadcrumb')">
+                <a href="{{ route('home') }}">@lang('Home')</a>
+                <span aria-hidden="true">/</span>
+                @if ($product->categories->isNotEmpty())
+                    <a href="{{ $product->categories->first()->shopLink() }}">{{ __($product->categories->first()->name) }}</a>
+                    <span aria-hidden="true">/</span>
+                @endif
+                <span aria-current="page">{{ __($product->name) }}</span>
+            </nav>
             <div class="row g-4 g-xl-5">
                 <div class="col-xl-9">
                     @include('Template::partials.quick_view')

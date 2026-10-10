@@ -55,11 +55,6 @@ class AppServiceProvider extends ServiceProvider {
                 'allSubcategories' => function($q) {
                     $q->orderBy('position');
                 },
-                'products' => function ($product) {
-                    return $product->published();
-                },
-                'products.reviews',
-                'products'
             ])
             ->orderBy('position')->get();
 

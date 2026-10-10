@@ -1,7 +1,12 @@
 <div class="row g-3" id="grid-view">
     @foreach ($products as $product)
         <div class="col-6 grid-control col-md-4 col-lg-3">
-            <x-dynamic-component :component="frontendComponent('product-card')" :product="$product" />
+            <div class="catalog-product-tile">
+                @if ($product->brand)
+                    <span class="catalog-brand-tag">{{ __($product->brand->name) }}</span>
+                @endif
+                <x-dynamic-component :component="frontendComponent('product-card')" :product="$product" />
+            </div>
         </div>
     @endforeach
 

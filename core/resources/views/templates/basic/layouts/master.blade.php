@@ -1,5 +1,8 @@
 @extends('Template::layouts.app')
 @section('app')
+    @push('style')
+        <link rel="stylesheet" href="{{ asset(activeTemplate(true) . 'css/storefront-refresh.css') }}">
+    @endpush
     @include('Template::partials.header')
 
     <main>

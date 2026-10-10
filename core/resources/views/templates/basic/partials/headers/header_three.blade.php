@@ -16,7 +16,7 @@
             <div class="row g-0">
                 <div class="header-bottom-wrapper {{ $layoutClass }}">
 
-                    <button class="primary-menu-button d-lg-none">
+                    <button type="button" class="primary-menu-button d-lg-none" aria-label="@lang('Open navigation menu')">
                         <span></span>
                         <span></span>
                         <span></span>

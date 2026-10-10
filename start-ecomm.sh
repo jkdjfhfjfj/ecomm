@@ -156,6 +156,13 @@ unset APP_URL
 export APP_ENV=local
 export APP_DEBUG=false
 
+# A stale config cache can keep the installer password unset and the old
+# environment name after Replit Secrets or the local .env has changed.
+(
+  cd "$APP_DIR"
+  php artisan config:clear --no-ansi
+)
+
 if [[ ! -f "$MYSQL_HOME/ready" ]]; then
   if [[ -f "$MYSQL_HOME/import-error" || -f "$MYSQL_HOME/importing" ]]; then
     if [[ -f "$MYSQL_HOME/import.pid" ]] && kill -0 "$(cat "$MYSQL_HOME/import.pid")" 2>/dev/null; then

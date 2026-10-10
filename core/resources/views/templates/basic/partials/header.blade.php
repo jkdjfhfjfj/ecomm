@@ -5,7 +5,7 @@
  @endphp
 
 
- <div class="header-area bg-white">
+ <div class="header-area bg-white storefront-header">
      @foreach ($headers as $header)
      @include('Template::partials.headers.'.$header)
      @endforeach

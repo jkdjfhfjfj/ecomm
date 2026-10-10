@@ -7,7 +7,12 @@
             <div class="row gy-4">
                 @foreach ($homeProducts as $product)
                     <div class="col-6 col-md-4 col-xl-3">
-                        <x-dynamic-component :component="frontendComponent('product-card')" :product="$product" />
+                        <div class="catalog-product-tile">
+                            @if ($product->brand)
+                                <span class="catalog-brand-tag">{{ __($product->brand->name) }}</span>
+                            @endif
+                            <x-dynamic-component :component="frontendComponent('product-card')" :product="$product" />
+                        </div>
                     </div>
                 @endforeach
             </div>
