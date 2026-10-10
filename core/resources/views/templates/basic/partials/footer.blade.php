@@ -19,9 +19,8 @@
             <div class="footer-top">
                 <div class="footer-widget widget-about">
                     @if (@$footer->logo)
-                        <img src="{{ getImage(null) }}"
-                            data-src="{{ getImage('assets/images/frontend/footer/' . @$footer->logo) }}"
-                            class="lazyload footer-logo" alt="footer-logo">
+                        <img src="{{ getImage('assets/images/frontend/footer/' . $footer->logo) }}"
+                            class="footer-logo" alt="{{ gs('site_name') }} logo" loading="eager" decoding="async">
                     @endif
 
                     @if (@$footer->footer_note)
