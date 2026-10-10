@@ -11,11 +11,11 @@ In path-routed workspaces, a healthy standalone webview workflow does not automa
 
 **How to apply:** Check artifact path registration before debugging Laravel or MySQL when the dev domain cannot reach the app. Bind the PHP server to the artifact-assigned `PORT`, normalize trusted forwarded host/scheme/prefix values before Laravel captures the request, and verify redirects and assets through the shared preview route.
 
-When the artifact-assigned port returns HTTP 200 locally but the shared preview returns 502 and the managed artifact workflow fails its health check, treat these as separate hops. Avoid adding `.replit` port mappings or changing the preview path as guesses; restore the intended route and investigate artifact gateway/registration status.
+When an artifact-assigned port returns HTTP 200 locally but the shared preview returns 502, check whether a failed artifact still owns `/`. A `.replit` mapping to the legacy workflow will not help while that root route is claimed; move the artifact to a distinct subpath before mapping the legacy workflow's port to external port 80.
 
-**Why:** In this workspace, Laravel served the storefront successfully on ports 5000 and 25501, while the shared preview still returned 502. Port-map and subpath experiments did not fix the gateway failure.
+**Why:** In this workspace, port mapping alone did not fix the preview while the failed storefront artifact still owned `/`. Moving the artifact off root and mapping the healthy legacy workflow on port 5000 made the shared URL return HTTP 200.
 
-**How to apply:** Once direct HTTP is verified, stop changing Laravel/DB code. Check managed artifact routing and preview-gateway status, then only restart after a justified route/config change.
+**How to apply:** Make sure only one service owns the root route. For the legacy Laravel workflow, move the artifact preview to a subpath, map port 5000 to external port 80, then verify the exact shared URL.
 
 An artifact service must open its own configured `localPort`; a managed workflow that only waits on the main app's already-open port does not satisfy the artifact workflow's startup check.
 
