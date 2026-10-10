@@ -1,45 +1,34 @@
-# [Project name]
+# Ecomm Storefront
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+Laravel 11 e-commerce application imported from `jkdjfhfjfj/ecomm`. The repository files are at the Project root alongside the existing Replit workspace services.
 
 ## Run & Operate
 
-- `pnpm --filter @workspace/api-server run dev` — run the API server (port 5000)
-- `pnpm run typecheck` — full typecheck across all packages
-- `pnpm run build` — typecheck + build all packages
-- `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
-- `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
-- Required env: `DATABASE_URL` — Postgres connection string
+- Start the **Ecomm Storefront** workflow to launch the PHP app and its local MySQL server.
+- The workflow runs `bash ./start-ecomm.sh` and serves the app on port `5000`.
+- Local MySQL listens only on `127.0.0.1:3306`.
+- Development database: `ecomm_replit`; username: `ecomm_local`; password: blank.
+- MySQL files persist in `.mysql-data/` and are ignored by Git. The seed import runs once in the background; existing MySQL data is never dropped.
+- Laravel's local environment and generated application key live in ignored `core/.env`.
+- Existing pnpm workspace checks remain available with `pnpm run typecheck` and `pnpm run build`.
 
 ## Stack
 
-- pnpm workspaces, Node.js 24, TypeScript 5.9
-- API: Express 5
-- DB: PostgreSQL + Drizzle ORM
-- Validation: Zod (`zod/v4`), `drizzle-zod`
-- API codegen: Orval (from OpenAPI spec)
-- Build: esbuild (CJS bundle)
+- E-commerce app: PHP 8.4, Laravel 11, MySQL 8.0.
+- Existing workspace services: pnpm, Node.js 24, TypeScript, Express, PostgreSQL, and Drizzle ORM.
 
-## Where things live
+## Where Things Live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
-
-## Architecture decisions
-
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
-
-## Product
-
-_Describe the high-level user-facing capabilities of this app once they exist._
-
-## User preferences
-
-_Populate as you build — explicit user instructions worth remembering across sessions._
+- `index.php` — application front controller.
+- `core/` — Laravel application, routes, configuration, and dependencies.
+- `assets/` — public store assets.
+- `install/database.sql` — imported local MySQL schema and seed data.
+- `start-ecomm.sh` — starts MySQL and PHP, then launches the one-time database setup.
+- `initialize-ecomm-db.sh` — imports the seed schema and completes Laravel setup.
+- `replit-dev-router.php` — serves public assets and routes app requests while blocking private project files.
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
-
-## Pointers
-
-- See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and package details
+- The source app's license activation check is retained; it has not been bypassed.
+- The blank-password MySQL account is restricted to the local development database and is not suitable for production. Use separately managed production database credentials if deploying.
+- Do not delete `.mysql-data/` unless you intend to remove the local database.

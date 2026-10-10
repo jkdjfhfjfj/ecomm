@@ -1,0 +1,527 @@
+Talk to us
+255 credits
+
+
+
+My APIs/jomashop.com API
+subscribed
+·
+canonical v14
+
+jomashop.com API
+rename
+Pinned to a canonical version. Snippet is canonical-keyed — anyone with their own Parse key can run it.
+
+based on canonical jomashop.com API ↗
+jomashop.com
+MCP
+
+Delete
+Endpoints
+9
+Added
+13h ago
+Add endpoint
+Revise API
+
+GET
+get_category_products
+
+GET
+get_product_details
+
+GET
+get_product_reviews
+
+GET
+search_products
+
+GET
+get_navigation_menu
+
+GET
+get_watch_brands
+
+GET
+get_brand_products
+
+GET
+get_sale_products
+
+GET
+get_new_arrivals
+This call costs
+1 credit / call
+— charged only on success
+Parameters
+page
+1
+Current page number.
+sort_by
+most_viewed
+Sort criteria.
+page_size
+60
+Number of products per page.
+min_rating
+Minimum customer rating filter (e.g. 4.0). Omitted by default, which applies no rating filter.
+Minimum customer rating filter (e.g. 4.0). Omitted by default, which applies no rating filter.
+category_id
+10709
+Category ID (e.g. 871 for Watches, 10709 for Sale).
+Send request
+Ready to send
+Fill in the parameters and hit send request to see live response data here.
+Call it over HTTP
+canonical URL · shareable with a Parse key
+cURL
+Python
+TypeScript
+MCP
+OpenAPI spec
+Copy
+curl -X GET 'https://api.parse.bot/scraper/406cfd10-b189-4fe9-a006-9e79e55c4856/get_category_products?page=1&sort_by=most_viewed&page_size=60&category_id=10709' \
+  -H 'X-API-Key: $PARSE_API_KEY' \
+  -H 'API-Snapshot-Version: 14'
+Replace $PARSE_API_KEY with one of your keys
+Get your API key →
+All endpoints · 9 total
+click to expand
+
+GET
+get_category_products
+1 credit / call
+Browse products by category with pagination, sorting, and filtering. Returns category metadata with a flat items array of product listings, total_count, current_page, and total_pages.
+
+Input
+Param	Type	Description
+page	integer	Current page number.
+sort_by	string	Sort criteria.
+page_size	integer	Number of products per page.
+min_rating	number	Minimum customer rating filter (e.g. 4.0). Omitted by default, which applies no rating filter.
+category_id	integer	Category ID (e.g. 871 for Watches, 10709 for Sale).
+Response
+{
+  "type": "object",
+  "fields": {
+    "id": "integer category ID",
+    "name": "string category name",
+    "items": "array of product listing objects",
+    "total_count": "integer total products in category",
+    "total_pages": "integer total pages available",
+    "current_page": "integer current page number"
+  },
+  "sample": {
+    "data": {
+      "id": 871,
+      "name": "Watches",
+      "items": [
+        {
+          "id": 322721,
+          "sku": "TIST1224071105100",
+          "msrp": 815,
+          "name": "Tissot Carson Automatic Black Dial Men's Watch T122.407.11.051.00",
+          "url_key": "tissot-carson-watch-t1224071105100",
+          "stock_status": "IN_STOCK"
+        }
+      ],
+      "total_count": 50418,
+      "total_pages": 841,
+      "current_page": 1
+    },
+    "status": "success"
+  }
+}
+
+GET
+get_product_details
+1 credit / call
+Fetch detailed product information using the product URL key (slug). Returns stale_input with kind input_not_found if the url_key does not match any product.
+
+Input
+Param	Type	Description
+url_keyrequired	string	Product URL key (slug) from the product page URL, e.g. 'rolex-submariner-automatic-chronometer-black-dial-mens-watch-126610lnbkso' or 'omega-watch-om32630405001002'.
+Response
+{
+  "type": "object",
+  "fields": {
+    "id": "integer product ID",
+    "sku": "string product SKU",
+    "name": "string product name",
+    "image": "object with label and url_nocache",
+    "brand_url": "string brand page URL path",
+    "description": "object with html field containing product description",
+    "moredetails": "object with gender_label and more_details_text",
+    "stock_status": "string stock availability status"
+  },
+  "sample": {
+    "data": {
+      "id": 561875,
+      "sku": "RLX126610LNBKSO",
+      "name": "Rolex Submariner Automatic Chronometer Black Dial Men's Watch 126610LNBKSO",
+      "image": {
+        "label": "rolex-submariner-automatic-chronometer-black-dial-mens-watch-126610lnbkso-m126610ln0001",
+        "url_nocache": "https://cdn2.jomashop.com/media/catalog/product/r/o/rolex-submariner-automatic-chronometer-black-dial-mens-watch-126610lnbkso-m126610ln0001.jpg"
+      },
+      "brand_url": "rolex.html",
+      "description": {
+        "html": "Stainless steel case with a stainless steel bracelet..."
+      },
+      "moredetails": {
+        "gender_label": "Mens",
+        "more_details_text": {
+          "department": "Watches",
+          "manufacturer": "Rolex"
+        }
+      },
+      "stock_status": "IN_STOCK"
+    },
+    "status": "success"
+  }
+}
+
+GET
+get_product_reviews
+1 credit / call
+Fetch customer reviews for a specific product via Yotpo. Returns reviews array, bottomline statistics, and pagination info.
+
+Input
+Param	Type	Description
+page	integer	Page number for reviews.
+per_page	integer	Number of reviews per page (server may override this value).
+product_idrequired	string	Product ID (domain_key from Yotpo, e.g. '561875'). Can be found in search_products results under payload.metadata.product_id or from get_product_details id field.
+Response
+{
+  "type": "object",
+  "fields": {
+    "reviews": "array of review objects with score, content, title, user",
+    "bottomline": "object with total_review, average_score, star_distribution",
+    "pagination": "object with page, per_page, total"
+  },
+  "sample": {
+    "data": {
+      "reviews": [
+        {
+          "id": 698559593,
+          "user": {
+            "display_name": "Rick B."
+          },
+          "score": 5,
+          "title": "Another happy purchase",
+          "content": "This is my third purchase from Jomashop.",
+          "created_at": "2025-04-12T15:16:24.000Z",
+          "verified_buyer": true
+        }
+      ],
+      "bottomline": {
+        "total_review": 5,
+        "average_score": 4.6,
+        "star_distribution": {
+          "1": 0,
+          "2": 0,
+          "3": 1,
+          "4": 0,
+          "5": 4
+        }
+      },
+      "pagination": {
+        "page": 1,
+        "total": 5,
+        "per_page": 10
+      }
+    },
+    "status": "success"
+  }
+}
+
+GET
+search_products
+1 credit / call
+Search for products using keywords. Returns paginated results with product details including price, brand, and image.
+
+Input
+Param	Type	Description
+skip	integer	Offset for results (pagination).
+limit	integer	Max number of results to return.
+queryrequired	string	Search keyword (e.g. 'Rolex', 'luxury automatic watch').
+Response
+{
+  "type": "object",
+  "fields": {
+    "data": "array of product objects with id, name, brand, url, image, price, price_discounted, payload",
+    "has_more": "boolean indicating more results available",
+    "approximate_hits": "integer total estimated matching products"
+  },
+  "sample": {
+    "data": {
+      "data": [
+        {
+          "id": "51d8c9f9-0197-483d-beb9-ed4d0aac085c",
+          "url": "https://www.jomashop.com/rolex-datejust-41-watch-126300gyrj.html",
+          "name": "Datejust 41 Slate Dial Automatic Men's Jubilee Watch 126300GYRJ",
+          "alias": "RLX126300GYRJ",
+          "brand": "Rolex",
+          "image": "https://cdn2.jomashop.com/media/catalog/product/cache/...",
+          "price": 12950,
+          "price_discounted": 12950
+        }
+      ],
+      "has_more": true,
+      "approximate_hits": 2060
+    },
+    "status": "success"
+  }
+}
+
+GET
+get_navigation_menu
+1 credit / call
+Retrieve the full category navigation menu tree. Returns an object with items array of top-level categories with their metadata and HTML menu content.
+
+Input
+No input parameters required.
+
+Response
+{
+  "type": "object",
+  "fields": {
+    "items": "array of category objects with id, name, url_key, menu_content, children_count"
+  },
+  "sample": {
+    "data": {
+      "items": [
+        {
+          "id": 10709,
+          "name": "Sale",
+          "image": "https://www.jomashop.com/media/catalog/category/sale.png",
+          "url_key": "flash-sale-offers",
+          "position": 1,
+          "__typename": "CategoryTree",
+          "menu_content": "<style>...</style>...",
+          "children_count": "0"
+        }
+      ]
+    },
+    "status": "success"
+  }
+}
+
+GET
+get_watch_brands
+1 credit / call
+Retrieve a list of featured watch brands available on the site.
+
+Input
+No input parameters required.
+
+Response
+{
+  "type": "object",
+  "fields": {
+    "items": "array of brand objects with name field"
+  },
+  "sample": {
+    "data": {
+      "items": [
+        {
+          "name": "Rolex"
+        },
+        {
+          "name": "Seiko"
+        },
+        {
+          "name": "Tissot"
+        },
+        {
+          "name": "Omega"
+        },
+        {
+          "name": "Breitling"
+        }
+      ]
+    },
+    "status": "success"
+  }
+}
+
+GET
+get_brand_products
+1 credit / call
+Fetch products for a specific brand in a category. Uses the same underlying category query with a brand filter applied. Returns category data with flat items array.
+
+Input
+Param	Type	Description
+page	integer	Page number.
+brand_namerequired	string	Brand name exactly as listed (e.g. 'Rolex', 'Omega', 'Tag Heuer'). Use get_watch_brands to discover valid brand names.
+category_id	integer	Category ID to filter within.
+Response
+{
+  "type": "object",
+  "fields": {
+    "id": "integer category ID",
+    "name": "string category name",
+    "items": "array of product listing objects",
+    "total_count": "integer total products matching brand filter",
+    "total_pages": "integer total pages",
+    "current_page": "integer current page"
+  },
+  "sample": {
+    "data": {
+      "id": 871,
+      "name": "Watches",
+      "items": [
+        {
+          "id": 35895,
+          "sku": "OM32630405001002",
+          "name": "Omega Speedmaster Racing Black Dial Men's Watch 32630405001002",
+          "url_key": "omega-watch-om32630405001002",
+          "stock_status": "IN_STOCK"
+        }
+      ],
+      "total_count": 2023,
+      "total_pages": 34,
+      "current_page": 1
+    },
+    "status": "success"
+  }
+}
+
+GET
+get_sale_products
+1 credit / call
+Fetch products from the Sale category (ID 10709). Returns category data with flat items array of sale items.
+
+Input
+Param	Type	Description
+page	integer	Page number.
+Response
+{
+  "type": "object",
+  "fields": {
+    "id": "integer category ID (10709)",
+    "name": "string category name",
+    "items": "array of product listing objects",
+    "total_count": "integer total sale products",
+    "total_pages": "integer total pages",
+    "current_page": "integer current page"
+  },
+  "sample": {
+    "data": {
+      "id": 10709,
+      "name": "Sale",
+      "items": [
+        {
+          "id": 1212341,
+          "sku": "BLRBR0392-DTR-CE-SRB",
+          "name": "Bell and Ross Instruments Automatic Blue Dial Men's Watch BR0392-D-TR-CE/SRB",
+          "stock_status": "IN_STOCK"
+        }
+      ],
+      "total_count": 5,
+      "total_pages": 1,
+      "current_page": 1
+    },
+    "status": "success"
+  }
+}
+
+GET
+get_new_arrivals
+1 credit / call
+Fetch recently added products by sorting the category by news_from_date. Returns category data with flat items array sorted by newest first.
+
+Input
+Param	Type	Description
+page	integer	Page number.
+category_id	integer	Category ID to browse new arrivals within.
+Response
+{
+  "type": "object",
+  "fields": {
+    "id": "integer category ID",
+    "name": "string category name",
+    "items": "array of product listing objects",
+    "total_count": "integer total products",
+    "total_pages": "integer total pages",
+    "current_page": "integer current page"
+  },
+  "sample": {
+    "data": {
+      "id": 871,
+      "name": "Watches",
+      "items": [
+        {
+          "id": 99989,
+          "sku": "SE-SYMK22",
+          "name": "Seiko 5 Automatic Black Dial Gold-tone Ladies Watch SYMK22",
+          "url_key": "seiko-watch-symk22",
+          "stock_status": "IN_STOCK"
+        }
+      ],
+      "total_count": 50418,
+      "total_pages": 841,
+      "current_page": 1
+    },
+    "status": "success"
+  }
+}
+Version history
+this copy's own numbering (independent of canonical) · 1 entry
+v1
+latest
+Initial version
+13h ago
+current
+
+Ask the agent
+
+API Agent
+changes ship in minutes · chats are private to you
+
+History
+New
+how can I get category ids
+The best way to discover valid category IDs is with 
+GET
+get_navigation_menu
+. It returns the full site navigation tree, and each item includes an id field — that's the category ID you can pass to other endpoints like 
+GET
+get_category_products
+, 
+GET
+get_brand_products
+, and 
+GET
+get_new_arrivals
+.
+
+Here's a quick call:
+
+bash
+Copy
+curl "https://api.parse.bot/scraper/406cfd10-b189-4fe9-a006-9e79e55c4856/get_navigation_menu" \
+  -H "X-API-Key: $PARSE_API_KEY"
+Each item in the items array looks like:
+
+json
+Copy
+{
+  "id": 10709,
+  "name": "Sale",
+  "url_key": "flash-sale-offers",
+  "children_count": "0"
+}
+Two category IDs are also already documented and known to work:
+
+ID	Category
+871	Watches (default)
+10709	Sale
+For anything beyond those two, 
+GET
+get_navigation_menu
+ is the reliable way to find the full list.
+
+What should this API do that it doesn't yet?
+
+Send
+Scraper · Parse
