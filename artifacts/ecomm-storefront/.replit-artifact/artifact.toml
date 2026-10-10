@@ -1,14 +1,14 @@
 kind = "web"
-previewPath = "/"
+previewPath = "/storefront-artifact"
 title = "Ecomm Storefront"
-description = "Development Preview route for the imported Laravel Ecomm storefront. It serves the Laravel source from the workspace root with local MySQL; production deployment is not configured by this preview bridge."
+description = "Optional artifact preview for the imported Laravel storefront."
 version = "1.0.0"
 id = "artifacts/ecomm-storefront"
 router = "path"
 
 [[services]]
 name = "web"
-paths = [ "/" ]
+paths = [ "/storefront-artifact" ]
 localPort = 25501
 
 [services.development]
@@ -25,4 +25,4 @@ to = "/index.html"
 
 [services.env]
 PORT = "25501"
-BASE_PATH = "/"
+BASE_PATH = "/storefront-artifact"
