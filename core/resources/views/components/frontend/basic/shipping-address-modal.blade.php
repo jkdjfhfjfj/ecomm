@@ -94,12 +94,16 @@
     #addressModal .modal-dialog { width: min(100% - 1rem, 760px); max-height: calc(100dvh - 1rem); margin: .5rem auto; }
     #addressModal .modal-content { max-height: calc(100dvh - 1rem); }
     #addressModal .modal-body { overflow-y: auto; overscroll-behavior: contain; padding-bottom: max(1rem, env(safe-area-inset-bottom)); }
+    #addressModal .form-group { margin-bottom: .75rem; }
+    #addressModal .form-group label { margin-bottom: .3rem; font-size: .88rem; }
+    #addressModal .form-control { min-height: 44px; }
     #addressModal .modal-close-btn { z-index: 2; }
     @media(max-width: 575.98px) {
         #addressModal .modal-dialog { width: 100%; max-width: none; height: 100dvh; max-height: 100dvh; margin: 0; }
         #addressModal .modal-content { height: 100%; max-height: 100dvh; border-radius: 0; }
-        #addressModal .modal-body { height: 100%; padding: 1.25rem 1rem calc(1rem + env(safe-area-inset-bottom)); }
-        #addressModal form > .col-12 { position: sticky; bottom: 0; z-index: 2; padding: .75rem 0 calc(.75rem + env(safe-area-inset-bottom)); background: var(--bs-modal-bg, #fff); }
+        #addressModal .modal-body { height: 100%; padding: 1.1rem 1rem calc(.5rem + env(safe-area-inset-bottom)); }
+        #addressModal .modal-body form>.row { --bs-gutter-y: .2rem; }
+        #addressModal form > .col-12 { position: sticky; bottom: calc(-.5rem - env(safe-area-inset-bottom)); z-index: 2; padding: .65rem 0 calc(.75rem + env(safe-area-inset-bottom)); margin-top: .35rem!important; background: var(--bs-modal-bg, #fff); box-shadow: 0 -8px 16px rgba(30,35,40,.07); }
     }
 </style>
 

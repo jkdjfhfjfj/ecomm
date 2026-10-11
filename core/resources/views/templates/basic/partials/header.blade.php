@@ -4,6 +4,7 @@
      $siteMenu = $headerThree->group->links;
  @endphp
 
+ @include('Template::partials.storefront_styles')
 
  <div class="header-area bg-white storefront-header">
      @foreach ($headers as $header)

@@ -1,6 +1,6 @@
 <a href="{{ $category->shopLink() }}" class="vm-category-card" aria-label="@lang('Shop') {{ __($category->name) }}">
     <span class="vm-category-card__image">
-        <img src="{{ getImage(null) }}" data-src="{{ $category->categoryImage() }}" class="lazyload owl-lazy" alt="{{ __($category->name) }}" width="360" height="280" loading="lazy">
+        <img src="{{ $category->categoryImage() }}" alt="{{ __($category->name) }}" width="360" height="280" loading="lazy" decoding="async" onerror="this.hidden=true">
     </span>
     <span class="vm-category-card__title line-limitation-1">{{ __($category->name) }}</span>
 </a>

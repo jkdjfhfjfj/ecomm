@@ -23,8 +23,9 @@
                     </p>
                 @elseif(Route::is('product.by.category'))
                     <p class="message">
-                        @lang('Sorry, we currently do not have any products available in this category.')
+                        @lang('No products are currently listed in this category.')
                     </p>
+                    <a class="empty-message-link" href="{{ route('categories') }}">@lang('Explore other categories') <span aria-hidden="true">→</span></a>
                 @endif
             </div>
         </div>

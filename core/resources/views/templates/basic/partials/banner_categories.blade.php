@@ -3,6 +3,9 @@
         ->orderBy('position')
         ->get()
         ->unique('slug')
+        ->reject(fn ($category) => str_contains(strtolower((string) $category->slug), 'daily-offer')
+            || in_array(strtolower(trim((string) $category->name)), ['daily offer', 'daily offers'], true))
+        ->filter(fn ($category) => filter_var($category->external_image_url, FILTER_VALIDATE_URL) || filled($category->image))
         ->values();
 
     if (gs('homepage_layout') == 'sidebar_menu') {
@@ -24,11 +27,16 @@
 @endphp
 
 @if (!blank($featuredCategories))
-    <div class="overflow-hidden">
+    <div class="overflow-hidden banner-category-wrap">
         <div class="featured-category-slider owl-theme owl-carousel">
             @foreach ($featuredCategories as $category)
-                <div class="banner-categories p-2">
-                    <x-dynamic-component :component="frontendComponent('category-card')" :category="$category" />
+                <div class="banner-categories">
+                    <a class="banner-category-card" href="{{ $category->shopLink() }}" aria-label="@lang('Shop :category', ['category' => __($category->name)])">
+                        <span class="banner-category-image">
+                            <img src="{{ $category->categoryImage() }}" alt="{{ __($category->name) }}" loading="eager" decoding="async" onerror="const card=this.closest('.banner-categories');const slide=this.closest('.owl-item');if(slide){slide.remove();if(window.jQuery)window.jQuery('.featured-category-slider').trigger('refresh.owl.carousel')}else if(card){card.remove()}">
+                        </span>
+                        <span class="banner-category-title">{{ __($category->name) }}</span>
+                    </a>
                 </div>
             @endforeach
         </div>
@@ -41,13 +49,10 @@
                 const categoriesToShow = @json($categoriesToShow);
 
                 const viewItems = {
-                    0: {
-                        items: 3,
-                        margin: 12,
-                    },
+                    0: { items: 2, margin: 8 },
                     425: {
-                        items: 4,
-                        margin: 12,
+                        items: 3,
+                        margin: 10,
                     },
                     575: {
                         items: 4,
@@ -66,8 +71,8 @@
                     dots: false,
                     autoplay: true,
                     autoplayTimeout: 4000,
-                    loop: true,
-                    lazyLoad: true,
+                    loop: {{ $featuredCategories->count() > 4 ? 'true' : 'false' }},
+                    lazyLoad: false,
                     responsive: viewItems,
                 });
             })(jQuery);

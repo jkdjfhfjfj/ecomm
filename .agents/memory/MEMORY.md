@@ -5,3 +5,4 @@
 - [External API key priority](geoapify-key-management.md) — environment secrets are authoritative; encrypted admin-managed database values are fallbacks only.
 - [Shopper category hierarchy](catalog-category-hierarchy.md) — use nested navigation groups while keeping products assigned to verified leaf categories.
 - [HostBuddy Railpack builds](hostbuddy-railpack.md) — Railpack installs pnpm first; its PHP image may omit Composer and required extensions for the nested Laravel app.
+- [Storefront redesign expectations](storefront-redesign-expectations.md) — use supplied screen captures as acceptance criteria; the user expects visible, broad storefront redesigns rather than isolated CSS tweaks.

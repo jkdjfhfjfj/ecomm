@@ -44,7 +44,7 @@
 
 
 <div class="site-sidebar mobile-menu sidebar-nav d-lg-none">
-    <button type="button" class="sidebar-close-btn">
+    <button type="button" class="sidebar-close-btn" aria-label="@lang('Close category menu')">
         <i class="las la-times"></i>
     </button>
 
@@ -74,7 +74,7 @@
 @once
     @push('style')
         <style>
-            .mobile-menu-body{overflow-y:auto;max-height:calc(100dvh - 120px);padding:1rem}
+            .mobile-menu-body{overflow-y:auto;max-height:calc(100dvh - 92px);padding:1rem 1rem calc(2rem + env(safe-area-inset-bottom))}
             .mobile-category-tree{border:1px solid #e8edf3;border-radius:16px;background:#fff;padding:.9rem}
             .mobile-category-tree__heading{display:flex;align-items:center;justify-content:space-between;gap:.75rem;padding:.2rem .2rem .85rem;border-bottom:1px solid #edf0f3}
             .mobile-category-tree__heading>div{display:grid;gap:.15rem}
@@ -83,7 +83,7 @@
             .mobile-category-tree__heading>a{padding:.55rem .7rem;border-radius:10px;background:#f3f6fa;color:#25364a;font-size:.78rem;font-weight:650;white-space:nowrap}
             .mobile-category-tree__roots,.mobile-category-tree__children{list-style:none;margin:0;padding:0}
             .mobile-category-tree__item{margin:0}
-            .mobile-category-tree__row{display:flex;align-items:center;gap:.4rem;min-height:44px;border-bottom:1px solid #f0f2f5}
+            .mobile-category-tree__row{display:flex;align-items:center;gap:.4rem;min-height:48px;border-bottom:1px solid #f0f2f5}
             .mobile-category-tree__row>a{flex:1;display:block;padding:.65rem .4rem;color:#26364a;font-size:.93rem;font-weight:600}
             .mobile-category-tree__toggle{width:34px;height:34px;border:0;border-radius:9px;background:#f3f6fa;color:#334155}
             .mobile-category-tree__children{margin-left:.7rem;padding-left:.65rem;border-left:1px solid #e6ebf1}

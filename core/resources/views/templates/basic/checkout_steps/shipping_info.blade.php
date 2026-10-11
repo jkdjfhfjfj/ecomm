@@ -1,6 +1,7 @@
 @extends('Template::layouts.checkout')
 
 @section('blade')
+    @include('Template::partials.storefront_styles')
     <div class="address-wrapper">
         @foreach ($shippingAddresses as $item)
             @php
@@ -60,7 +61,7 @@
             </label>
         @endforeach
 
-        <button class="newAddress w-100 address-single-add-new">
+        <button type="button" class="newAddress w-100 address-single-add-new">
             <i class="las la-plus-circle"></i>
             <span class="add-new-title d-block">@lang('Add New Address')</span>
         </button>
@@ -89,9 +90,31 @@
 
 @push('style')
     <style>
-        .add-new-title {
-            font-size: 1rem;
-            color: hsl(var(--body-color) / 0.8);
+        .address-wrapper { display:grid; gap:14px; padding-bottom:12px; }
+        .address-single { display:flex; align-items:flex-start; gap:18px; padding:18px; border:1px solid var(--store-line,#e4dfd5); background:#fffefa; color:var(--store-ink,#252521); }
+        .address-single:has(input:checked) { border-color:var(--store-accent,#9b493d); box-shadow:inset 3px 0 var(--store-accent,#9b493d); }
+        .address-item-left { display:flex; align-items:center; gap:11px; margin-bottom:12px; }
+        .address-item-left h6 { margin:0; font-weight:700; }
+        .address-item-left input { accent-color:var(--store-accent,#9b493d); }
+        .address-item-right { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px 20px; }
+        .address-item-inner { display:flex; gap:8px; min-width:0; font-size:.87rem; }
+        .address-item-label { flex:0 0 76px; color:var(--store-muted,#746f67); }
+        .item-devide { display:none; }
+        .address-item-value { overflow-wrap:anywhere; }
+        .address-single .btn { white-space:nowrap; }
+        .address-single-add-new { min-height:110px; display:grid; place-content:center; gap:5px; border:1px dashed #b7aa97; background:rgba(255,254,250,.55); color:var(--store-accent,#9b493d); }
+        .address-single-add-new i { font-size:1.4rem; }
+        .add-new-title { font-size:1rem; color:inherit; }
+        #shipping-form .btn--base { min-height:46px; padding:0 20px; border-radius:3px; background:var(--store-ink,#252521); }
+        @media(max-width:767px) {
+            .address-wrapper { gap:10px; }
+            .address-single { gap:9px; padding:13px; }
+            .address-item-right { grid-template-columns:1fr; gap:5px; }
+            .address-item-label { flex-basis:68px; }
+            .address-single .position-relative { align-self:flex-start; }
+            .address-wrapper+.d-flex { gap:14px!important; padding-bottom:calc(96px + env(safe-area-inset-bottom)); }
+            #shipping-form { width:100%; }
+            #shipping-form .btn--base { width:100%; }
         }
     </style>
 @endpush
