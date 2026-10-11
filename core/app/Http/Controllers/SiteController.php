@@ -54,13 +54,16 @@ class SiteController extends Controller {
             ->take(12)
             ->values();
         $homeCategoryRows = Category::query()
-            ->where('external_source', 'parsebot_jomashop')
+            ->where(function ($query) {
+                $query->where('is_featured', Status::YES)
+                    ->orWhere('feature_in_banner', Status::YES);
+            })
             ->whereNotIn('external_id', ['5695'])
             ->whereNotIn('slug', ['daily-offers'])
             ->whereRaw("LOWER(name) NOT LIKE ?", ['%daily%'])
             ->whereRaw("LOWER(slug) NOT LIKE ?", ['%daily%'])
             ->orderBy('position')
-            ->limit(4)
+            ->limit(8)
             ->get()
             ->map(function (Category $category) {
                 $products = Product::published()

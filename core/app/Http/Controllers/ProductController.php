@@ -107,7 +107,15 @@ class ProductController extends Controller {
         }
 
         if ($request->search) {
-            $allProducts->searchable(['products.name', 'products.summary', 'products.description']);
+            $searchTerm = trim((string) $request->search);
+            $allProducts->where(function ($query) use ($searchTerm) {
+                $like = '%' . $searchTerm . '%';
+                $query->where('products.name', 'like', $like)
+                    ->orWhere('products.summary', 'like', $like)
+                    ->orWhere('products.description', 'like', $like)
+                    ->orWhereHas('brand', fn ($brand) => $brand->where('name', 'like', $like))
+                    ->orWhereHas('categories', fn ($category) => $category->where('categories.name', 'like', $like));
+            });
         }
 
         if ($request->has('brand')) {

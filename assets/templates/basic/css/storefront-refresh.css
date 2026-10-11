@@ -53,7 +53,41 @@ button, input, select { font-family: var(--store-body); }
 .view-category .menu-category-btn { min-height: 48px; color: #fff; }
 .header-bottom .action-btn-inner { gap: 8px; }
 .header-bottom .cart-icon-design .button { border: 0; background: transparent; color: #fff; }
-.mobile-menu-icons { background: var(--store-paper); border-top: 1px solid var(--store-line); }
+.mobile-menu-icons {
+    background: #20211f !important;
+    border-top: 1px solid rgba(255,255,255,.16) !important;
+    color: #fff !important;
+    box-shadow: 0 -8px 24px rgba(20,22,20,.16);
+}
+.mobile-menu-icons .ecommerce,
+.mobile-menu-icons .ecommerce__text,
+.mobile-menu-icons .ecommerce__icon,
+.mobile-menu-icons .ecommerce__icon i,
+.mobile-menu-icons a,
+.mobile-menu-icons button { color: #fff !important; opacity: 1; }
+.mobile-menu-icons img { filter: brightness(0) invert(1); }
+.mobile-menu-icons > li + li { border-left-color: rgba(255,255,255,.2) !important; }
+.mobile-menu.sidebar-nav {
+    width: min(430px, 92vw);
+    max-width: none;
+    background: #fbfaf7;
+    box-shadow: 18px 0 55px rgba(22, 27, 31, .2);
+}
+.mobile-menu .mobile-menu-body { padding: 18px 16px 28px; }
+.mobile-category-tree {
+    border: 1px solid #e7e1d7 !important;
+    border-radius: 4px !important;
+    background: #fffefa !important;
+    box-shadow: 0 10px 28px rgba(37, 37, 33, .06);
+}
+.mobile-category-tree__heading { position: sticky; top: 0; z-index: 2; background: #fffefa; }
+.mobile-category-tree__heading > a { border-radius: 3px !important; background: #252521 !important; color: #fff !important; }
+.mobile-category-tree__row { border-color: #eee9e0 !important; }
+.mobile-category-tree__row > a { color: #252521 !important; text-decoration: none; }
+.mobile-category-tree__row > a:hover,
+.mobile-category-tree__row > a:focus-visible { color: #9b493d !important; }
+.mobile-category-tree__toggle { border-radius: 3px !important; background: #f3eee5 !important; }
+.mobile-category-tree__children { border-color: #d9cfc1 !important; }
 
 .hero-section { margin-top: 22px; }
 .hero-slider { overflow: hidden; }
