@@ -74,7 +74,7 @@ else
     php "$COMPOSER_PHAR" install --no-dev --prefer-dist --no-interaction --optimize-autoloader
 fi
 
-php artisan config:clear
+php artisan optimize:clear
 php artisan migrate --force --no-interaction
 
 mkdir -p \
