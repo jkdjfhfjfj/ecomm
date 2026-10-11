@@ -49,7 +49,11 @@ for extension in bcmath gd gmp zip; do
 done
 
 if command -v composer >/dev/null 2>&1; then
-    composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader
+    if [ "${CPANEL_CODE_ONLY_REINSTALL:-0}" = "1" ]; then
+        composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader --no-scripts
+    else
+        composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader
+    fi
 else
     COMPOSER_TMP="$(mktemp -d)"
     trap 'rm -rf "$COMPOSER_TMP"' EXIT HUP INT TERM
@@ -71,11 +75,19 @@ else
     ' "$COMPOSER_INSTALLER"
 
     php "$COMPOSER_INSTALLER" --quiet --install-dir="$COMPOSER_TMP" --filename=composer.phar
-    php "$COMPOSER_PHAR" install --no-dev --prefer-dist --no-interaction --optimize-autoloader
+    if [ "${CPANEL_CODE_ONLY_REINSTALL:-0}" = "1" ]; then
+        php "$COMPOSER_PHAR" install --no-dev --prefer-dist --no-interaction --optimize-autoloader --no-scripts
+    else
+        php "$COMPOSER_PHAR" install --no-dev --prefer-dist --no-interaction --optimize-autoloader
+    fi
 fi
 
-php artisan optimize:clear
-php artisan migrate --force --no-interaction
+if [ "${CPANEL_CODE_ONLY_REINSTALL:-0}" = "1" ]; then
+    echo "Code-only reinstall: database operations and application boot scripts are skipped."
+else
+    php artisan optimize:clear
+    php artisan migrate --force --no-interaction
+fi
 
 mkdir -p \
     "$APP/storage/framework/cache/data" \
@@ -94,5 +106,14 @@ if [ ! -e "$APP/public/storage" ] && [ ! -L "$APP/public/storage" ]; then
 fi
 
 chmod -R u+rwX "$APP/storage" "$APP/bootstrap/cache"
+
+if [ "${CPANEL_CODE_ONLY_REINSTALL:-0}" = "1" ]; then
+    # Clear only generated filesystem caches; do not boot Laravel or flush the
+    # application cache store, which may itself be backed by MySQL.
+    find "$APP/bootstrap/cache" -maxdepth 1 -type f \
+        \( -name 'config.php' -o -name 'routes-*.php' \) -delete
+    find "$APP/storage/framework/views" -maxdepth 1 -type f -name '*.php' -delete
+    echo "Code-only reinstall complete: migrations, seeders, imports, and application cache were left untouched."
+fi
 
 echo "Laravel production dependencies and public assets are prepared."

@@ -4,7 +4,7 @@ This guide targets the Laravel storefront in `core/`, not the separate Vite prev
 
 ## Build and document root
 
-Configure the Git builder to run this from the repository root:
+For a normal Git deployment that applies pending Laravel migrations, configure the Git builder to run this from the repository root:
 
 ```sh
 sh scripts/cpanel-build.sh
@@ -14,7 +14,23 @@ The build environment must provide PHP 8.3+. The build script checks for the req
 
 For the Railpack deployment shown in the logs, leave Start Command blank to use PHP auto-detection unless HostBuddy specifically requires a custom command. The root package has no `npm run start` script. Ensure the deployed PHP server serves Laravel's `core/public` directory; do not expose the repository root. If using HostBuddy's separate classic cPanel/Apache hosting instead, set that domain's document root to `core/public`.
 
-The build script installs production Composer dependencies, copies the tracked storefront assets into `core/public/assets`, and prepares Laravel's storage link and writable directories. It does not run database migrations or alter the database.
+The normal build script installs the production dependencies pinned by `core/composer.lock`, copies the tracked storefront assets into `core/public/assets`, prepares Laravel's storage link and writable directories, clears caches, and applies pending migrations. It does not reset or seed the database.
+
+## Code-only reinstall (keep the existing database)
+
+Use this command when you need to rebuild the application code without changing any database tables or records. Configure these HostBuddy build environment values first: `DB_CONNECTION=mysql`, `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`, and `CPANEL_PERSISTENT_STORAGE_CONFIRMED=1`. The last value is an explicit confirmation that HostBuddy keeps `core/storage/app/public` across builds; do not set it unless you have verified that behavior.
+
+```sh
+sh scripts/cpanel-reinstall.sh
+```
+
+The code-only command checks the Laravel source, Composer lockfile, MySQL environment settings, and the persistent-storage confirmation before building. It installs the locked production dependencies without running Composer scripts, copies tracked storefront assets, and clears only generated config, route, and compiled-view files. It skips Laravel boot commands, migrations, seeders, imports, resets, and application-cache clearing; it does not read or write database records.
+
+Keep the existing database settings in HostBuddy's private environment configuration. The command does not create, overwrite, or delete `.env` or files under `core/storage/app/public`. It does not change license/activation source files or behavior. Composer dependencies are regenerated from the committed lockfile. `core/vendor` is generated and ignored by Git, so manual edits made only inside that directory are not included in a Git reinstall.
+
+HostBuddy must retain the deployment's existing `core/storage/app/public` files across builds. If HostBuddy builds into a fresh release directory, configure persistent storage or restore the existing upload directory before using the command.
+
+For a no-change test of the preflight, set `CPANEL_REINSTALL_DRY_RUN=1`; the script validates its required settings and exits before installing dependencies or clearing caches. After a real build, verify the app connects to the same database and existing uploads remain available. Do not use `migrate:fresh`, `db:wipe`, or database seed commands for a code-only reinstall.
 
 ## Database copy
 
