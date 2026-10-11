@@ -9,13 +9,14 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use RuntimeException;
 use Throwable;
 
 class ParseBotImportController extends Controller
 {
     private const SETTINGS_KEY = 'parsebot_admin_settings';
     private const DAILY_BUDGET = 250;
-    private const MAX_RUN_BUDGET = 5;
+    private const MAX_RUN_BUDGET = 1;
 
     public function index()
     {
@@ -90,6 +91,8 @@ class ParseBotImportController extends Controller
             return back()
                 ->with('parsebot_output', $output)
                 ->with($exitCode === 0 ? 'success' : 'error', $exitCode === 0 ? 'Import step finished.' : 'Import step stopped; review the output and resume after correcting the issue.');
+        } catch (RuntimeException $exception) {
+            return back()->withErrors(['credit_limit' => $exception->getMessage()]);
         } catch (Throwable $exception) {
             report($exception);
             return back()->withErrors(['import' => 'The import step failed. Check the server log; the API key is not included in the error message.']);

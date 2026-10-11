@@ -69,6 +69,18 @@ class ImportParseBotCatalog extends Command
         $baseUrl = rtrim((string) config('services.parsebot.scraper_url'), '/');
         $limit = (int) $this->option('credit-limit');
 
+        if ($this->option('categories-only')) {
+            if ($this->option('details-only')) {
+                $this->error('Choose either --categories-only or --details-only, not both.');
+                return self::FAILURE;
+            }
+            foreach (self::CATEGORIES as $sourceId => $categoryName) {
+                $this->saveCategory($sourceId, $categoryName);
+            }
+            $this->info('Saved all 15 categories with hosted image URLs where the source provides them.');
+            return self::SUCCESS;
+        }
+
         $this->apiKey = trim((string) config('services.parsebot.api_key'));
         if ($this->apiKey === '') {
             try {
@@ -93,18 +105,6 @@ class ImportParseBotCatalog extends Command
         if ($limit < 1 || $limit > self::DAILY_REQUEST_CAP) {
             $this->error('The credit limit must be between 1 and 250.');
             return self::FAILURE;
-        }
-
-        if ($this->option('categories-only') && $this->option('details-only')) {
-            $this->error('Choose either --categories-only or --details-only, not both.');
-            return self::FAILURE;
-        }
-        if ($this->option('categories-only')) {
-            foreach (self::CATEGORIES as $sourceId => $categoryName) {
-                $this->saveCategory($sourceId, $categoryName);
-            }
-            $this->info('Saved all 15 categories with hosted image URLs where the source provides them.');
-            return self::SUCCESS;
         }
 
         $remainingToday = self::DAILY_REQUEST_CAP - $this->dailyRequestsUsedToday();

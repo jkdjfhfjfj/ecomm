@@ -2,6 +2,6 @@
 - [MySQL startup and lock ownership](mysql-startup-lock.md) — verify stale socket locks and avoid restarting shared-MySQL storefront workflows during imports.
 - [Parse.bot catalog payloads](parsebot-catalog-payloads.md) — keep source descriptions distinct from specs; persist raw listings because detail requests can time out.
 - [Storefront test-project scope](storefront-test-project.md) — the user describes this storefront as a test project they made; use that context for local/production distinctions.
-- [Geoapify key priority](geoapify-key-management.md) — the environment secret is authoritative; the admin-managed database key is an encrypted fallback only.
+- [External API key priority](geoapify-key-management.md) — environment secrets are authoritative; encrypted admin-managed database values are fallbacks only.
 - [Shopper category hierarchy](catalog-category-hierarchy.md) — use nested navigation groups while keeping products assigned to verified leaf categories.
 - [HostBuddy Railpack builds](hostbuddy-railpack.md) — Railpack installs pnpm first; its PHP image may omit Composer and required extensions for the nested Laravel app.
