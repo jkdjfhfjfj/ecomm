@@ -44,6 +44,25 @@ class Product extends Model {
         return $this->offer()->running();
     }
 
+    public function scopeWithDisplayableImage($query)
+    {
+        return $query->where(function ($images) {
+            $validMedia = function ($media) {
+                $media->whereNotNull('path')->where('path', '!=', '')
+                    ->whereNotNull('file_name')->where('file_name', '!=', '');
+            };
+
+            $images->whereHas('displayImage', $validMedia)
+                ->orWhereHas('galleryImages', $validMedia)
+                ->orWhere('external_image_url', 'REGEXP', '^https?://[^[:space:]]+')
+                ->orWhere(function ($snapshot) {
+                    $snapshot->whereNotNull('external_details')
+                        ->where('external_details', 'LIKE', '%http%')
+                        ->where('external_details', 'LIKE', '%media_gallery%');
+                });
+        });
+    }
+
     public function coupons() {
         return $this->belongsToMany(Coupon::class, 'coupons_products', 'product_id', 'coupon_id');
     }
@@ -158,31 +177,49 @@ class Product extends Model {
         return route('product.detail', $this->slug);
     }
 
+    private function isValidExternalImageUrl($url): bool
+    {
+        if (!is_string($url)) {
+            return false;
+        }
+        $parts = parse_url($url);
+        return is_array($parts)
+            && in_array(strtolower($parts['scheme'] ?? ''), ['http', 'https'], true)
+            && !empty($parts['host'])
+            && filter_var($url, FILTER_VALIDATE_URL) !== false;
+    }
+
     public function mainImage($thumb = true) {
         $thumb = $thumb ? '/thumb_' : '/';
         $image = $this->displayImage;
-        if (!$image) {
-            if ($this->external_image_url && in_array(parse_url($this->external_image_url, PHP_URL_SCHEME), ['https', 'http'], true)) {
-                return $this->external_image_url;
+        if ($image && $image->file_name && $image->path && is_file($image->path . '/' . $image->file_name)) {
+            $imagePath = $image->path . $thumb . $image->file_name;
+            if ($thumb && !is_file($imagePath)) {
+                $imagePath = $image->path . '/' . $image->file_name;
             }
-            $externalGallery = $this->externalGalleryUrls();
-            if ($externalGallery) {
-                return $externalGallery[0];
-            }
-            return getImage(null);
+            return getImage($imagePath);
         }
-        return getImage($image->path . $thumb . $image->file_name);
+
+        if ($this->isValidExternalImageUrl($this->external_image_url)) {
+            return $this->external_image_url;
+        }
+        $externalGallery = $this->externalGalleryUrls();
+        return $externalGallery[0] ?? getImage(null);
     }
 
     public function hasDisplayableImage(): bool
     {
+        if ($this->isValidExternalImageUrl($this->external_image_url)) {
+            return true;
+        }
+
         $localImage = $this->displayImage;
-        if ($localImage && $localImage->file_name && $localImage->path) {
+        if ($localImage && $localImage->file_name && $localImage->path && is_file($localImage->path . '/' . $localImage->file_name)) {
             return true;
         }
 
         foreach ($this->externalGalleryUrls() as $url) {
-            if (is_string($url) && in_array(parse_url($url, PHP_URL_SCHEME), ['https', 'http'], true)) {
+            if ($this->isValidExternalImageUrl($url)) {
                 return true;
             }
         }
@@ -202,7 +239,7 @@ class Product extends Model {
         $urls = [];
 
         foreach ([$this->external_image_url, data_get($details, 'image.url_nocache'), data_get($details, 'image.url'), data_get($listing, 'image.url_nocache'), data_get($listing, 'image.url'), $details['image_url'] ?? null, $listing['image_url'] ?? null] as $url) {
-            if (is_string($url) && in_array(parse_url($url, PHP_URL_SCHEME), ['https', 'http'], true)) {
+            if ($this->isValidExternalImageUrl($url)) {
                 $urls[] = $url;
             }
         }
@@ -214,13 +251,13 @@ class Product extends Model {
                 }
                 foreach (is_array($image['sizes'] ?? null) ? $image['sizes'] : [] as $size) {
                     $url = is_array($size) ? ($size['url'] ?? null) : null;
-                    if (is_string($url) && in_array(parse_url($url, PHP_URL_SCHEME), ['https', 'http'], true)) {
+                    if ($this->isValidExternalImageUrl($url)) {
                         $urls[] = $url;
                     }
                 }
                 foreach (['url_nocache', 'url', 'image_url'] as $key) {
                     $url = $image[$key] ?? null;
-                    if (is_string($url) && in_array(parse_url($url, PHP_URL_SCHEME), ['https', 'http'], true)) {
+                    if ($this->isValidExternalImageUrl($url)) {
                         $urls[] = $url;
                     }
                 }
@@ -238,13 +275,13 @@ class Product extends Model {
                     }
                     foreach (is_array($image['sizes'] ?? null) ? $image['sizes'] : [] as $size) {
                         $url = is_array($size) ? ($size['url'] ?? null) : null;
-                        if (is_string($url) && in_array(parse_url($url, PHP_URL_SCHEME), ['https', 'http'], true)) {
+                        if ($this->isValidExternalImageUrl($url)) {
                             $urls[] = $url;
                         }
                     }
                     foreach (['url_nocache', 'url', 'image_url'] as $key) {
                         $url = $image[$key] ?? null;
-                        if (is_string($url) && in_array(parse_url($url, PHP_URL_SCHEME), ['https', 'http'], true)) {
+                        if ($this->isValidExternalImageUrl($url)) {
                             $urls[] = $url;
                         }
                     }

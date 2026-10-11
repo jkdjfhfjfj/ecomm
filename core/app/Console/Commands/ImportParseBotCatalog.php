@@ -16,7 +16,7 @@ use RuntimeException;
 
 class ImportParseBotCatalog extends Command
 {
-    protected $signature = 'parsebot:import-catalog {--credit-limit=250 : Maximum Parse.bot request attempts for this run (daily limit: 250)} {--all-pages : Fetch category pages round-robin up to the credit limit} {--details-only : Enrich products already in the local database without fetching category listings} {--sync-stored-details : Populate product columns from details already saved locally without API calls} {--categories-only : Save category records and hosted category image URLs without scraper requests} {--category-ids= : Comma-separated source category IDs to import} {--listings-only : Skip product detail requests and save listing data only}';
+    protected $signature = 'parsebot:import-catalog {--credit-limit=100 : Maximum Parse.bot request attempts for this run (daily limit: 100)} {--all-pages : Fetch category pages round-robin up to the credit limit} {--details-only : Enrich products already in the local database without fetching category listings} {--sync-stored-details : Populate product columns from details already saved locally without API calls} {--categories-only : Save category records and hosted category image URLs without scraper requests} {--category-ids= : Comma-separated source category IDs to import} {--listings-only : Skip product detail requests and save listing data only}';
     protected $description = 'Import Jomashop category listings, optionally paginating fairly across categories within a Parse.bot credit cap.';
 
     private const SOURCE = 'parsebot_jomashop';
@@ -52,7 +52,7 @@ class ImportParseBotCatalog extends Command
         4621 => 'Pre-owned',
         17587 => 'Gifts',
     ];
-    private const DAILY_REQUEST_CAP = 250;
+    private const DAILY_REQUEST_CAP = 100;
     private array $sourceAttributeCache = [];
     private array $sourceAttributeValueCache = [];
 
@@ -74,7 +74,7 @@ class ImportParseBotCatalog extends Command
             return self::FAILURE;
         }
         if ($limit < 1 || $limit > self::DAILY_REQUEST_CAP) {
-            $this->error('The credit limit must be between 1 and 250.');
+            $this->error('The credit limit must be between 1 and 100.');
             return self::FAILURE;
         }
 
@@ -92,11 +92,11 @@ class ImportParseBotCatalog extends Command
 
         $remainingToday = self::DAILY_REQUEST_CAP - $this->dailyRequestsUsedToday();
         if ($remainingToday < 1) {
-            $this->error('The Parse.bot daily request limit of 250 has been reached. Try again after the daily reset.');
+            $this->error('The Parse.bot daily request limit of 100 has been reached. Try again after the daily reset.');
             return self::FAILURE;
         }
         $limit = min($limit, $remainingToday);
-        $this->info("Parse.bot request budget today: {$remainingToday} remaining (maximum 250).");
+        $this->info("Parse.bot request budget today: {$remainingToday} remaining (maximum 100).");
         if ($this->option('details-only')) {
             return $this->enrichExistingProducts($baseUrl, $limit);
         }
@@ -420,7 +420,7 @@ class ImportParseBotCatalog extends Command
             $today = now()->toDateString();
             $used = $state['date'] === $today ? max(0, (int) $state['used']) : 0;
             if ($used >= self::DAILY_REQUEST_CAP) {
-                throw new RuntimeException('Parse.bot daily request limit of 250 has been reached.');
+            throw new RuntimeException('Parse.bot daily request limit of 100 has been reached.');
             }
 
             $nextState = json_encode(['date' => $today, 'used' => $used + 1], JSON_UNESCAPED_SLASHES);

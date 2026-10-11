@@ -28,27 +28,22 @@ class SiteController extends Controller {
         $seoImage    = @$seoContents->image ? getImage(getFilePath('seo') . '/' . @$seoContents->image, getFileSize('seo')) : null;
         $dailyOffer = Offer::running()
             ->where('campaign_type', 'daily')
-            ->whereHas('products')
-            ->with(['products.displayImage', 'products.brand', 'products.productVariants'])
+            ->whereHas('products', fn ($products) => $products->published()->withDisplayableImage())
+            ->with(['products' => fn ($products) => $products->published()->withDisplayableImage()->with(['displayImage', 'brand', 'productVariants'])])
             ->latest('id')
             ->first();
         $homepageOfferBanners = Offer::running()
             ->where('show_banner', 1)
             ->where('campaign_type', '!=', 'daily')
-            ->whereHas('products')
+            ->whereHas('products', fn ($products) => $products->published()->withDisplayableImage())
             ->orderByRaw("campaign_type = 'flash' DESC")
             ->latest('starts_from')
             ->limit(4)
             ->get();
         $homeProducts = Product::published()
             ->shopPageProducts()
+            ->withDisplayableImage()
             ->whereHas('categories')
-            ->where(function ($query) {
-                $query->where(function ($query) {
-                    $query->whereNotNull('external_image_url')
-                        ->where('external_image_url', '!=', '');
-                })->orWhereHas('displayImage');
-            })
             ->with(['displayImage', 'brand', 'productVariants'])
             ->latest('id')
             ->limit(36)
@@ -64,13 +59,8 @@ class SiteController extends Controller {
             ->map(function (Category $category) {
                 $products = Product::published()
                     ->shopPageProducts()
+                    ->withDisplayableImage()
                     ->whereHas('categories', fn ($query) => $query->where('categories.id', $category->id))
-                    ->where(function ($query) {
-                        $query->where(function ($query) {
-                            $query->whereNotNull('external_image_url')
-                                ->where('external_image_url', '!=', '');
-                        })->orWhereHas('displayImage');
-                    })
                     ->with(['displayImage', 'brand', 'productVariants'])
                     ->latest('id')
                     ->limit(24)
@@ -123,7 +113,9 @@ class SiteController extends Controller {
 
     public function offers() {
         $pageTitle = 'All Offers';
-        $offers = Offer::running()->get();
+        $offers = Offer::running()
+            ->whereHas('products', fn ($products) => $products->published()->withDisplayableImage())
+            ->get();
 
         $sections = Page::where('tempname', activeTemplate())->where('slug', 'offers')->first();
         $seoContents = $sections->seo_content;
@@ -135,7 +127,9 @@ class SiteController extends Controller {
     public function offerProducts($id) {
         try {
             $id = decrypt($id);
-            $offer = Offer::running()->with('products')->findOrFail($id);
+            $offer = Offer::running()->with(['products' => fn ($products) => $products->published()->withDisplayableImage()])
+                ->whereHas('products', fn ($products) => $products->published()->withDisplayableImage())
+                ->findOrFail($id);
             $pageTitle =   $offer->name . ' - Products';
             return view('Template::offer_products', compact('pageTitle', 'offer'));
         } catch (\Throwable $th) {

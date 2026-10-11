@@ -90,16 +90,7 @@ class ProductController extends Controller {
 
     private function getProducts($scope = null, $breadcrumbLinks = []) {
         $request = request();
-        $allProducts = Product::published();
-        $allProducts->where(function ($withImage) {
-            $withImage->whereNotNull('products.main_image_id')
-                ->orWhereHas('galleryImages')
-                ->orWhere(function ($externalImage) {
-                    $externalImage->whereNotNull('products.external_image_url')
-                        ->where('products.external_image_url', '!=', '');
-                })
-                ->orWhereRaw("JSON_LENGTH(JSON_EXTRACT(products.external_details, '$.listing.media_gallery')) > 0");
-        });
+        $allProducts = Product::published()->withDisplayableImage();
 
         if ($scope && !$request->search) {
             if ($scope instanceof Closure) {
@@ -194,6 +185,11 @@ class ProductController extends Controller {
         }
 
         $products    = $allProducts->with($this->productRelations())->ratingReviewCount()->paginate(getPaginate($request->per_page ?? 24));
+        $products->setCollection(
+            $products->getCollection()
+                ->filter(fn (Product $product) => $product->hasDisplayableImage())
+                ->values()
+        );
 
         if ($request->ajax()) {
             return response()->json([
