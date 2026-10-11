@@ -2,6 +2,14 @@
 @section('panel')
     <div class="row gy-4">
         <div class="col-12">
+            <div class="alert alert-primary d-flex flex-wrap align-items-center justify-content-between gap-2">
+                <span><strong>@lang('Import directly from Parse.bot')</strong> — @lang('run bounded listing and detail-enrichment steps from the admin panel.')</span>
+                <a class="btn btn--primary btn-sm" href="{{ route('admin.products.parsebot.index') }}">
+                    <i class="las la-cloud-download-alt"></i> @lang('Open Parse.bot Importer')
+                </a>
+            </div>
+        </div>
+        <div class="col-12">
             <div class="card">
                 <div class="card-body px-0">
                     <h5 class="mb-2 px-3">@lang('Step by Step Guide')</h5>

@@ -8,9 +8,12 @@ use App\Models\Product;
 use App\Models\ProductVariant;
 use App\Models\Attribute as ProductAttribute;
 use App\Models\AttributeValue;
+use App\Models\Frontend;
 use Illuminate\Console\Command;
+use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Str;
 use RuntimeException;
 
@@ -55,6 +58,7 @@ class ImportParseBotCatalog extends Command
     private const DAILY_REQUEST_CAP = 250;
     private array $sourceAttributeCache = [];
     private array $sourceAttributeValueCache = [];
+    private string $apiKey = '';
 
     public function handle(): int
     {
@@ -65,8 +69,21 @@ class ImportParseBotCatalog extends Command
         $baseUrl = rtrim((string) config('services.parsebot.scraper_url'), '/');
         $limit = (int) $this->option('credit-limit');
 
-        if (!config('services.parsebot.api_key')) {
-            $this->error('PARSE_BOT_API_KEY is not configured in Replit Secrets.');
+        $this->apiKey = trim((string) config('services.parsebot.api_key'));
+        if ($this->apiKey === '') {
+            try {
+                $settings = Frontend::where('data_keys', 'parsebot_admin_settings')->first();
+                $encryptedKey = data_get($settings?->data_values, 'encrypted_api_key');
+                if (is_string($encryptedKey) && $encryptedKey !== '') {
+                    $this->apiKey = Crypt::decryptString($encryptedKey);
+                }
+            } catch (DecryptException) {
+                $this->apiKey = '';
+            }
+        }
+
+        if ($this->apiKey === '') {
+            $this->error('Configure PARSE_BOT_API_KEY in the deployment environment or save an encrypted fallback in admin settings.');
             return self::FAILURE;
         }
         if (!filter_var($baseUrl, FILTER_VALIDATE_URL) || !str_starts_with($baseUrl, 'https://')) {
@@ -351,7 +368,7 @@ class ImportParseBotCatalog extends Command
         try {
             $response = Http::acceptJson()
                 ->withHeaders([
-                    'X-API-Key' => config('services.parsebot.api_key'),
+                    'X-API-Key' => $this->apiKey,
                     'API-Snapshot-Version' => (string) config('services.parsebot.snapshot_version', 14),
                 ])
                 ->connectTimeout(10)

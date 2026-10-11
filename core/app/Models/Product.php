@@ -7,9 +7,26 @@ use App\Traits\ProductPrice;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Traits\FileExport;
+use Illuminate\Support\Str;
 
 class Product extends Model {
     use SoftDeletes, ProductPrice, FileExport;
+
+    protected static function booted(): void
+    {
+        static::saving(function (Product $product) {
+            if (blank($product->meta_title) && filled($product->name)) {
+                $product->meta_title = Str::limit(trim($product->name), 255, '');
+            }
+
+            if (blank($product->meta_description) && filled($product->description)) {
+                $description = trim(preg_replace('/\s+/', ' ', strip_tags((string) $product->description)));
+                if ($description !== '') {
+                    $product->meta_description = Str::limit($description, 300, '');
+                }
+            }
+        });
+    }
 
     protected $appends = ['price_range'];
 

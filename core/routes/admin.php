@@ -183,6 +183,12 @@ Route::middleware('admin')->group(function () {
             Route::post('store/import', 'storeBulkImport')->name('import.store');
         });
 
+        Route::controller('ParseBotImportController')->prefix('parsebot')->name('parsebot.')->group(function () {
+            Route::get('', 'index')->name('index');
+            Route::post('key', 'saveFallbackKey')->name('key');
+            Route::post('run', 'run')->name('run');
+        });
+
         Route::controller('ProductExportController')->group(function () {
             Route::get('export', 'bulkExport')->name('export');
             Route::post('export/store', 'bulkExportProduct')->name('export.store');
