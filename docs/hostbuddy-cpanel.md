@@ -10,7 +10,7 @@ Configure the Git builder to run this from the repository root:
 sh scripts/cpanel-build.sh
 ```
 
-The build environment must provide PHP 8.3+ and the PHP extensions required by `core/composer.lock`. If Composer is absent, the build script downloads its official installer and verifies its published SHA-384 signature before installing production dependencies. Railpack installs the root pnpm workspace before it runs this custom build command, so `package.json` pins the package-manager version used to validate `pnpm-lock.yaml`.
+The build environment must provide PHP 8.3+. The build script checks for the required `bcmath`, `gd`, and `gmp` extensions and attempts to install them using the PHP image's extension installer (or the official PHP Docker helpers plus their system libraries). If Composer is absent, the script downloads its official installer and verifies its published SHA-384 signature before installing production dependencies. Railpack installs the root pnpm workspace before it runs this custom build command, so `package.json` pins the package-manager version used to validate `pnpm-lock.yaml`.
 
 For the Railpack deployment shown in the logs, leave Start Command blank to use PHP auto-detection unless HostBuddy specifically requires a custom command. The root package has no `npm run start` script. Ensure the deployed PHP server serves Laravel's `core/public` directory; do not expose the repository root. If using HostBuddy's separate classic cPanel/Apache hosting instead, set that domain's document root to `core/public`.
 

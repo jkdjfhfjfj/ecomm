@@ -11,6 +11,42 @@ fi
 
 cd "$APP"
 
+MISSING_EXTENSIONS=0
+for extension in bcmath gd gmp; do
+    if ! php -m | grep -Eiq "^${extension}$"; then
+        MISSING_EXTENSIONS=1
+    fi
+done
+
+if [ "$MISSING_EXTENSIONS" -eq 1 ]; then
+    if command -v install-php-extensions >/dev/null 2>&1; then
+        install-php-extensions bcmath gd gmp
+    elif command -v docker-php-ext-install >/dev/null 2>&1 && \
+         command -v docker-php-ext-configure >/dev/null 2>&1 && \
+         command -v apt-get >/dev/null 2>&1; then
+        apt-get update
+        apt-get install -y --no-install-recommends \
+            libfreetype6-dev \
+            libgmp-dev \
+            libjpeg62-turbo-dev \
+            libpng-dev \
+            libwebp-dev
+        docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp
+        docker-php-ext-install -j"$(nproc)" bcmath gd gmp
+        rm -rf /var/lib/apt/lists/*
+    else
+        echo "PHP extensions bcmath, gd, and gmp are required; HostBuddy's PHP image cannot install them from this build script." >&2
+        exit 1
+    fi
+fi
+
+for extension in bcmath gd gmp; do
+    if ! php -m | grep -Eiq "^${extension}$"; then
+        echo "Required PHP extension ${extension} is still unavailable after installation." >&2
+        exit 1
+    fi
+done
+
 if command -v composer >/dev/null 2>&1; then
     composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader
 else
