@@ -19,11 +19,11 @@ Treat Parse.bot HTTP 429 as a hard pause for the current import attempt; do not 
 
 **Why:** A catalog request returned HTTP 429 during a resumed run, and repeated attempts would not recover service availability or help preserve credits.
 
-The Parse.bot key has a 100-request daily allowance.
+The Parse.bot key has a 250-request daily free-credit allowance.
 
-**Why:** The user confirmed the prior key reached its 100-request daily limit.
+**Why:** The user confirmed the current Parse.bot allowance is 250 free requests per day.
 
-**How to apply:** Keep all listing and detail calls combined under 100 attempts per local day; account for failed attempts too. Inspect the latest importer result before another API run. Use local snapshot sync while rate-limited, then resume bounded batches after a successful provider response.
+**How to apply:** Keep listing and detail calls combined under 250 attempts per local day; account for failed attempts too. Stop after 429 or repeated timeouts, inspect the latest importer result, and resume from saved category checkpoints once the provider responds successfully.
 
 Never build product descriptions from specification or merchandising facts. Store source descriptions only in the description field; keep returned specifications in their own field and map structured scalar facts to product attributes. Leave unavailable source fields empty rather than generating substitute copy.
 
