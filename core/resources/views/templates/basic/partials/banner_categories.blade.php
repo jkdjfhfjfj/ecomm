@@ -1,8 +1,9 @@
 @php
     $featuredCategories = \App\Models\Category::where('feature_in_banner', 1)
-        ->where('slug', '!=', 'daily-offers')
         ->orderBy('position')
-        ->get();
+        ->get()
+        ->unique('slug')
+        ->values();
 
     if (gs('homepage_layout') == 'sidebar_menu') {
         $categoriesToShow = [
