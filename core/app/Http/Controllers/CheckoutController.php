@@ -11,6 +11,7 @@ use App\Models\ShippingMethod;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Crypt;
 
 class CheckoutController extends Controller {
     private $cartManager;
@@ -21,9 +22,11 @@ class CheckoutController extends Controller {
     }
 
     public function addressSuggestions(Request $request) {
-        abort_unless((bool) gs('geoapify_address_enabled'), 404);
+        if (!(bool) gs('geoapify_address_enabled')) {
+            return response()->json(['message' => 'Address lookup is disabled in storefront settings.'], 503);
+        }
         $validated = $request->validate(['text' => 'required|string|min:3|max:180']);
-        $apiKey = config('services.geoapify.key');
+        $apiKey = $this->geoapifyApiKey();
         if (!$apiKey) {
             return response()->json(['message' => 'Address suggestions are not configured.'], 503);
         }
@@ -53,6 +56,74 @@ class CheckoutController extends Controller {
         })->filter(fn ($place) => $place['label'] !== '')->values();
 
         return response()->json(['suggestions' => $suggestions]);
+    }
+
+    public function addressFromCoordinates(Request $request) {
+        if (!(bool) gs('geoapify_address_enabled')) {
+            return response()->json(['message' => 'Address lookup is disabled in storefront settings.'], 503);
+        }
+        $coordinates = $request->validate([
+            'lat' => 'required|numeric|between:-90,90',
+            'lon' => 'required|numeric|between:-180,180',
+        ]);
+        $apiKey = $this->geoapifyApiKey();
+        if (!$apiKey) {
+            return response()->json(['message' => 'Address lookup is not configured.'], 503);
+        }
+
+        $params = [
+            'lat' => $coordinates['lat'],
+            'lon' => $coordinates['lon'],
+            'limit' => 1,
+            'apiKey' => $apiKey,
+        ];
+        $countryCodes = strtolower(preg_replace('/[^a-z,]/i', '', (string) gs('geoapify_country_codes')));
+        if ($countryCodes !== '') {
+            $params['filter'] = 'countrycode:' . $countryCodes;
+        }
+
+        try {
+            $response = Http::timeout(8)->get('https://api.geoapify.com/v1/geocode/reverse', $params)->throw();
+        } catch (\Throwable $exception) {
+            return response()->json(['message' => 'Could not look up this location right now.'], 502);
+        }
+
+        $place = data_get($response->json(), 'features.0.properties');
+        if (!is_array($place)) {
+            return response()->json(['message' => 'No address was found for this location.'], 404);
+        }
+
+        return response()->json([
+            'place' => [
+                'label' => $place['formatted'] ?? '',
+                'address' => trim(implode(' ', array_filter([$place['housenumber'] ?? null, $place['street'] ?? null]))) ?: ($place['address_line1'] ?? $place['formatted'] ?? ''),
+                'city' => $place['city'] ?? $place['town'] ?? $place['village'] ?? '',
+                'state' => $place['state'] ?? '',
+                'zip' => $place['postcode'] ?? '',
+                'country' => $place['country'] ?? '',
+            ],
+        ]);
+    }
+
+    private function geoapifyApiKey(): ?string
+    {
+        $environmentKey = config('services.geoapify.key');
+        if (is_string($environmentKey) && trim($environmentKey) !== '') {
+            return trim($environmentKey);
+        }
+
+        $encryptedDatabaseKey = gs('geoapify_api_key');
+        if (!is_string($encryptedDatabaseKey) || trim($encryptedDatabaseKey) === '') {
+            return null;
+        }
+
+        try {
+            $databaseKey = Crypt::decryptString($encryptedDatabaseKey);
+        } catch (\Illuminate\Contracts\Encryption\DecryptException $exception) {
+            return null;
+        }
+
+        return trim($databaseKey) !== '' ? trim($databaseKey) : null;
     }
 
     public function storeGuestUser(Request $request) {

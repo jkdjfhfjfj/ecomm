@@ -1,5 +1,5 @@
 kind = "web"
-previewPath = "/storefront-artifact"
+previewPath = "/"
 title = "Ecomm Storefront"
 description = "Optional artifact preview for the imported Laravel storefront."
 version = "1.0.0"
@@ -8,11 +8,11 @@ router = "path"
 
 [[services]]
 name = "web"
-paths = [ "/storefront-artifact" ]
+paths = [ "/" ]
 localPort = 25501
 
 [services.development]
-run = "bash ../../start-ecomm.sh"
+run = "node ../../scripts/ecomm-preview-proxy.cjs"
 
 [services.production]
 build = [ "pnpm", "--filter", "@workspace/ecomm-storefront", "run", "build" ]
@@ -25,4 +25,4 @@ to = "/index.html"
 
 [services.env]
 PORT = "25501"
-BASE_PATH = "/storefront-artifact"
+BASE_PATH = ""

@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Lib\RequiredConfig;
 use App\Models\Frontend;
 use App\Rules\FileTypeValidate;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Http\Request;
 
 class GeneralSettingController extends Controller {
@@ -62,7 +63,9 @@ class GeneralSettingController extends Controller {
 
     public function systemConfiguration() {
         $pageTitle = 'System Configuration';
-        return view('admin.setting.configuration', compact('pageTitle'));
+        $geoapifyEnvKeyConfigured = (bool) config('services.geoapify.key');
+        $geoapifyDatabaseKeyConfigured = filled(gs('geoapify_api_key'));
+        return view('admin.setting.configuration', compact('pageTitle', 'geoapifyEnvKeyConfigured', 'geoapifyDatabaseKeyConfigured'));
     }
 
     public function systemConfigurationSubmit(Request $request) {
@@ -83,9 +86,18 @@ class GeneralSettingController extends Controller {
         $general->subscriber_module = $request->subscriber_module ? Status::ENABLE : Status::DISABLE;
         $general->product_review = $request->product_review ? Status::ENABLE : Status::DISABLE;
         $general->product_review_auto_approval = $request->product_review_auto_approval ? Status::ENABLE : Status::DISABLE;
-        $request->validate(['geoapify_country_codes' => 'nullable|string|max:120']);
+        $request->validate([
+            'geoapify_country_codes' => 'nullable|string|max:120',
+            'geoapify_api_key' => 'nullable|string|max:512',
+            'clear_geoapify_api_key' => 'nullable|boolean',
+        ]);
         $general->geoapify_address_enabled = $request->boolean('geoapify_address_enabled') ? Status::ENABLE : Status::DISABLE;
         $general->geoapify_country_codes = strtoupper(preg_replace('/[^a-z,]/i', '', (string) $request->input('geoapify_country_codes')));
+        if ($request->boolean('clear_geoapify_api_key')) {
+            $general->geoapify_api_key = null;
+        } elseif ($request->filled('geoapify_api_key')) {
+            $general->geoapify_api_key = Crypt::encryptString(trim($request->input('geoapify_api_key')));
+        }
         $general->guest_checkout = $request->guest_checkout ? Status::ENABLE : Status::DISABLE;
         $general->save();
         $notify[] = ['success', 'System configuration updated successfully'];

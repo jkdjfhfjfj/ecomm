@@ -4,7 +4,7 @@
         <div class="container">
             <div class="compare-section-wrapper">
                 <div class="compare-section-content">
-                    @if ($compareProducts->count())
+                    @if ($compareProducts->count() >= 2)
                         <table class="table comparison-table count-{{ $compareProducts->count() + 1 }}">
                             <tbody>
                                 <tr class="comparison-header">
@@ -49,6 +49,21 @@
                             </tbody>
                         </table>
 
+                        @if ($comparisonRows->isNotEmpty())
+                            <table class="table comparison-table count-{{ $compareProducts->count() + 1 }} border-top-none">
+                                <tbody>
+                                    @foreach ($comparisonRows as $row)
+                                        <tr>
+                                            <td class="name">{{ __($row['label']) }}</td>
+                                            @foreach ($compareProducts as $compareProduct)
+                                                <td class="value">{{ $row['values'][$compareProduct->id] ?? '—' }}</td>
+                                            @endforeach
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        @endif
+
                         @foreach ($specificationTemplate->specifications ?? [] as $groupSpecification)
                             <table class="table comparison-table count-{{ $compareProducts->count() + 1 }} border-top-none">
                                 <thead class="sliding-header">
@@ -81,10 +96,17 @@
                             <div class="empty-thumb">
                                 <img src="{{ asset('assets/images/empty_list.png') }}" alt="image">
                             </div>
-                            <h5 class="mt-3 text-muted">@lang('No Product Selected')</h5>
+                            <h5 class="mt-3 text-muted">
+                                {{ $compareProducts->count() === 1 ? __('One product selected') : __('Your comparison is empty') }}
+                            </h5>
                             <p class="message">
-                                @lang('Please select at least two products to begin the comparison.')
+                                @if ($compareProducts->count() === 1)
+                                    @lang('Add one more product to compare it with') <strong>{{ $compareProducts->first()->name }}</strong>.
+                                @else
+                                    @lang('Add at least two products using the compare button on product cards.')
+                                @endif
                             </p>
+                            <a href="{{ route('product.all') }}" class="btn btn--base mt-3">@lang('Browse products')</a>
                         </div>
                     @endif
                 </div>
@@ -109,5 +131,6 @@
         .empty-message img {
             max-width: 100px;
         }
+        .empty-message{max-width:620px;margin:auto;padding:2rem 1rem;border:1px solid #e8eaf0;border-radius:1rem;background:#fff}
     </style>
 @endpush

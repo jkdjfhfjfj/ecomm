@@ -25,7 +25,7 @@
                 </li>
             @endif
 
-            @if ($product->product_type_id && gs('product_compare'))
+            @if (gs('product_compare'))
                 <li class="product-compare-btn">
                     <button tyepe="button" class="addToCompare {{ $addedInCompareList ? 'active' : '' }}" data-id="{{ $product->id }}"><i class="las la-exchange-alt"></i></button>
                 </li>

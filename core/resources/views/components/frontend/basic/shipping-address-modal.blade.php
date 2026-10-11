@@ -1,9 +1,9 @@
 @props(['countries' => []])
-<div class="modal custom--modal fade" id="addressModal" role="dialog">
+<div class="modal custom--modal fade" id="addressModal" tabindex="-1" role="dialog" aria-labelledby="addressModalTitle" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-body">
-                <h5 class="modal-title"></h5>
+                <h5 class="modal-title" id="addressModalTitle"></h5>
                 <button type="button" class="close modal-close-btn" data-bs-dismiss="modal" aria-label="Close">
                     <i class="las la-times"></i>
                 </button>
@@ -89,6 +89,19 @@
         </div>
     </div>
 </div>
+
+<style>
+    #addressModal .modal-dialog { width: min(100% - 1rem, 760px); max-height: calc(100dvh - 1rem); margin: .5rem auto; }
+    #addressModal .modal-content { max-height: calc(100dvh - 1rem); }
+    #addressModal .modal-body { overflow-y: auto; overscroll-behavior: contain; padding-bottom: max(1rem, env(safe-area-inset-bottom)); }
+    #addressModal .modal-close-btn { z-index: 2; }
+    @media(max-width: 575.98px) {
+        #addressModal .modal-dialog { width: 100%; max-width: none; height: 100dvh; max-height: 100dvh; margin: 0; }
+        #addressModal .modal-content { height: 100%; max-height: 100dvh; border-radius: 0; }
+        #addressModal .modal-body { height: 100%; padding: 1.25rem 1rem calc(1rem + env(safe-area-inset-bottom)); }
+        #addressModal form > .col-12 { position: sticky; bottom: 0; z-index: 2; padding: .75rem 0 calc(.75rem + env(safe-area-inset-bottom)); background: var(--bs-modal-bg, #fff); }
+    }
+</style>
 
 @push('script')
     <script>

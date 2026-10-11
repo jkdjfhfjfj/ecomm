@@ -110,6 +110,7 @@ class CategoryController extends Controller {
 
     protected function categoryTree() {
         return Category::isParent()
+            ->withCount('products')
             ->with('allSubcategories', function ($q) {
                 $q->orderBy('position')->orderBy('name');
             })

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\ProductType;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class CompareController extends Controller {
 
@@ -23,10 +24,6 @@ class CompareController extends Controller {
             return response()->json(['error' => 'Product not found']);
         }
 
-        if (!$product->product_type_id) {
-            return response()->json(['error' => 'This product cannot be added to the comparison list']);
-        }
-
         $compare = session('compare', []);
 
         if (isset($compare[$product->id])) {
@@ -38,12 +35,13 @@ class CompareController extends Controller {
         $productIds      = array_keys(session('compare') ?? []);
         $compareProducts = Product::published()->whereIn('id', $productIds)->get();
 
-        if (!blank($compareProducts)) {
-            $firstProduct   = $compareProducts->first();
-            if (!$firstProduct) {
-                return response()->json(['error' => 'Something went wrong']);
-            }
-            if ($product->product_type_id != $firstProduct->product_type_id) {
+        if ($compareProducts->isNotEmpty()) {
+            $firstProduct = $compareProducts->first(fn($candidate) => (bool) $candidate->product_type_id);
+            if (
+                $product->product_type_id
+                && $firstProduct?->product_type_id
+                && $product->product_type_id != $firstProduct?->product_type_id
+            ) {
                 return response()->json(['error' => 'The product type doesn\'t match', 'type' => 'ADDED']);
             }
         }
@@ -59,7 +57,46 @@ class CompareController extends Controller {
         $productIds      = array_keys(session('compare') ?? []);
         $compareProducts = Product::published()->with('categories', 'activeOffer', 'brand')->ratingReviewCount()->whereIn('id', $productIds)->get();
         $specificationTemplate = ProductType::find(@$compareProducts->first()?->product_type_id);
-        return view('Template::compare', compact('pageTitle', 'compareProducts', 'specificationTemplate'));
+        $comparisonRows = [];
+
+        foreach ($compareProducts as $product) {
+            $facts = $product->specification;
+            if (is_string($facts)) {
+                $facts = json_decode($facts, true);
+            } elseif (is_object($facts)) {
+                $facts = (array) $facts;
+            }
+            if (!is_array($facts)) {
+                $facts = [];
+            }
+
+            foreach ($facts as $key => $value) {
+                if (is_array($value) && isset($value['key'])) {
+                    $label = trim((string) $value['key']);
+                    $value = $value['value'] ?? null;
+                } else {
+                    $label = is_string($key) ? Str::headline($key) : '';
+                }
+                if ($label === '' || !is_scalar($value) || trim((string) $value) === '') {
+                    continue;
+                }
+                $rowKey = Str::lower($label);
+                $comparisonRows[$rowKey]['label'] = $label;
+                $comparisonRows[$rowKey]['values'][$product->id] = trim((string) $value);
+            }
+        }
+
+        foreach ($compareProducts as $product) {
+            $comparisonRows['brand']['label'] = __('Brand');
+            $comparisonRows['brand']['values'][$product->id] = $product->brand?->name ?: '—';
+            $comparisonRows['categories']['label'] = __('Categories');
+            $comparisonRows['categories']['values'][$product->id] = $product->categories->pluck('name')->implode(', ') ?: '—';
+            $comparisonRows['availability']['label'] = __('Availability');
+            $comparisonRows['availability']['values'][$product->id] = $product->in_stock ? __('In stock') : __('Out of stock');
+        }
+        $comparisonRows = collect($comparisonRows)->values();
+
+        return view('Template::compare', compact('pageTitle', 'compareProducts', 'specificationTemplate', 'comparisonRows'));
     }
 
     public function compareProductsCount() {

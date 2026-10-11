@@ -49,9 +49,18 @@ class ProductController extends Controller {
 
         request()->merge(['category_id' => $category->id]);
 
-        $scope = function ($query) use ($category) {
-            $query->whereHas('categories', function ($q) use ($category) {
-                $q->where('category_id', $category->id);
+        $categoryIds = collect([$category->id]);
+        $parentsToScan = collect([$category->id]);
+        while ($parentsToScan->isNotEmpty()) {
+            $children = Category::whereIn('parent_id', $parentsToScan)->pluck('id');
+            $categoryIds = $categoryIds->merge($children);
+            $parentsToScan = $children;
+        }
+        $categoryIds = $categoryIds->unique()->values();
+
+        $scope = function ($query) use ($categoryIds) {
+            $query->whereHas('categories', function ($q) use ($categoryIds) {
+                $q->whereIn('categories.id', $categoryIds);
             });
         };
 

@@ -66,6 +66,7 @@ Route::controller('CompareController')->name('compare.')->group(function () {
 Route::name('checkout.')->group(function () {
     Route::controller('CheckoutController')->group(function () {
         Route::get('address-suggestions', 'addressSuggestions')->name('address.suggestions')->middleware('throttle:30,1');
+        Route::get('address-reverse', 'addressFromCoordinates')->name('address.reverse')->middleware('throttle:10,1');
         Route::post('store-guest-info', 'storeGuestUser')->name('guest.info.store')->middleware('checkModule:guest_checkout');
         Route::post('store-guest-shipping-info', 'storeGuestShippingInfo')->name('guest.shipping.info.store')->middleware('checkModule:guest_checkout');
         Route::get('checkout/shipping-info', 'shippingInfo')->name('shipping.info')->middleware('checkout.step:shipping_info');

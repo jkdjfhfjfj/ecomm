@@ -1,4 +1,5 @@
 @php
+    $parentCategories = $parentCategories->reject(fn ($category) => $category->external_source === 'local_navigation');
     if ($limit) {
         $parentCategories = $parentCategories->take($limit);
     }
@@ -8,6 +9,11 @@
     <div class="vm-category-navigation__heading">
         <span>@lang('Discover')</span>
         <strong>@lang('Shop by category')</strong>
+        <a class="vm-category-navigation__brand-link" href="{{ route('brands') }}">
+            <i class="las la-tags" aria-hidden="true"></i>
+            <span>@lang('Shop by brand')</span>
+            <i class="las la-arrow-right" aria-hidden="true"></i>
+        </a>
     </div>
     <div class="category-dropdown">
         <ul class="list-inline mega-menu vertical-megamenu" aria-label="@lang('Shop by category')">
@@ -80,6 +86,9 @@
             .vm-category-navigation__heading{display:flex;flex-direction:column;gap:.15rem;padding:.9rem 1rem .7rem;border-bottom:1px solid #edf0f3}
             .vm-category-navigation__heading span{text-transform:uppercase;letter-spacing:.11em;font-size:.65rem;font-weight:700;color:#7b8794}
             .vm-category-navigation__heading strong{font-size:1rem;color:#182230}
+            .vm-category-navigation__brand-link{display:flex;align-items:center;gap:.6rem;margin-top:.65rem;padding:.65rem .75rem;border-radius:.7rem;background:#f3f6fa;color:#25364a;font-size:.86rem;font-weight:650;text-decoration:none}
+            .vm-category-navigation__brand-link i:last-child{margin-inline-start:auto;color:#7b8794}
+            .vm-category-navigation__brand-link:hover,.vm-category-navigation__brand-link:focus-visible{background:#e9eff6;color:#142b43}
             .vm-category-navigation .category-dropdown{padding:.35rem}
             .vm-category-navigation .vertical-megamenu>li{margin:0!important}
             .vm-category-navigation .vertical-megamenu>li>.menu-item{display:flex;align-items:center;gap:.75rem;min-height:44px;padding:.55rem .7rem!important;border-radius:.65rem;color:#344054;font-weight:550;transition:background .16s ease,color .16s ease}

@@ -108,7 +108,7 @@
                         </button>
                     @endif
 
-                    @if ($product->product_type_id && gs('product_compare'))
+                    @if (gs('product_compare'))
                         <button class="add-to-wishlist-btn  @if (checkCompareList($product->id)) active @endif addToCompare" data-id="{{ $product->id }}">
                             <i class="las la-exchange-alt compare-icon"></i> @lang('Compare')
                         </button>

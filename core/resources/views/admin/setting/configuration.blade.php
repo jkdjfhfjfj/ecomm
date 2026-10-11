@@ -230,7 +230,26 @@
                             <li class="list-group-item d-flex flex-wrap flex-sm-nowrap gap-2 justify-content-between align-items-center">
                                 <div>
                                     <p class="fw-bold mb-0">@lang('Geoapify Address Suggestions')</p>
-                                    <p class="mb-0"><small>@lang('Offer shipping address suggestions as customers type. Add the Geoapify API key in Replit Secrets.')</small></p>
+                                    <p class="mb-0"><small>@lang('Offer address suggestions while customers type and allow them to fill an address from their current location.')</small></p>
+                                    <p class="small mt-2 mb-1">
+                                        <strong>@lang('Active key source'):</strong>
+                                        @if ($geoapifyEnvKeyConfigured)
+                                            <span class="text-success">@lang('Replit environment secret (preferred)')</span>
+                                        @elseif ($geoapifyDatabaseKeyConfigured)
+                                            <span class="text-success">@lang('Encrypted database fallback')</span>
+                                        @else
+                                            <span class="text-danger">@lang('Not configured')</span>
+                                        @endif
+                                    </p>
+                                    <label class="d-block mt-2" for="geoapify-api-key">@lang('Database fallback API key')</label>
+                                    <input id="geoapify-api-key" type="password" name="geoapify_api_key" class="form-control" autocomplete="new-password" placeholder="{{ $geoapifyDatabaseKeyConfigured ? __('Saved securely — leave blank to keep') : __('Enter Geoapify API key') }}">
+                                    <small class="d-block mt-1">@lang('Preferred setup: Replit Tools → Secrets → add GEOAPIFY_API_KEY. The environment secret takes priority. If it is absent, the key entered here is encrypted in this app’s database.')</small>
+                                    @if ($geoapifyDatabaseKeyConfigured)
+                                        <label class="d-block mt-2">
+                                            <input type="checkbox" name="clear_geoapify_api_key" value="1">
+                                            @lang('Remove the database fallback key')
+                                        </label>
+                                    @endif
                                     <label class="d-block mt-2" for="geoapify-country-codes">@lang('Limit to country codes (optional, comma-separated)</label>
                                     <input id="geoapify-country-codes" name="geoapify_country_codes" class="form-control" placeholder="ke,us" value="{{ gs('geoapify_country_codes') }}">
                                 </div>

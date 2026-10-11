@@ -5,6 +5,13 @@
             <div class="card">
 
                 <div class="card-body">
+                    <div class="catalog-tree-heading">
+                        <div>
+                            <h5 class="mb-1">@lang('Catalog hierarchy')</h5>
+                            <p class="mb-0 text-muted">@lang('Browse nested categories and see each category’s product count.')</p>
+                        </div>
+                        <span class="catalog-tree-depth">@lang('Up to 5 levels')</span>
+                    </div>
                     <div class="d-flex  flex-wrap gap-2 mb-3">
                         <button type="reset" class="category-tree-btn active addRootCategory flex-grow-1"> <i class="las la-plus"></i> @lang('Add Root Category')</button>
 
@@ -14,9 +21,12 @@
 
                     </div>
 
-                    <input type="text" class="form-control" value="" id="treeSearch" placeholder="@lang('Search')" />
-                    <button type="button" class="expand-collapse-btn text-muted text-sm" data-state="close_all">@lang('Expand All')</button>
-                    <div id="categoryTree">
+                    <div class="catalog-tree-search">
+                        <i class="las la-search" aria-hidden="true"></i>
+                        <input type="search" class="form-control" value="" id="treeSearch" placeholder="@lang('Search categories')" aria-label="@lang('Search categories')" />
+                        <button type="button" class="expand-collapse-btn" data-state="close_all">@lang('Expand All')</button>
+                    </div>
+                    <div id="categoryTree" class="catalog-hierarchy-tree">
                         <ul>
                             @include('admin.category.tree')
                         </ul>
@@ -414,6 +424,26 @@
 
 @push('style')
     <style>
+        .catalog-tree-heading { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:18px; }
+        .catalog-tree-heading h5 { color:#17233b; font-size:16px; font-weight:750; }
+        .catalog-tree-heading p { font-size:12px; line-height:1.45; }
+        .catalog-tree-depth { flex:none; border-radius:999px; background:#eff6ff; color:#2563eb; padding:5px 9px; font-size:10px; font-weight:700; }
+        .catalog-tree-search { display:flex; align-items:center; gap:8px; margin:15px 0 9px; }
+        .catalog-tree-search > i { color:#7a879b; margin-left:3px; }
+        .catalog-tree-search .form-control { flex:1; min-width:0; border-radius:9px; }
+        .catalog-tree-search .expand-collapse-btn { flex:none; border:0; background:transparent; color:#2563eb; font-size:11px; font-weight:650; }
+        .catalog-hierarchy-tree { padding:13px 10px; border:1px solid #e7ebf2; border-radius:12px; background:linear-gradient(180deg,#fff,#f9fbff); max-height:65vh; overflow:auto; }
+        .catalog-hierarchy-tree .jstree-node { margin:3px 0; }
+        .catalog-hierarchy-tree .jstree-anchor { min-height:32px; height:auto; padding:5px 7px; border-radius:7px; transition:background .15s ease,color .15s ease; }
+        .catalog-hierarchy-tree .jstree-hovered { background:#f1f5fb; }
+        .catalog-hierarchy-tree .category-tree-product-count { display:inline-flex; align-items:center; justify-content:center; min-width:23px; height:20px; margin-left:8px; padding:0 6px; border-radius:999px; background:#eaf1fc; color:#526580; font-size:10px; font-weight:700; vertical-align:middle; }
+        .catalog-hierarchy-tree .jstree-clicked .category-tree-product-count { background:rgba(255,255,255,.2); color:#fff; }
+        @media(max-width:767px) {
+            .catalog-tree-heading { flex-direction:column; }
+            .catalog-tree-search { flex-wrap:wrap; }
+            .catalog-tree-search .form-control { flex-basis:calc(100% - 25px); }
+            .catalog-hierarchy-tree { max-height:45vh; }
+        }
         .select2-container {
             z-index: 0 !important;
         }

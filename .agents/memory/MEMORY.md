@@ -1,4 +1,6 @@
 - [Laravel Preview routing](laravel-preview-proxy.md) — normalize trusted forwarded host/scheme/prefix and register an artifact root route; standalone workflows alone don't own the shared dev domain.
 - [MySQL startup and lock ownership](mysql-startup-lock.md) — verify stale socket locks and avoid restarting shared-MySQL storefront workflows during imports.
-- [Parse.bot catalog payloads](parsebot-catalog-payloads.md) — listing responses contain usable gallery, manufacturer, and price data; persist raw listings because product-detail requests can time out.
+- [Parse.bot catalog payloads](parsebot-catalog-payloads.md) — keep source descriptions distinct from specs; persist raw listings because detail requests can time out.
 - [Storefront test-project scope](storefront-test-project.md) — the user describes this storefront as a test project they made; use that context for local/production distinctions.
+- [Geoapify key priority](geoapify-key-management.md) — the environment secret is authoritative; the admin-managed database key is an encrypted fallback only.
+- [Shopper category hierarchy](catalog-category-hierarchy.md) — use nested navigation groups while keeping products assigned to verified leaf categories.
