@@ -4,3 +4,4 @@
 - [Storefront test-project scope](storefront-test-project.md) — the user describes this storefront as a test project they made; use that context for local/production distinctions.
 - [Geoapify key priority](geoapify-key-management.md) — the environment secret is authoritative; the admin-managed database key is an encrypted fallback only.
 - [Shopper category hierarchy](catalog-category-hierarchy.md) — use nested navigation groups while keeping products assigned to verified leaf categories.
+- [HostBuddy Railpack builds](hostbuddy-railpack.md) — Railpack runs pnpm installation before the custom build command; match the pinned pnpm version to the lockfile.

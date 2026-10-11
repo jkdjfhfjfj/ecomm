@@ -35,4 +35,4 @@ fi
 
 chmod -R u+rwX "$APP/storage" "$APP/bootstrap/cache"
 
-echo "cPanel build prepared. Set the domain document root to core/public."
+echo "Laravel production dependencies and public assets are prepared."
