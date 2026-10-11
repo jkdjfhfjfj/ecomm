@@ -1,0 +1,390 @@
+Websites
+
+S
+
+M
+
+L
+
+Logout
+
+
+mwania-001
+
+Back to Account
+
+Projects
+NEW
+
+Dashboard
+
+Websites
+
+Databases
+
+Emails
+
+Files
+
+Apps
+
+FTP
+
+CDN
+
+DNS
+
+SSL
+
+Advanced Tools
+Scroll for more
+Support
+
+
+Ask AI Support
+
+24/7 Live Chat
+
+24/7 Helpdesk
+[Knowledge Base](https://www.hostbuddy.com/support/kb/c165/control-panel-v10.aspx)
+Websites
+
+🇺🇸
+
+Day mode
++ New Site
++ Sub Domain
++ Automated Backups
+Search websites
+Sort
+
+Site Name
+
+
+
+↔
+Swipe table to see more
+Site Name	Mapped Domains	This Month Stats	Status	Actions
+ecom
+mwania-001-site1.ktempurl.com
+SSL
+geepay.us
+Visitor history is unavailable.	Active	
+Domains
+Files
+GitHub
+VSDeploy
+FTP
+SSL
+CDN
+DNS
+
+GitHub
+GitHub
+
+Back to Websites
+
+ecom
+Deploy target: /ecom
+
+Connected
+Deploy Hook Ready
+Reconnect GitHub Account
+Disconnect GitHub Account
+Deploy Hooks
+Environment Variables
+Build Logs
+Deployment #3863683
+https://github.com/jkdjfhfjfj/ecomm.git
+
+
+2026-10-11 00:18:25 -07:00 - Checking for git...
+2026-10-11 00:18:26 -07:00 - git is already installed at /usr/bin/git.
+2026-10-11 00:18:26 -07:00 - Checking for docker...
+2026-10-11 00:18:26 -07:00 - docker is already installed at /usr/bin/docker.
+2026-10-11 00:18:26 -07:00 - Checking for $HOME/.local/bin/railpack...
+2026-10-11 00:18:26 -07:00 - $HOME/.local/bin/railpack is already installed at /home/ubuntu/.local/bin/railpack.
+2026-10-11 00:18:27 -07:00 - Cloning repository ecom_3863683...
+2026-10-11 00:18:28 -07:00 - DONE.
+2026-10-11 00:18:29 -07:00 - Loading Environment Variables...
+2026-10-11 00:18:30 -07:00 - DONE.
+2026-10-11 00:18:30 -07:00 - Setting up buildkit
+2026-10-11 00:18:30 -07:00 - DONE.
+2026-10-11 00:18:32 -07:00 - Building application with Railpack...
+2026-10-11 00:18:52 -07:00 -                    
+2026-10-11 00:18:52 -07:00 - ?-----------------?
+2026-10-11 00:18:52 -07:00 - Ý Railpack 0.35.0 Ý
+2026-10-11 00:18:52 -07:00 - ?-----------------?
+2026-10-11 00:18:52 -07:00 - 
+2026-10-11 00:18:52 -07:00 -   ? Detected Php
+2026-10-11 00:18:52 -07:00 -   ? Using custom php.ini: php.ini
+2026-10-11 00:18:52 -07:00 -   ? Installing Node
+2026-10-11 00:18:52 -07:00 -   ? Pruning node dependencies
+2026-10-11 00:18:52 -07:00 -             
+2026-10-11 00:18:52 -07:00 -   Packages  
+2026-10-11 00:18:52 -07:00 -   ----------
+2026-10-11 00:18:52 -07:00 -   php   Ý  8.4.26   Ý  railpack default (8.4)
+2026-10-11 00:18:52 -07:00 -   node  Ý  22.23.3  Ý  railpack default (22)
+2026-10-11 00:18:52 -07:00 -   pnpm  Ý  9.15.9   Ý  pnpm-lock.yaml (9)
+2026-10-11 00:18:52 -07:00 -             
+2026-10-11 00:18:52 -07:00 -   Steps     
+2026-10-11 00:18:52 -07:00 -   ----------
+2026-10-11 00:18:52 -07:00 -   ? prepare
+2026-10-11 00:18:52 -07:00 -     $ mkdir -p /usr/local/etc/php/conf.d
+2026-10-11 00:18:52 -07:00 -     $ mkdir -p /conf.d/
+2026-10-11 00:18:52 -07:00 -                 
+2026-10-11 00:18:52 -07:00 -   ? install:node
+2026-10-11 00:18:52 -07:00 -     $ pnpm add -g node-gyp
+2026-10-11 00:18:52 -07:00 -     $ pnpm install --frozen-lockfile --prefer-offline
+2026-10-11 00:18:52 -07:00 -               
+2026-10-11 00:18:52 -07:00 -   ? prune:node
+2026-10-11 00:18:52 -07:00 -     $ pnpm prune --prod --ignore-scripts
+2026-10-11 00:18:52 -07:00 -          
+2026-10-11 00:18:52 -07:00 -   ? build
+2026-10-11 00:18:52 -07:00 -     $ sh scripts/cpanel-build.sh
+2026-10-11 00:18:52 -07:00 -             
+2026-10-11 00:18:52 -07:00 -   Deploy    
+2026-10-11 00:18:52 -07:00 -   ----------
+2026-10-11 00:18:52 -07:00 -     $ /start-container.sh
+2026-10-11 00:18:52 -07:00 - 
+2026-10-11 00:18:52 -07:00 -   Starting Docker Build...
+2026-10-11 00:18:52 -07:00 -   ------------------------
+2026-10-11 00:18:52 -07:00 - 
+2026-10-11 00:18:52 -07:00 -  INFO cache imports: []
+2026-10-11 00:18:52 -07:00 -  INFO cache exports: []
+2026-10-11 00:18:52 -07:00 - #1 docker-image://ghcr.io/railwayapp/railpack-builder:mise-2026.7.15
+2026-10-11 00:18:52 -07:00 - #1 resolve ghcr.io/railwayapp/railpack-builder:mise-2026.7.15 1.4s done
+2026-10-11 00:18:52 -07:00 - #1 sha256:3813ea5c706b6abb2da410ff7f952ac3d7826303b0e955529fdedc2fdaa27e11 119B / 119B 0.5s done
+2026-10-11 00:18:52 -07:00 - #1 sha256:c4c8d41b604fcbd884cd8d2a51b6c34aea981b6587689e4da19bf61a92af0551 865.75kB / 865.75kB 0.5s done
+2026-10-11 00:18:52 -07:00 - #1 sha256:2dd2dd4f152bd44fe5b02de3e47483f6cdf32bf3d7ea1c7cc70d57b075f2eebd 0B / 64.41MB 0.2s
+2026-10-11 00:18:52 -07:00 - #1 sha256:28b58b340b6712fad5ed288eb0cd2cdc03dad0139536e8263177ecb5db4dd733 13.63MB / 224.70MB 0.6s
+2026-10-11 00:18:52 -07:00 - #1 sha256:4a20fd9e8190ebba6c236fbb288fc16ffa915a45b2ea2bfcde250764d1caaa68 3.15MB / 37.27MB 0.3s
+2026-10-11 00:18:52 -07:00 - #1 sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1 32B / 32B 0.2s done
+2026-10-11 00:18:52 -07:00 - #1 sha256:2dd2dd4f152bd44fe5b02de3e47483f6cdf32bf3d7ea1c7cc70d57b075f2eebd 64.41MB / 64.41MB 5.5s done
+2026-10-11 00:18:52 -07:00 - #1 sha256:28b58b340b6712fad5ed288eb0cd2cdc03dad0139536e8263177ecb5db4dd733 224.70MB / 224.70MB 10.7s done
+2026-10-11 00:18:52 -07:00 - #1 sha256:4a20fd9e8190ebba6c236fbb288fc16ffa915a45b2ea2bfcde250764d1caaa68 37.27MB / 37.27MB 2.9s done
+2026-10-11 00:18:52 -07:00 - #1 sha256:bd0ec93c9c52acfa7f522ce201898ba8ebdf67a6d01c6a4ea70e8d413dbc534a 24.04MB / 24.04MB 3.4s done
+2026-10-11 00:18:52 -07:00 - #1 sha256:c4013e1e38341061b49f51c4b44f2e534c25135d7ed5b75af8b2094766bb5519 48.50MB / 48.50MB 3.5s done
+2026-10-11 00:18:52 -07:00 - #1 extracting sha256:c4013e1e38341061b49f51c4b44f2e534c25135d7ed5b75af8b2094766bb5519 3.8s done
+2026-10-11 00:18:52 -07:00 - #1 extracting sha256:bd0ec93c9c52acfa7f522ce201898ba8ebdf67a6d01c6a4ea70e8d413dbc534a 4.7s done
+2026-10-11 00:18:52 -07:00 - #1 extracting sha256:2dd2dd4f152bd44fe5b02de3e47483f6cdf32bf3d7ea1c7cc70d57b075f2eebd 6.5s done
+2026-10-11 00:18:52 -07:00 - #1 extracting sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1 0.1s done
+2026-10-11 00:18:52 -07:00 - #1 extracting sha256:4a20fd9e8190ebba6c236fbb288fc16ffa915a45b2ea2bfcde250764d1caaa68 1.9s done
+2026-10-11 00:18:52 -07:00 - #1 extracting sha256:28b58b340b6712fad5ed288eb0cd2cdc03dad0139536e8263177ecb5db4dd733 18.1s done
+2026-10-11 00:18:52 -07:00 - #1 extracting sha256:c4c8d41b604fcbd884cd8d2a51b6c34aea981b6587689e4da19bf61a92af0551 0.2s done
+2026-10-11 00:18:52 -07:00 - #1 extracting sha256:3813ea5c706b6abb2da410ff7f952ac3d7826303b0e955529fdedc2fdaa27e11 0.1s done
+2026-10-11 00:18:52 -07:00 - #1 DONE 46.2s
+2026-10-11 00:18:52 -07:00 - 
+2026-10-11 00:18:52 -07:00 - #2 [railpack] secrets hash
+2026-10-11 00:18:52 -07:00 - #2 DONE 0.7s
+2026-10-11 00:18:52 -07:00 - 
+2026-10-11 00:18:52 -07:00 - #3 mkdir /etc/mise
+2026-10-11 00:18:52 -07:00 - #3 DONE 0.3s
+2026-10-11 00:18:52 -07:00 - 
+2026-10-11 00:18:52 -07:00 - #4 copy /etc/mise/config.toml
+2026-10-11 00:18:52 -07:00 - #4 CACHED
+2026-10-11 00:18:52 -07:00 - 
+2026-10-11 00:18:52 -07:00 - #5 copy /usr/local/bin/mise
+2026-10-11 00:18:52 -07:00 - #5 CACHED
+2026-10-11 00:18:52 -07:00 - 
+2026-10-11 00:18:52 -07:00 - #6 copy /mise/installs
+2026-10-11 00:18:52 -07:00 - #6 CACHED
+2026-10-11 00:18:52 -07:00 - 
+2026-10-11 00:18:52 -07:00 - #7 install mise packages: node, pnpm
+2026-10-11 00:18:52 -07:00 - #7 CACHED
+2026-10-11 00:18:52 -07:00 - 
+2026-10-11 00:18:52 -07:00 - #8 copy /mise/shims
+2026-10-11 00:18:52 -07:00 - #8 CACHED
+2026-10-11 00:18:52 -07:00 - 
+2026-10-11 00:18:52 -07:00 - #9 copy /root/.local/state/mise
+2026-10-11 00:18:52 -07:00 - #9 CACHED
+2026-10-11 00:18:52 -07:00 - 
+2026-10-11 00:18:52 -07:00 - #10 loading .
+2026-10-11 00:18:52 -07:00 - #10 transferring context: 5.01MB 0.1s
+2026-10-11 00:18:52 -07:00 - #10 ...
+2026-10-11 00:18:52 -07:00 - 
+2026-10-11 00:18:52 -07:00 - #11 create mise config
+2026-10-11 00:18:52 -07:00 - #11 DONE 0.6s
+2026-10-11 00:18:52 -07:00 - 
+2026-10-11 00:18:52 -07:00 - #10 loading .
+2026-10-11 00:18:52 -07:00 - #10 transferring context: 32.06MB 0.7s done
+2026-10-11 00:18:52 -07:00 - #10 DONE 0.8s
+2026-10-11 00:18:52 -07:00 - 
+2026-10-11 00:18:52 -07:00 - #7 install mise packages: node, pnpm
+2026-10-11 00:18:52 -07:00 - #7 1.172 mise node@22.23.3    [1/3] install
+2026-10-11 00:18:52 -07:00 - #7 1.177 mise node@22.23.3    [1/3] download node-v22.23.3-linux-x64.tar.gz
+2026-10-11 00:18:52 -07:00 - #7 1.231 mise pnpm@9.15.9     [1/2] install
+2026-10-11 00:18:52 -07:00 - #7 2.330 mise node@22.23.3    [2/3] generate checksum node-v22.23.3-linux-x64.tar.gz
+2026-10-11 00:18:52 -07:00 - #7 2.360 mise node@22.23.3    [3/3] extract node-v22.23.3-linux-x64.tar.gz
+2026-10-11 00:18:52 -07:00 - #7 3.352 mise pnpm@9.15.9     [1/2] download pnpm-linux-x64
+2026-10-11 00:18:52 -07:00 - #7 4.330 mise node@22.23.3    [3/3] node -v
+2026-10-11 00:18:52 -07:00 - #7 4.349 mise node@22.23.3    [3/3] v22.23.3
+2026-10-11 00:18:52 -07:00 - #7 4.354 mise node@22.23.3    [3/3] npm -v
+2026-10-11 00:18:52 -07:00 - #7 4.620 mise node@22.23.3    [3/3] 10.9.9
+2026-10-11 00:18:52 -07:00 - #7 4.742 mise node@22.23.3  ? installed
+2026-10-11 00:18:52 -07:00 - #7 ...
+2026-10-11 00:18:52 -07:00 - 
+2026-10-11 00:18:52 -07:00 - #12 docker-image://docker.io/dunglas/frankenphp:php8.4.26-bookworm
+2026-10-11 00:18:52 -07:00 - #12 resolve docker.io/dunglas/frankenphp:php8.4.26-bookworm 1.7s done
+2026-10-11 00:18:52 -07:00 - #12 sha256:22a8bfb67598188d56e213bc55c77f019f84e44d0073d9abe5f6f0d6acc2cf2f 176.39kB / 176.39kB 0.6s done
+2026-10-11 00:18:52 -07:00 - #12 sha256:7d741ab9c3018fee823c2041148e87183665f7a33a4a0f3ae43c093208473254 20.75MB / 20.75MB 0.8s done
+2026-10-11 00:18:52 -07:00 - #12 sha256:a8c884e66fca96e82d3de3d896925e47d3b33c394a947a9df83db77a9ddb4569 2.20kB / 2.20kB 0.7s done
+2026-10-11 00:18:52 -07:00 - #12 sha256:5038e05faee9b04204292f44edef2a75858fdc1deae61483c02e9ea2a33e8cea 33.82kB / 33.82kB 0.6s done
+2026-10-11 00:18:52 -07:00 - #12 sha256:b4b3b7ead13d6ffa918d99c5cd1efe998fe0c215daa69dd9f8fdc6865bbd393c 1.16kB / 1.16kB 0.2s done
+2026-10-11 00:18:52 -07:00 - #12 sha256:be6ab5883b016f2078c45c56def7c5520d48ac277433ad14ba8edfbb440d0b9c 417B / 417B 0.2s done
+2026-10-11 00:18:52 -07:00 - #12 sha256:9208631d1360d47eec47f0154551b51271e488f5b764f4ee5ee65976b82fcc76 43.52kB / 43.52kB 0.4s done
+2026-10-11 00:18:52 -07:00 - #12 sha256:cb063dfe7de190f6cad2b0da6a3e7b47e9b886df96881184e178681fc6ab0192 147.12kB / 147.12kB 0.3s done
+2026-10-11 00:18:52 -07:00 - #12 sha256:64d8f2a46f3302a611b60ffd4022f678c64caf57f59f8d374e18a7df96456d1c 93B / 93B 0.3s done
+2026-10-11 00:18:52 -07:00 - #12 sha256:6fc3c4e1d47617f5331859f7df1b02cd4e9da7afe712d24a57a333a2967c07c2 246B / 246B 0.2s done
+2026-10-11 00:18:52 -07:00 - #12 sha256:974d08e44ae9138285b436560d1c7dadd01d30a2b594caa9b500c9a806b9d926 251B / 251B 0.2s done
+2026-10-11 00:18:52 -07:00 - #12 sha256:6155c933187799901f755bd726d8c1d7409321ac405c6731968145a56f724514 2.45kB / 2.45kB 0.3s done
+2026-10-11 00:18:52 -07:00 - #12 sha256:6c3245ea1ce5e2b97b2f2ef5ae8b32b0935dc8f4cd14115e840e097cc5192a46 26.21MB / 39.97MB 1.4s
+2026-10-11 00:18:52 -07:00 - #12 sha256:20fbac5425b6b97ffea1ddc054610e6c070295f1c58cf4e1f89f2c86cc4d179e 488B / 488B 0.2s done
+2026-10-11 00:18:52 -07:00 - #12 sha256:09a8e847a9778161cce27918600481f0f91c22b245609483097241ed90dfcbaa 2.10MB / 13.90MB 1.1s
+2026-10-11 00:18:53 -07:00 - #12 sha256:e410314175c161e58eb911b91f007f5cc34cafa3fab82d7ba8afb924a6e2dfe7 223B / 223B 0.2s done
+2026-10-11 00:18:53 -07:00 - #12 sha256:6912bbca7a8f277d8486abdfeb92e075c430ec9a97f3f7149b933f196853cb64 2.10MB / 106.46MB 0.9s
+2026-10-11 00:18:53 -07:00 - #12 sha256:45aae2a48a69905aa3ab6f1d43cd9d5cf6e14d2298df92c09f080ee1ee58bd0a 225B / 225B 0.1s done
+2026-10-11 00:18:53 -07:00 - #12 sha256:7fd1ebe418b5079d4aa36f416af9b143d127bc75b0155d71cb5fd559b5e04d39 6.29MB / 28.25MB 0.6s
+2026-10-11 00:18:53 -07:00 - #12 sha256:6c3245ea1ce5e2b97b2f2ef5ae8b32b0935dc8f4cd14115e840e097cc5192a46 28.31MB / 39.97MB 1.5s
+2026-10-11 00:18:53 -07:00 - #12 sha256:7fd1ebe418b5079d4aa36f416af9b143d127bc75b0155d71cb5fd559b5e04d39 8.39MB / 28.25MB 0.8s
+2026-10-11 00:18:53 -07:00 - #12 sha256:6c3245ea1ce5e2b97b2f2ef5ae8b32b0935dc8f4cd14115e840e097cc5192a46 30.41MB / 39.97MB 1.7s
+2026-10-11 00:18:53 -07:00 - #12 sha256:7fd1ebe418b5079d4aa36f416af9b143d127bc75b0155d71cb5fd559b5e04d39 10.49MB / 28.25MB 0.9s
+2026-10-11 00:18:53 -07:00 - #12 sha256:6c3245ea1ce5e2b97b2f2ef5ae8b32b0935dc8f4cd14115e840e097cc5192a46 33.55MB / 39.97MB 1.8s
+2026-10-11 00:18:53 -07:00 - #12 sha256:7fd1ebe418b5079d4aa36f416af9b143d127bc75b0155d71cb5fd559b5e04d39 12.58MB / 28.25MB 1.1s
+2026-10-11 00:18:53 -07:00 - #12 sha256:6c3245ea1ce5e2b97b2f2ef5ae8b32b0935dc8f4cd14115e840e097cc5192a46 35.65MB / 39.97MB 2.0s
+2026-10-11 00:18:53 -07:00 - #12 sha256:7fd1ebe418b5079d4aa36f416af9b143d127bc75b0155d71cb5fd559b5e04d39 14.68MB / 28.25MB 1.2s
+2026-10-11 00:18:53 -07:00 - #12 sha256:6c3245ea1ce5e2b97b2f2ef5ae8b32b0935dc8f4cd14115e840e097cc5192a46 37.75MB / 39.97MB 2.1s
+2026-10-11 00:18:53 -07:00 - #12 sha256:7fd1ebe418b5079d4aa36f416af9b143d127bc75b0155d71cb5fd559b5e04d39 16.78MB / 28.25MB 1.4s
+2026-10-11 00:18:53 -07:00 - #12 sha256:6c3245ea1ce5e2b97b2f2ef5ae8b32b0935dc8f4cd14115e840e097cc5192a46 39.97MB / 39.97MB 2.3s
+2026-10-11 00:18:53 -07:00 - #12 sha256:09a8e847a9778161cce27918600481f0f91c22b245609483097241ed90dfcbaa 3.15MB / 13.90MB 2.0s
+2026-10-11 00:18:53 -07:00 - #12 sha256:7fd1ebe418b5079d4aa36f416af9b143d127bc75b0155d71cb5fd559b5e04d39 19.92MB / 28.25MB 1.5s
+2026-10-11 00:18:53 -07:00 - #12 sha256:7fd1ebe418b5079d4aa36f416af9b143d127bc75b0155d71cb5fd559b5e04d39 23.07MB / 28.25MB 1.7s
+2026-10-11 00:18:53 -07:00 - #12 ...
+2026-10-11 00:18:53 -07:00 - 
+2026-10-11 00:18:53 -07:00 - #7 install mise packages: node, pnpm
+2026-10-11 00:18:53 -07:00 - #7 6.931 mise pnpm@9.15.9     [1/2] generate checksum pnpm-linux-x64
+2026-10-11 00:18:53 -07:00 - #7 6.971 mise pnpm@9.15.9     [1/2] extract pnpm-linux-x64
+2026-10-11 00:18:53 -07:00 - #7 7.121 mise pnpm@9.15.9   ? installed
+2026-10-11 00:18:53 -07:00 - #7 DONE 9.5s
+2026-10-11 00:18:53 -07:00 - 
+2026-10-11 00:18:53 -07:00 - #12 docker-image://docker.io/dunglas/frankenphp:php8.4.26-bookworm
+2026-10-11 00:18:53 -07:00 - #12 sha256:6c3245ea1ce5e2b97b2f2ef5ae8b32b0935dc8f4cd14115e840e097cc5192a46 39.97MB / 39.97MB 2.5s done
+2026-10-11 00:18:53 -07:00 - #12 sha256:09a8e847a9778161cce27918600481f0f91c22b245609483097241ed90dfcbaa 13.90MB / 13.90MB 4.7s done
+2026-10-11 00:18:53 -07:00 - #12 sha256:6912bbca7a8f277d8486abdfeb92e075c430ec9a97f3f7149b933f196853cb64 106.46MB / 106.46MB 4.8s
+2026-10-11 00:18:53 -07:00 - #12 sha256:7fd1ebe418b5079d4aa36f416af9b143d127bc75b0155d71cb5fd559b5e04d39 28.25MB / 28.25MB 2.2s done
+2026-10-11 00:18:53 -07:00 - #12 sha256:6912bbca7a8f277d8486abdfeb92e075c430ec9a97f3f7149b933f196853cb64 106.46MB / 106.46MB 5.2s done
+2026-10-11 00:18:53 -07:00 - #12 extracting sha256:7fd1ebe418b5079d4aa36f416af9b143d127bc75b0155d71cb5fd559b5e04d39
+2026-10-11 00:18:53 -07:00 - #12 ...
+2026-10-11 00:18:53 -07:00 - 
+2026-10-11 00:18:53 -07:00 - #13 copy / /app
+2026-10-11 00:18:53 -07:00 - #13 DONE 1.6s
+2026-10-11 00:18:53 -07:00 - 
+2026-10-11 00:18:53 -07:00 - #14 mkdir -p /app/node_modules/.cache
+2026-10-11 00:18:53 -07:00 - #14 ...
+2026-10-11 00:18:53 -07:00 - 
+2026-10-11 00:18:53 -07:00 - #12 docker-image://docker.io/dunglas/frankenphp:php8.4.26-bookworm
+2026-10-11 00:18:53 -07:00 - #12 extracting sha256:7fd1ebe418b5079d4aa36f416af9b143d127bc75b0155d71cb5fd559b5e04d39 1.6s done
+2026-10-11 00:18:53 -07:00 - #12 DONE 12.3s
+2026-10-11 00:18:53 -07:00 - 
+2026-10-11 00:18:53 -07:00 - #12 docker-image://docker.io/dunglas/frankenphp:php8.4.26-bookworm
+2026-10-11 00:18:53 -07:00 - #12 extracting sha256:45aae2a48a69905aa3ab6f1d43cd9d5cf6e14d2298df92c09f080ee1ee58bd0a
+2026-10-11 00:18:53 -07:00 - #12 ...
+2026-10-11 00:18:53 -07:00 - 
+2026-10-11 00:18:53 -07:00 - #14 mkdir -p /app/node_modules/.cache
+2026-10-11 00:18:53 -07:00 - #14 DONE 0.9s
+2026-10-11 00:18:53 -07:00 - 
+2026-10-11 00:18:53 -07:00 - #12 docker-image://docker.io/dunglas/frankenphp:php8.4.26-bookworm
+2026-10-11 00:18:53 -07:00 - #12 extracting sha256:45aae2a48a69905aa3ab6f1d43cd9d5cf6e14d2298df92c09f080ee1ee58bd0a 0.5s done
+2026-10-11 00:18:53 -07:00 - #12 extracting sha256:6912bbca7a8f277d8486abdfeb92e075c430ec9a97f3f7149b933f196853cb64
+2026-10-11 00:18:53 -07:00 - #12 ...
+2026-10-11 00:18:53 -07:00 - 
+2026-10-11 00:18:53 -07:00 - #15 pnpm add -g node-gyp
+2026-10-11 00:18:53 -07:00 - #15 0.990 Progress: resolved 1, reused 0, downloaded 0, added 0
+2026-10-11 00:18:53 -07:00 - #15 1.273 Packages: +20
+2026-10-11 00:18:53 -07:00 - #15 1.273 ++++++++++++++++++++
+2026-10-11 00:18:53 -07:00 - #15 1.776 Progress: resolved 20, reused 20, downloaded 0, added 20, done
+2026-10-11 00:18:53 -07:00 - #15 1.905 
+2026-10-11 00:18:53 -07:00 - #15 1.905 /opt/pnpm/global/5:
+2026-10-11 00:18:53 -07:00 - #15 1.905 + node-gyp 13.1.0
+2026-10-11 00:18:53 -07:00 - #15 1.905 
+2026-10-11 00:18:53 -07:00 - #15 1.935 Done in 1.2s using pnpm v9.15.9
+2026-10-11 00:18:53 -07:00 - #15 DONE 3.3s
+2026-10-11 00:18:53 -07:00 - 
+2026-10-11 00:18:53 -07:00 - #16 pnpm install --frozen-lockfile --prefer-offline
+2026-10-11 00:18:53 -07:00 - #16 0.831 Scope: all 9 workspace projects
+2026-10-11 00:18:53 -07:00 - #16 0.971 ?ERR_PNPM_LOCKFILE_CONFIG_MISMATCH? Cannot proceed with the frozen installation. The current "overrides" configuration doesnt match the value found in the lockfile
+2026-10-11 00:18:53 -07:00 - #16 0.971 
+2026-10-11 00:18:53 -07:00 - #16 0.971 Update your lockfile using "pnpm install --no-frozen-lockfile"
+2026-10-11 00:18:53 -07:00 - #16 ERROR: process "pnpm install --frozen-lockfile --prefer-offline" did not complete successfully: exit code: 1
+2026-10-11 00:18:53 -07:00 - 
+2026-10-11 00:18:53 -07:00 - #12 docker-image://docker.io/dunglas/frankenphp:php8.4.26-bookworm
+2026-10-11 00:18:53 -07:00 - #12 extracting sha256:6912bbca7a8f277d8486abdfeb92e075c430ec9a97f3f7149b933f196853cb64 5.9s done
+2026-10-11 00:18:53 -07:00 - #12 DONE 18.7s
+2026-10-11 00:18:53 -07:00 - 
+2026-10-11 00:18:53 -07:00 - #17 install apt packages: ca-certificates git unzip zip
+2026-10-11 00:18:53 -07:00 - #17 CANCELED
+2026-10-11 00:18:53 -07:00 - ------
+2026-10-11 00:18:53 -07:00 -  > pnpm install --frozen-lockfile --prefer-offline:
+2026-10-11 00:18:53 -07:00 - 0.831 Scope: all 9 workspace projects
+2026-10-11 00:18:53 -07:00 - 0.971 ?ERR_PNPM_LOCKFILE_CONFIG_MISMATCH? Cannot proceed with the frozen installation. The current "overrides" configuration doesnt match the value found in the lockfile
+2026-10-11 00:18:53 -07:00 - 0.971 
+2026-10-11 00:18:53 -07:00 - 0.971 Update your lockfile using "pnpm install --no-frozen-lockfile"
+2026-10-11 00:18:53 -07:00 - ------
+2026-10-11 00:18:53 -07:00 -  ERRO failed to solve: failed to solve: process "pnpm install --frozen-lockfile --prefer-offline" did not complete successfully: exit code: 1
+2026-10-11 00:18:53 -07:00 - unrecognized image format
+2026-10-11 00:18:53 -07:00 - Error: Failed to build the application with Railpack.
+2026-10-11 00:18:53 -07:00 - An unexpected error occurred: ScriptHalted
+2026-10-11 00:18:53 -07:00 - Cleaning up temporary files in $HOME/mwania-001/ecom_3863683, container ecom_3863683, image ecom_3863683 and volume...
+2026-10-11 00:18:53 -07:00 - 
+2026-10-11 00:18:53 -07:00 - 
+2026-10-11 00:18:53 -07:00 - 
+2026-10-11 00:18:53 -07:00 - Total reclaimed space: 0B
+2026-10-11 00:18:53 -07:00 - DONE.
+2026-10-11 00:18:54 -07:00 - Deployment process completed with status: FAILURE. Log file: h:\root\home\mwania-001\www\ecom\node_app_automate_deploy_3863683.log
+Deployment Method
+
+Git Repository
+Recommended for GitHub, GitLab, Bitbucket, and private repositories.
+
+Upload A Zip File
+Max size 200MB. Only .zip files are allowed.
+Target Repository
+
+jkdjfhfjfj/ecomm
+Select the project repository you intend to build and deploy.
+
+Git Branch
+main
+The default branch is usually main or master.
+Deployment Key
+Personal Access Token
+Deploy Key
+Personal Access Token
+ghp_XXXXXXXXXXXXXX
+Needed only for private repositories.
+Build Command
+sh scripts/cpanel-build.sh
+Automatically detected if left blank for most frameworks.
+Start Command
+npm run start
+Automatically detected if left blank.
+Create Deploy Hook
+Deploy Now
+Environment Variables
+Deployments History
+ID	Source	Created	Status	Build Logs
+#3863683	https://github.com/jkdjfhfjfj/ecomm.git	2 mins ago	Failed	
+#3858530	https://github.com/jkdjfhfjfj/Whatsapp-Business-API.git	1 day ago	Success	
+#3818186	https://github.com/jkdjfhfjfj/Whatsapp-Business-API.git	14 days ago	Failed	
+FAQs
+What frameworks are supported?
+Our platform automatically detects and supports all major modern frameworks, including Next.js, Express, Fastify, Nest.js, Remix, Nuxt, Astro, SvelteKit, React, Vue, Angular, Solid, Sails, and more.
+
+Why hosting Node.js application with us?
+We provide a full-stack cloud platform where hosting, CDN, security, and compute are built in. Push code and the platform builds, runs, and serves your application globally.
+
+How to deploy Node.js app?
+Connect to Git Repository such as GitHub, GitLab, or Bitbucket, or upload a ZIP file of your project. We create a secure build environment, build the app, and upload the output to your site root.
+
+My app runs fine locally. Why does it fail to deploy?
+Please check the logs first. Common issues include missing PORT configuration, an invalid start command, or missing environment variables.
