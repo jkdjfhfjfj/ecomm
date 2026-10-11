@@ -23,6 +23,19 @@
 <body>
     <div class="body-overlay" id="body-overlay"></div>
     @include('Template::partials.preloader')
+    <script>
+        // Keep the storefront usable if a remote image or extension stalls the
+        // window load event that normally removes this loader.
+        window.setTimeout(function () {
+            const loader = document.querySelector('.preloader');
+            if (!loader) return;
+            loader.style.transition = 'opacity .35s ease, visibility .35s ease';
+            loader.style.opacity = '0';
+            loader.style.visibility = 'hidden';
+            loader.style.pointerEvents = 'none';
+            window.setTimeout(function () { loader.remove(); }, 400);
+        }, 1800);
+    </script>
 
     @yield('app')
 

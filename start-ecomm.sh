@@ -55,8 +55,19 @@ mysql_is_ready() {
     >/dev/null 2>&1
 }
 
+mysql_pid_is_live() {
+  [[ -f "$MYSQL_PID" ]] || return 1
+  local pid cmd
+  pid="$(cat "$MYSQL_PID" 2>/dev/null || true)"
+  [[ "$pid" =~ ^[0-9]+$ ]] || return 1
+  kill -0 "$pid" 2>/dev/null || return 1
+  [[ -r "/proc/$pid/cmdline" ]] || return 1
+  cmd="$(tr '\0' ' ' <"/proc/$pid/cmdline" 2>/dev/null || true)"
+  [[ "$cmd" == *mysqld* && "$cmd" == *"$MYSQL_SOCKET"* ]]
+}
+
 if ! mysql_is_ready; then
-  if [[ -f "$MYSQL_PID" ]] && kill -0 "$(cat "$MYSQL_PID")" 2>/dev/null; then
+  if mysql_pid_is_live; then
     echo "Waiting for the existing local MySQL process..."
   else
     rm -f "$MYSQL_SOCKET" "$MYSQL_PID"
@@ -92,7 +103,7 @@ if ! mysql_is_ready; then
       ready=1
       break
     fi
-    if [[ -f "$MYSQL_PID" ]] && ! kill -0 "$(cat "$MYSQL_PID")" 2>/dev/null; then
+    if [[ -f "$MYSQL_PID" ]] && ! mysql_pid_is_live; then
       break
     fi
     sleep 1
