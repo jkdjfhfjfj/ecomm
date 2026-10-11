@@ -55,6 +55,7 @@ class SiteController extends Controller {
             ->where('external_source', 'parsebot_jomashop')
             ->whereNotIn('external_id', ['5695'])
             ->orderBy('position')
+            ->limit(8)
             ->get()
             ->map(function (Category $category) {
                 $products = Product::published()

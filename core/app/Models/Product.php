@@ -54,10 +54,12 @@ class Product extends Model {
 
             $images->whereHas('displayImage', $validMedia)
                 ->orWhereHas('galleryImages', $validMedia)
-                ->orWhere('external_image_url', 'REGEXP', '^https?://[^[:space:]]+')
+                ->orWhere(function ($url) {
+                    $url->where('external_image_url', 'LIKE', 'http://%')
+                        ->orWhere('external_image_url', 'LIKE', 'https://%');
+                })
                 ->orWhere(function ($snapshot) {
                     $snapshot->whereNotNull('external_details')
-                        ->where('external_details', 'LIKE', '%http%')
                         ->where('external_details', 'LIKE', '%media_gallery%');
                 });
         });
