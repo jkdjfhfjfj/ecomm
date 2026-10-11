@@ -9,13 +9,33 @@ if [ "$(php -r 'echo PHP_VERSION_ID;')" -lt 80300 ]; then
     exit 1
 fi
 
-if ! command -v composer >/dev/null 2>&1; then
-    echo "Composer must be available to the HostBuddy build environment." >&2
-    exit 1
-fi
-
 cd "$APP"
-composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader
+
+if command -v composer >/dev/null 2>&1; then
+    composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader
+else
+    COMPOSER_TMP="$(mktemp -d)"
+    trap 'rm -rf "$COMPOSER_TMP"' EXIT HUP INT TERM
+    COMPOSER_INSTALLER="$COMPOSER_TMP/installer.php"
+    COMPOSER_PHAR="$COMPOSER_TMP/composer.phar"
+
+    php -r '
+        $signature = file_get_contents("https://composer.github.io/installer.sig");
+        $installer = file_get_contents("https://getcomposer.org/installer");
+        if ($signature === false || $installer === false ||
+            !hash_equals(trim($signature), hash("sha384", $installer))) {
+            fwrite(STDERR, "Composer installer download or signature verification failed.\n");
+            exit(1);
+        }
+        if (file_put_contents($argv[1], $installer) === false) {
+            fwrite(STDERR, "Could not save the verified Composer installer.\n");
+            exit(1);
+        }
+    ' "$COMPOSER_INSTALLER"
+
+    php "$COMPOSER_INSTALLER" --quiet --install-dir="$COMPOSER_TMP" --filename=composer.phar
+    php "$COMPOSER_PHAR" install --no-dev --prefer-dist --no-interaction --optimize-autoloader
+fi
 
 mkdir -p \
     "$APP/storage/framework/cache/data" \
