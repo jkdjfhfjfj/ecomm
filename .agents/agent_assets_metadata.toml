@@ -14,3 +14,17 @@ mtime_ms = 1791702176670
 storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:c3cf6659-8ae4-4f11-834a-5e3aace3982c/2f5c2c7b-e75a-49cb-a178-3165c0ad7e04/23e1277b-ee34-4f7b-b93c-2f5f6b7b71fb"
 storage_version_token = "1791721496670797"
 content_type = "application/octet-stream"
+
+[[outputs]]
+id = "HxxBcb7jJtsnB-aQ5XXFG"
+uri = "file://generated-artifacts/cpanel-preimport-20261011T125831Z-retry.sql.gz"
+type = "unspecified"
+title = "Pre-import cPanel database backup"
+description = "Verified compressed backup of the cPanel database before its tables were replaced by the current e-commerce export."
+logical_id = "6b070c90-9657-4c37-8351-916a72a47d72"
+content_hash = "sha256:371c16a1044904c7cde80bad2fcb6c9d9c492cdb217895805872130983c24400"
+size = 30751
+mtime_ms = 1791723543774
+storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:c3cf6659-8ae4-4f11-834a-5e3aace3982c/6b070c90-9657-4c37-8351-916a72a47d72/946184d1-b35b-4abd-b81c-54ab9c714a6a"
+storage_version_token = "1791723672077012"
+content_type = "application/octet-stream"
