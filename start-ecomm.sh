@@ -27,6 +27,37 @@ fi
 
 cd "$ROOT_DIR"
 
+# Use the imported cPanel catalog in the Replit preview when a complete
+# remote MySQL connection is available. These values are provided as Replit
+# Secrets, never written into core/.env or printed to the workflow log.
+if [[ -n "${CPANEL_MYSQL_HOST:-}" &&
+      -n "${CPANEL_MYSQL_PORT:-}" &&
+      -n "${CPANEL_MYSQL_DATABASE:-}" &&
+      -n "${CPANEL_MYSQL_USERNAME:-}" &&
+      -n "${CPANEL_MYSQL_PASSWORD:-}" ]]; then
+  if [[ ! -f "$APP_DIR/.env" ]]; then
+    echo "Laravel .env is missing; initialize the app key before using the remote database." >&2
+    exit 1
+  fi
+
+  export DB_CONNECTION=mysql
+  export DB_HOST="$CPANEL_MYSQL_HOST"
+  export DB_PORT="$CPANEL_MYSQL_PORT"
+  export DB_DATABASE="$CPANEL_MYSQL_DATABASE"
+  export DB_USERNAME="$CPANEL_MYSQL_USERNAME"
+  export DB_PASSWORD="$CPANEL_MYSQL_PASSWORD"
+  export APP_ENV=local
+  export APP_DEBUG=false
+  unset APP_URL
+
+  (
+    cd "$APP_DIR"
+    php artisan config:clear --no-ansi
+  )
+  echo "Starting storefront with the configured remote catalog database."
+  exec php -S "0.0.0.0:$APP_PORT" -t "$ROOT_DIR" "$ROOT_DIR/replit-dev-router.php"
+fi
+
 for command_name in mysqld mysql mysqladmin php flock; do
   if ! command -v "$command_name" >/dev/null 2>&1; then
     echo "Required command not found: $command_name" >&2

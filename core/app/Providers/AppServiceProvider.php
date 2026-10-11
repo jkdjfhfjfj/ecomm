@@ -51,7 +51,6 @@ class AppServiceProvider extends ServiceProvider {
 
         $viewShare['parentCategories'] = Category::isParent()
             ->with([
-                'specialProducts.brand',
                 'allSubcategories' => function($q) {
                     $q->orderBy('position');
                 },

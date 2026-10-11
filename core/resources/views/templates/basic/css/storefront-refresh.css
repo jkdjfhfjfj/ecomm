@@ -54,6 +54,7 @@ button, input, select { font-family: var(--store-body); }
 .header-bottom .action-btn-inner { gap: 8px; }
 .header-bottom .cart-icon-design .button { border: 0; background: transparent; color: #fff; }
 .mobile-menu-icons { background: var(--store-paper); border-top: 1px solid var(--store-line); }
+.logo img { display:block; width:auto; max-width:100%; height:auto; max-height:58px; object-fit:contain; }
 
 .hero-section { margin-top: 22px; }
 .hero-slider { overflow: hidden; }
@@ -155,6 +156,7 @@ button, input, select { font-family: var(--store-body); }
 .daily-deal-wrap { padding:32px 0 8px !important; }
 .daily-deal-card { border-radius:0 !important; background:linear-gradient(110deg,#262622 0%,#39382f 68%,#8e493c 150%) !important; box-shadow:none !important; }
 .daily-deal-cta { border-radius:0 !important; background:var(--store-accent) !important; }
+.daily-offer-reopen { bottom:calc(22px + env(safe-area-inset-bottom)); }
 
 @media (max-width: 1199px) {
     .category-sidebar { flex-basis:220px; }
@@ -168,6 +170,13 @@ button, input, select { font-family: var(--store-body); }
     .filter-select-right { justify-content:flex-end; flex-wrap:wrap; }
 }
 @media (max-width: 767px) {
+    body { padding-bottom:calc(68px + env(safe-area-inset-bottom)); }
+    .header-middle .container { padding:8px 14px; }
+    .header-wrapper { min-height:48px; gap:10px; }
+    .logo { flex:0 1 auto; min-width:0; }
+    .logo img { max-height:44px; max-width:min(48vw, 190px); }
+    .header-search-wrapper { flex:1 1 auto; }
+    .header-search-btn { flex:0 0 40px; width:40px; height:40px; }
     .hero-section { margin-top:10px; }
     .catalog-intro { align-items:flex-start; padding:13px 0 19px; margin-bottom:16px; }
     .catalog-intro h1 { font-size:2.55rem; }
@@ -195,6 +204,28 @@ button, input, select { font-family: var(--store-body); }
     .products-description .nav-tabs { flex-wrap:nowrap; overflow:auto; }
     .products-description .nav-tabs a { padding:10px; white-space:nowrap; font-size:.82rem; }
     .daily-deal-card { align-items:flex-start !important; }
+    .mobile-menu-icons {
+        position:fixed;
+        z-index:1040;
+        right:0;
+        bottom:0;
+        left:0;
+        display:flex !important;
+        justify-content:space-around !important;
+        gap:0;
+        padding:7px 4px calc(7px + env(safe-area-inset-bottom));
+        border-top:1px solid rgba(255,255,255,.12);
+        background:#242522 !important;
+        box-shadow:0 -8px 24px rgba(20,22,20,.16);
+    }
+    .mobile-menu-icons > li { flex:1 1 0; min-width:0; text-align:center; }
+    .mobile-menu-icons .ecommerce { display:flex; min-height:44px; flex-direction:column; align-items:center; justify-content:center; gap:3px; color:#f8f6f1 !important; }
+    .mobile-menu-icons .ecommerce__icon { display:grid; min-height:21px; place-items:center; }
+    .mobile-menu-icons .ecommerce__icon img { width:20px; height:20px; filter:brightness(0) invert(1); opacity:.92; }
+    .mobile-menu-icons .ecommerce__icon i { color:#f8f6f1; font-size:20px; }
+    .mobile-menu-icons .ecommerce__text { color:#f1eee8 !important; font-size:10px; line-height:1.15; white-space:nowrap; }
+    .mobile-menu-icons .ecommerce__is { background:var(--store-accent); color:#fff; }
+    .daily-offer-reopen { right:12px; bottom:calc(78px + env(safe-area-inset-bottom)); padding:.65rem .85rem; font-size:.86rem; }
 }
 @media (prefers-reduced-motion: reduce) {
     *, *:before, *:after { scroll-behavior:auto !important; transition-duration:.01ms !important; animation-duration:.01ms !important; }
