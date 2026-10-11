@@ -1,7 +1,11 @@
 @extends('Template::layouts.app')
 @section('app')
     @push('style')
-        <link rel="stylesheet" href="{{ asset(activeTemplate(true) . 'css/storefront-refresh.css') }}">
+        @php
+            $storefrontCssPath = base_path('../assets/templates/' . activeTemplateName() . '/css/storefront-refresh.css');
+            $storefrontCssVersion = is_file($storefrontCssPath) ? filemtime($storefrontCssPath) : '1';
+        @endphp
+        <link rel="stylesheet" href="{{ asset(activeTemplate(true) . 'css/storefront-refresh.css') }}?v={{ $storefrontCssVersion }}">
     @endpush
     @include('Template::partials.header')
 

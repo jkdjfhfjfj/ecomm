@@ -38,7 +38,7 @@ class SiteController extends Controller {
             ->whereHas('products', fn ($products) => $products->published()->withDisplayableImage())
             ->orderByRaw("campaign_type = 'flash' DESC")
             ->latest('starts_from')
-            ->limit(4)
+            ->limit(2)
             ->get();
         $homeProducts = Product::published()
             ->shopPageProducts()
