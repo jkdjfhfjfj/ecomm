@@ -15,6 +15,11 @@ MYSQL_PORT=3306
 APP_DB=ecomm_replit
 APP_DB_USER=ecomm_local
 
+# This downloaded test copy runs in Replit's development preview, not as a licensed production install.
+if [[ -n "${REPLIT_DEV_DOMAIN:-}" ]]; then
+  export APP_ENV=local
+fi
+
 if [[ ! "$APP_PORT" =~ ^[0-9]+$ ]]; then
   echo "Invalid application port: $APP_PORT" >&2
   exit 1
