@@ -74,6 +74,9 @@ else
     php "$COMPOSER_PHAR" install --no-dev --prefer-dist --no-interaction --optimize-autoloader
 fi
 
+php artisan config:clear
+php artisan migrate --force --no-interaction
+
 mkdir -p \
     "$APP/storage/framework/cache/data" \
     "$APP/storage/framework/sessions" \
