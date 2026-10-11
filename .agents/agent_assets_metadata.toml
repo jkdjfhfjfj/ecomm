@@ -1,0 +1,16 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "7W83RQZsjrvqjsVoDLgD7"
+uri = "file://generated-artifacts/ecomm_install-cpanel.sql.gz"
+type = "unspecified"
+title = "cPanel database export"
+description = "Compressed MySQL database export for the cPanel deployment."
+logical_id = "2f5c2c7b-e75a-49cb-a178-3165c0ad7e04"
+content_hash = "sha256:f4cc08997e6e9853a0f0e0599b1b94944ecec580c35fc1621568fa70c86c74b1"
+size = 1938690
+mtime_ms = 1791702176670
+storage_uri = "gcs://replit-rams-assets-worf/rams/assets/repl:c3cf6659-8ae4-4f11-834a-5e3aace3982c/2f5c2c7b-e75a-49cb-a178-3165c0ad7e04/23e1277b-ee34-4f7b-b93c-2f5f6b7b71fb"
+storage_version_token = "1791721496670797"
+content_type = "application/octet-stream"
