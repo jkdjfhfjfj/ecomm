@@ -31,17 +31,25 @@ class AppServiceProvider extends ServiceProvider {
     public function boot(): void {
         if (!cache()->get('SystemInstalled')) {
             $envFilePath = base_path('.env');
-            if (!file_exists($envFilePath)) {
+            $hasEnvFile = is_file($envFilePath) && trim((string) file_get_contents($envFilePath)) !== '';
+
+            // Hosts such as HostBuddy can inject production settings as process
+            // environment variables instead of placing a .env file in the release.
+            // Treat a complete app key + database connection config as installed;
+            // this avoids sending an existing database back through the installer.
+            $connection = (string) config('database.default');
+            $hasRuntimeConfig = filled(config('app.key'))
+                && filled(config("database.connections.{$connection}.host"))
+                && filled(config("database.connections.{$connection}.database"))
+                && filled(config("database.connections.{$connection}.username"))
+                && filled(config("database.connections.{$connection}.password"));
+
+            if (!$hasEnvFile && !$hasRuntimeConfig) {
                 header('Location: install');
                 exit;
             }
-            $envContents = file_get_contents($envFilePath);
-            if (empty($envContents)) {
-                header('Location: install');
-                exit;
-            } else {
-                cache()->put('SystemInstalled', true);
-            }
+
+            cache()->put('SystemInstalled', true);
         }
 
         $activeTemplate = activeTemplate();

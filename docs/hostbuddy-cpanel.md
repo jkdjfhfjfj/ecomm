@@ -18,19 +18,21 @@ The normal build script installs the production dependencies pinned by `core/com
 
 ## Code-only reinstall (keep the existing database)
 
-Use this command when you need to rebuild the application code without changing any database tables or records. Configure these HostBuddy build environment values first: `DB_CONNECTION=mysql`, `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`, and `CPANEL_PERSISTENT_STORAGE_CONFIRMED=1`. The last value is an explicit confirmation that HostBuddy keeps `core/storage/app/public` across builds; do not set it unless you have verified that behavior.
+Use this command when you need to rebuild the application code without changing any database tables or records:
 
 ```sh
 sh scripts/cpanel-reinstall.sh
 ```
 
-The code-only command checks the Laravel source, Composer lockfile, MySQL environment settings, and the persistent-storage confirmation before building. It installs the locked production dependencies without running Composer scripts, copies tracked storefront assets, and clears only generated config, route, and compiled-view files. It skips Laravel boot commands, migrations, seeders, imports, resets, and application-cache clearing; it does not read or write database records.
+The code-only command checks that the Laravel source and Composer lockfile are present. It does not need database credentials at build time and does not connect to MySQL. It installs the locked production dependencies without running Composer scripts, copies tracked storefront assets, and clears only generated config, route, and compiled-view files. It skips Laravel boot commands, migrations, seeders, imports, resets, and application-cache clearing; it does not read or write database records.
 
-Keep the existing database settings in HostBuddy's private environment configuration. The command does not create, overwrite, or delete `.env` or files under `core/storage/app/public`. It does not change license/activation source files or behavior. Composer dependencies are regenerated from the committed lockfile. `core/vendor` is generated and ignored by Git, so manual edits made only inside that directory are not included in a Git reinstall.
+Keep the existing database settings in HostBuddy's private runtime environment (or in `core/.env`); the running application still needs them to connect to the database. The build command does not create, overwrite, or delete `.env` or files under `core/storage/app/public`. It does not change license/activation source files or behavior. Composer dependencies are regenerated from the committed lockfile. `core/vendor` is generated and ignored by Git, so manual edits made only inside that directory are not included in a Git reinstall.
 
-HostBuddy must retain the deployment's existing `core/storage/app/public` files across builds. If HostBuddy builds into a fresh release directory, configure persistent storage or restore the existing upload directory before using the command.
+This project redirects to `/install` if `core/.env` is missing and its `SystemInstalled` cache flag is absent. Restore the non-empty production `core/.env` from a secure backup before starting the app; it is gitignored and is not recreated by this build. Do not run the installer against an existing database.
 
-For a no-change test of the preflight, set `CPANEL_REINSTALL_DRY_RUN=1`; the script validates its required settings and exits before installing dependencies or clearing caches. After a real build, verify the app connects to the same database and existing uploads remain available. Do not use `migrate:fresh`, `db:wipe`, or database seed commands for a code-only reinstall.
+The build script itself does not delete `core/storage/app/public`, but HostBuddy may replace the deployment directory. Back up that directory or configure persistent storage before deploying if local uploads must be retained. Product image URLs stored in the existing database are unaffected by this code-only build.
+
+For a no-change test of the preflight, set `CPANEL_REINSTALL_DRY_RUN=1`; the script checks the source files and exits before installing dependencies or clearing caches. After a real build, verify the app connects to the same database and existing uploads remain available. Do not use `migrate:fresh`, `db:wipe`, or database seed commands for a code-only reinstall.
 
 ## Database copy
 
