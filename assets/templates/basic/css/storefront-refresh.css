@@ -168,6 +168,30 @@ button, input, select { font-family: var(--store-body); }
     .filter-select-right { justify-content:flex-end; flex-wrap:wrap; }
 }
 @media (max-width: 767px) {
+    .header-middle .container { padding: 8px 12px !important; }
+    .header-wrapper { min-height: 54px; gap: 10px; }
+    .header-middle .header-logo img,
+    .header-middle .logo img,
+    .header-middle img.logo { width: auto; max-width: 220px; max-height: 42px; object-fit: contain; }
+    .mobile-menu-icons {
+        position: fixed !important;
+        z-index: 1050 !important;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        display: flex !important;
+        justify-content: space-around;
+        padding: 8px 0 calc(8px + env(safe-area-inset-bottom));
+        border-top: 1px solid rgba(255,255,255,.16) !important;
+        background: #20201e !important;
+        color: #fff !important;
+    }
+    .mobile-menu-icons .ecommerce,
+    .mobile-menu-icons .ecommerce__text,
+    .mobile-menu-icons .ecommerce__icon i { color: #fff !important; }
+    .mobile-menu-icons > li + li { border-left-color: rgba(255,255,255,.2) !important; }
+    body { padding-bottom: calc(78px + env(safe-area-inset-bottom)); }
+
     .hero-section { margin-top:10px; }
     .catalog-intro { align-items:flex-start; padding:13px 0 19px; margin-bottom:16px; }
     .catalog-intro h1 { font-size:2.55rem; }

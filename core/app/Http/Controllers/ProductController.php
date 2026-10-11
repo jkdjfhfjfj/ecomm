@@ -34,6 +34,8 @@ class ProductController extends Controller {
 
     public function productByCategory($slug) {
         $category = Category::where('slug', $slug)->firstOrFail();
+        $isAllCategories = strtolower((string) $category->slug) === 'all-categories'
+            || strcasecmp(trim((string) $category->name), 'All Categories') === 0;
 
         $parents = $category->allParents();
 
@@ -47,22 +49,26 @@ class ProductController extends Controller {
 
         $this->pageTitle   = $category->name;
 
-        request()->merge(['category_id' => $category->id]);
-
-        $categoryIds = collect([$category->id]);
-        $parentsToScan = collect([$category->id]);
-        while ($parentsToScan->isNotEmpty()) {
-            $children = Category::whereIn('parent_id', $parentsToScan)->pluck('id');
-            $categoryIds = $categoryIds->merge($children);
-            $parentsToScan = $children;
+        if ($isAllCategories) {
+            // This is the catalog-wide landing page, not a product-bearing leaf.
+            // Applying its empty category pivot used to produce a false "0 products" state.
+            $scope = null;
+        } else {
+            request()->merge(['category_id' => $category->id]);
+            $categoryIds = collect([$category->id]);
+            $parentsToScan = collect([$category->id]);
+            while ($parentsToScan->isNotEmpty()) {
+                $children = Category::whereIn('parent_id', $parentsToScan)->pluck('id');
+                $categoryIds = $categoryIds->merge($children);
+                $parentsToScan = $children;
+            }
+            $categoryIds = $categoryIds->unique()->values();
+            $scope = function ($query) use ($categoryIds) {
+                $query->whereHas('categories', function ($q) use ($categoryIds) {
+                    $q->whereIn('categories.id', $categoryIds);
+                });
+            };
         }
-        $categoryIds = $categoryIds->unique()->values();
-
-        $scope = function ($query) use ($categoryIds) {
-            $query->whereHas('categories', function ($q) use ($categoryIds) {
-                $q->whereIn('categories.id', $categoryIds);
-            });
-        };
 
         $this->seoContents = getSeoContents($category);
 

@@ -68,6 +68,9 @@
                                     @if ($product->specification)
                                         <li><a href="#specification" data-bs-toggle="tab">@lang('Specification')</a></li>
                                     @endif
+                                    @if ($product->attributeValues->isNotEmpty())
+                                        <li><a href="#attributes" data-bs-toggle="tab">@lang('Attributes')</a></li>
+                                    @endif
 
                                     @if ($description)
                                         <li><a href="#description" data-bs-toggle="tab">@lang('Description')</a></li>
@@ -85,35 +88,57 @@
                                 </ul>
 
                                 <div class="tab-content">
-                                    @if ($product->specification && $product->productType)
+                                    @if ($product->specification)
                                         <div class="tab-pane fade" id="specification">
                                             <div class="specification-wrapper">
                                                 <div class="specification-table d-flex flex-column">
-                                                    @foreach ($product->productType->specifications as $specificationGroup)
-                                                        @if (collect($product->specification)->whereIn('key', $specificationGroup['attributes'])->whereNotNull('value')->count())
-                                                            <div>
-                                                                <h6 class="mb-2">
-                                                                    {{ __($specificationGroup['group_name']) }}</h6>
-                                                                <ul>
-                                                                    @foreach ($specificationGroup['attributes'] ?? [] as $attribute)
-                                                                        @php
-                                                                            $specification = collect(
-                                                                                $product->specification,
-                                                                            )->firstWhere('key', $attribute);
-                                                                        @endphp
+                                                    @if ($product->productType)
+                                                        @foreach ($product->productType->specifications as $specificationGroup)
+                                                            @if (collect($product->specification)->whereIn('key', $specificationGroup['attributes'])->whereNotNull('value')->count())
+                                                                <div>
+                                                                    <h6 class="mb-2">{{ __($specificationGroup['group_name']) }}</h6>
+                                                                    <ul>
+                                                                        @foreach ($specificationGroup['attributes'] ?? [] as $attribute)
+                                                                            @php($specification = collect($product->specification)->firstWhere('key', $attribute))
+                                                                            @if (data_get($specification, 'value'))
+                                                                                <li><span>{{ __($attribute) }}</span><span>{{ data_get($specification, 'value') }}</span></li>
+                                                                            @endif
+                                                                        @endforeach
+                                                                    </ul>
+                                                                </div>
+                                                            @endif
+                                                        @endforeach
+                                                    @else
+                                                        <ul>
+                                                            @foreach (collect($product->specification) as $fieldKey => $specification)
+                                                                @php($key = data_get($specification, 'key', $fieldKey))
+                                                                @php($value = data_get($specification, 'value', $specification))
+                                                                @if (is_scalar($key) && is_scalar($value) && trim((string) $value) !== '')
+                                                                    <li><span>{{ __((string) $key) }}</span><span>{{ (string) $value }}</span></li>
+                                                                @endif
+                                                            @endforeach
+                                                        </ul>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endif
 
-                                                                        @if (@$specification->value)
-                                                                            <li>
-                                                                                <span>{{ __($attribute) }}</span>
-                                                                                <span>{{ @$specification->value }}</span>
-                                                                            </li>
-                                                                        @endif
-                                                                    @endforeach
-                                                                </ul>
-                                                            </div>
+                                    @if ($product->attributeValues->isNotEmpty())
+                                        <div class="tab-pane fade" id="attributes">
+                                            <div class="specification-wrapper">
+                                                <ul>
+                                                    @foreach ($product->attributeValues as $attributeValue)
+                                                        @php($attribute = $product->attributes->firstWhere('id', $attributeValue->attribute_id))
+                                                        @php($value = $attributeValue->value ?: $attributeValue->name)
+                                                        @if ($value)
+                                                            <li>
+                                                                <span>{{ $attribute?->name ?? __('Option') }}</span>
+                                                                <span>{{ $value }}</span>
+                                                            </li>
                                                         @endif
                                                     @endforeach
-                                                </div>
+                                                </ul>
                                             </div>
                                         </div>
                                     @endif

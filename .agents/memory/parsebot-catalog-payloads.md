@@ -30,3 +30,9 @@ Never build product descriptions from specification or merchandising facts. Stor
 **Why:** The earlier importer repeated manufacturer, department, and subtype facts as product descriptions and extra descriptions, so the catalog showed specifications as prose.
 
 **How to apply:** When correcting imports, compare existing fields with saved source snapshots, remove only values proven to have been generated from specification facts, and replay the local snapshots without spending API requests.
+
+Treat the literal `ComplexTextValue` returned in saved description arrays as a serialization placeholder, not product copy.
+
+**Why:** The current stored detail snapshots contained this marker instead of readable description text; importing it would create false descriptions.
+
+**How to apply:** Filter the marker from detail payloads and leave the product description empty unless a readable source string is present.

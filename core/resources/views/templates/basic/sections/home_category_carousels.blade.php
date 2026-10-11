@@ -11,7 +11,10 @@
             <div class="home-category-feature-grid">
                 @foreach ($homeCategoryRows->take(4) as $row)
                     <a class="home-category-feature" href="{{ route('product.by.category', $row['category']->slug) }}">
-                        <img src="{{ $row['category']->categoryImage() }}" alt="{{ __($row['category']->name) }}" loading="lazy">
+                        <span class="home-category-feature-art" aria-hidden="true"></span>
+                        @if (filter_var($row['category']->external_image_url, FILTER_VALIDATE_URL) || $row['category']->image)
+                            <img src="{{ $row['category']->categoryImage() }}" alt="{{ __($row['category']->name) }}" loading="lazy" onerror="this.remove()">
+                        @endif
                         <span class="home-category-feature-label">
                             <span>{{ __($row['category']->name) }}</span>
                             <span aria-hidden="true">↗</span>
@@ -63,10 +66,11 @@
         .home-category-intro p { max-width:280px; margin:0 0 .4rem; color:#6c655d; font-size:.95rem; }
         .home-category-feature-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:1rem; margin-bottom:2rem; }
         .home-category-feature { position:relative; min-height:235px; overflow:hidden; background:#ded7cc; color:#fff; text-decoration:none; }
+        .home-category-feature-art { position:absolute; z-index:0; inset:0; background:radial-gradient(ellipse at 76% 28%,rgba(255,255,255,.4),transparent 28%),linear-gradient(135deg,#c64d31,#e38b51 48%,#272f2d); }
         .home-category-feature:after { position:absolute; inset:35% 0 0; content:""; background:linear-gradient(transparent,rgba(20,19,17,.66)); }
-        .home-category-feature img { width:100%; height:100%; min-height:235px; object-fit:cover; transition:transform .45s ease; }
+        .home-category-feature img { position:absolute; z-index:1; inset:0; width:100%; height:100%; min-height:235px; object-fit:cover; transition:transform .45s ease; }
         .home-category-feature:hover img { transform:scale(1.04); }
-        .home-category-feature-label { position:absolute; z-index:1; right:1rem; bottom:1rem; left:1rem; display:flex; align-items:center; justify-content:space-between; gap:.5rem; font-family:var(--store-display); font-size:1.35rem; }
+        .home-category-feature-label { position:absolute; z-index:3; right:1rem; bottom:1rem; left:1rem; display:flex; align-items:center; justify-content:space-between; gap:.5rem; font-family:var(--store-display); font-size:1.35rem; }
         .home-category-links { display:flex; gap:.65rem; overflow:auto; padding:.25rem 0 1.5rem; scrollbar-width:thin; }
         .home-category-links a { flex:0 0 auto; padding:.65rem 1rem; border:1px solid #e2e3df; border-radius:999px; background:#fff; color:#252824; font-size:.88rem; text-decoration:none; }
         .home-category-links a:hover { border-color:#a67c42; color:#805a27; }

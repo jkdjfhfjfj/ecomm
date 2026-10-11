@@ -117,7 +117,6 @@
                 return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
             };
             const todayStorageKey = `daily-offer-hidden:${offerId}`;
-            const sessionStorageKey = `daily-offer-dismissed:${offerId}`;
             const checkbox = modal.querySelector('#dailyOfferSkipToday');
             const reopenButton = document.getElementById('dailyOfferReopen');
             const target = Number(modal.dataset.countdownTarget);
@@ -157,7 +156,6 @@
             const handleHidden = () => {
                 window.clearInterval(countdownTimer);
                 window.clearInterval(slideshowTimer);
-                writeStorage(sessionStorage, sessionStorageKey, '1');
                 if (checkbox.checked) writeStorage(localStorage, todayStorageKey, dateKey());
                 shownThisTime = false;
             };
@@ -177,7 +175,7 @@
                 else removeStorage(localStorage, todayStorageKey);
             });
             const showModal = (manual = false) => {
-                if (!manual && (readStorage(localStorage, todayStorageKey) === dateKey() || readStorage(sessionStorage, sessionStorageKey))) return;
+                if (!manual && readStorage(localStorage, todayStorageKey) === dateKey()) return;
                 if (window.bootstrap?.Modal) {
                     window.bootstrap.Modal.getOrCreateInstance(modal).show();
                 } else if (window.jQuery && typeof window.jQuery(modal).modal === 'function') {

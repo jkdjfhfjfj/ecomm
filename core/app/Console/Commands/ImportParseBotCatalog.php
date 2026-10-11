@@ -501,9 +501,14 @@ class ImportParseBotCatalog extends Command
             ?? $data['description']
             ?? null;
         if (is_array($description)) {
-            $description = null;
+            $description = collect($description)
+                ->filter(fn ($part) => is_string($part) && trim($part) !== '' && trim($part) !== 'ComplexTextValue')
+                ->map(fn ($part) => trim($part))
+                ->implode("\n\n");
         }
-        $description = is_string($description) && trim($description) !== '' ? trim($description) : null;
+        $description = is_string($description) && trim($description) !== '' && trim($description) !== 'ComplexTextValue'
+            ? trim($description)
+            : null;
 
         $regularPrice = $data['price']
             ?? $data['regular_price']
@@ -535,6 +540,10 @@ class ImportParseBotCatalog extends Command
             || $this->matchesImportedText($product->description, $oldExtraDescriptionText);
 
         $storedDescription = (string) ($product->description ?? '');
+        if (trim($storedDescription) === 'ComplexTextValue') {
+            $storedDescription = '';
+            $product->description = null;
+        }
         if ($description === null && !$descriptionWasSpecificationFallback) {
             $description = $storedDescription !== '' ? $storedDescription : null;
         }
@@ -948,6 +957,8 @@ class ImportParseBotCatalog extends Command
         $products = Product::query()
             ->where('external_source', self::SOURCE)
             ->whereNotNull('external_details')
+            ->whereRaw("JSON_VALID(external_details)")
+            ->whereRaw("JSON_TYPE(JSON_EXTRACT(external_details, '$.details')) = 'OBJECT'")
             ->get();
         $updated = 0;
 
@@ -975,7 +986,6 @@ class ImportParseBotCatalog extends Command
             $updated++;
         }
 
-        $this->syncCatalogSeoMetadata();
         $this->info("Synced stored details for {$updated} products without making API requests.");
         return self::SUCCESS;
     }
