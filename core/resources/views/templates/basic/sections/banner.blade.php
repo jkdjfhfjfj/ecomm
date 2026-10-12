@@ -5,7 +5,7 @@
 <div class="container banner-container @if (gs('homepage_layout') == 'full_width_banner') single-banner @endif">
     <div class="store-discovery" aria-label="@lang('Store discovery')">
         <div class="store-discovery-copy">
-            <span class="store-discovery-kicker">@lang('Visermart Kenya')</span>
+            <span class="store-discovery-kicker">@lang('Visermart')</span>
             <strong>@lang('Find something worth keeping.')</strong>
         </div>
         <form action="{{ route('product.all') }}" method="GET" class="store-discovery-search" role="search">

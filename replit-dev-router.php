@@ -171,6 +171,17 @@ if (in_array($firstSegment, $blockedDirectories, true)) {
 }
 
 $extension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+if ($path === '/assets/templates/basic/css/color.php') {
+    $color = (string) ($_GET['color'] ?? '');
+    if (!preg_match('/^[a-f0-9]{6}$/i', $color)) {
+        $color = '336699';
+    }
+    $_GET['color'] = $color;
+    header('Content-Type: text/css; charset=utf-8');
+    require $root . '/assets/templates/basic/css/color.php';
+    exit;
+}
+
 if (in_array($extension, ['bak', 'env', 'ini', 'log', 'php', 'sh', 'sql'], true)) {
     http_response_code(404);
     exit;

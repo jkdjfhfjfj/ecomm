@@ -27,10 +27,11 @@ fi
 
 cd "$ROOT_DIR"
 
-# Use the imported cPanel catalog in the Replit preview when a complete
-# remote MySQL connection is available. These values are provided as Replit
-# Secrets, never written into core/.env or printed to the workflow log.
-if [[ -n "${CPANEL_MYSQL_HOST:-}" &&
+# Replit previews use the preserved local catalog snapshot by default. Opt in
+# to the remote cPanel database with REPLIT_USE_REMOTE_DATABASE=1 after its
+# host allows connections from this workspace. Credentials stay in Secrets.
+if [[ "${REPLIT_USE_REMOTE_DATABASE:-0}" == "1" &&
+      -n "${CPANEL_MYSQL_HOST:-}" &&
       -n "${CPANEL_MYSQL_PORT:-}" &&
       -n "${CPANEL_MYSQL_DATABASE:-}" &&
       -n "${CPANEL_MYSQL_USERNAME:-}" &&
@@ -171,10 +172,6 @@ if [[ -n "${ECOMM_INSTALL_DB_PASSWORD:-}" && ! -f "$MYSQL_HOME/ecomm-installer-p
   MYSQL_SOCKET="$MYSQL_SOCKET" php "$ROOT_DIR/scripts/configure-ecomm-install-db-password.php"
 fi
 
-if [[ -n "${ECOMM_INSTALL_DB_PASSWORD:-}" ]]; then
-  export DB_PASSWORD="$ECOMM_INSTALL_DB_PASSWORD"
-fi
-
 if [[ ! -f "$APP_DIR/.env" ]]; then
   cat >"$APP_DIR/.env" <<'ENV'
 APP_NAME=Ecomm
@@ -202,6 +199,12 @@ fi
 unset APP_URL
 export APP_ENV=local
 export APP_DEBUG=false
+export DB_CONNECTION=mysql
+export DB_HOST=127.0.0.1
+export DB_PORT="$MYSQL_PORT"
+export DB_DATABASE="$APP_DB"
+export DB_USERNAME="$APP_DB_USER"
+export DB_PASSWORD=
 
 # A stale config cache can keep the installer password unset and the old
 # environment name after Replit Secrets or the local .env has changed.

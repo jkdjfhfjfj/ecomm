@@ -14,3 +14,9 @@ Avoid restarting the two storefront workflows while a Parse.bot catalog import i
 **Why:** Restarting the storefront during a long listing import caused the importer to fail while attaching category links.
 
 **How to apply:** Let catalog imports finish before restarting either workflow that runs `start-ecomm.sh`, then confirm MySQL is stable before resuming imports.
+
+The Replit preview uses the preserved local MySQL snapshot by default. The cPanel database connection was refused from this workspace; opt into the remote preview only with `REPLIT_USE_REMOTE_DATABASE=1` after the host permits the connection. Local schema repair migrations must stay local unless production migration is explicitly requested.
+
+**Why:** Keeping the preview on the local snapshot restores a usable storefront without changing the production database while its network access is blocked.
+
+**How to apply:** Use the local preview for UI verification; separately resolve cPanel remote access and apply schema changes under the explicit production migration process.
