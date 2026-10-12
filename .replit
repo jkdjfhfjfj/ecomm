@@ -43,3 +43,8 @@ timeoutMs = 20000
 [nix]
 channel = "stable-25_05"
 packages = ["mysql80"]
+
+[userenv]
+
+[userenv.development]
+REPLIT_USE_REMOTE_DATABASE = "1"
