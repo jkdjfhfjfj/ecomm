@@ -147,6 +147,8 @@
             const handleShown = () => {
                 if (shownThisTime) return;
                 shownThisTime = true;
+                document.querySelectorAll('.modal-backdrop:not(.daily-offer-backdrop)')
+                    .forEach((backdrop) => backdrop.classList.add('daily-offer-backdrop'));
                 renderCountdown();
                 countdownTimer = window.setInterval(renderCountdown, 1000);
                 if (slides.length > 1 && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {

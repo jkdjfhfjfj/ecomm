@@ -55,17 +55,14 @@
     </div>
     <div class="mobile-menu-body">
         <nav class="mobile-menu-quick-links" aria-label="@lang('Main pages')">
-            <a href="{{ route('home') }}"><i class="las la-home" aria-hidden="true"></i><span>@lang('Home')</span></a>
-            <a href="{{ route('about') }}"><i class="las la-info-circle" aria-hidden="true"></i><span>@lang('About')</span></a>
-            <a href="{{ route('contact') }}"><i class="las la-envelope" aria-hidden="true"></i><span>@lang('Contact us')</span></a>
+                <a href="{{ route('home') }}">@lang('Home')</a>
+                <a href="{{ route('about') }}">@lang('About')</a>
+                <a href="{{ route('contact') }}">@lang('Contact us')</a>
         </nav>
         <nav class="mobile-category-tree" aria-label="@lang('Shop by category')">
             <div class="mobile-category-tree__heading">
-                <div>
-                    <span>@lang('Browse')</span>
                     <strong>@lang('Shop by category')</strong>
-                </div>
-                <a href="{{ route('brands') }}"><i class="las la-tags" aria-hidden="true"></i> @lang('Shop by brand')</a>
+                    <a href="{{ route('brands') }}">@lang('Shop by brand') <span aria-hidden="true">→</span></a>
             </div>
             <ul class="mobile-category-tree__roots">
                 @foreach ($parentCategories as $category)
@@ -79,18 +76,16 @@
 @once
     @push('style')
         <style>
-            .mobile-menu-body{overflow-y:auto;max-height:calc(100dvh - 92px);padding:1rem 1rem calc(2rem + env(safe-area-inset-bottom))}
-            .mobile-category-tree{border:1px solid #e8edf3;border-radius:16px;background:#fff;padding:.9rem}
-            .mobile-category-tree__heading{display:flex;align-items:center;justify-content:space-between;gap:.75rem;padding:.2rem .2rem .85rem;border-bottom:1px solid #edf0f3}
-            .mobile-category-tree__heading>div{display:grid;gap:.15rem}
-            .mobile-category-tree__heading span{font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:#7b8794;font-weight:700}
-            .mobile-category-tree__heading strong{font-size:1rem;color:#182230}
-            .mobile-category-tree__heading>a{padding:.55rem .7rem;border-radius:10px;background:#f3f6fa;color:#25364a;font-size:.78rem;font-weight:650;white-space:nowrap}
+            .mobile-menu-body{overflow-y:auto;max-height:calc(100dvh - 74px);padding:1rem 1.25rem calc(2rem + env(safe-area-inset-bottom))}
+            .mobile-category-tree{border:0;border-radius:0;background:transparent;padding:0}
+            .mobile-category-tree__heading{display:flex;align-items:baseline;justify-content:space-between;gap:.75rem;padding:.35rem 0 .85rem;border-bottom:1px solid #e9e5dc}
+            .mobile-category-tree__heading strong{font-size:1.05rem;color:#252521}
+            .mobile-category-tree__heading>a{padding:0;background:transparent;color:#9b493d;font-size:.8rem;font-weight:650;white-space:nowrap;text-decoration:none}
             .mobile-category-tree__roots,.mobile-category-tree__children{list-style:none;margin:0;padding:0}
             .mobile-category-tree__item{margin:0}
-            .mobile-category-tree__row{display:flex;align-items:center;gap:.4rem;min-height:48px;border-bottom:1px solid #f0f2f5}
+            .mobile-category-tree__row{display:flex;align-items:center;gap:.4rem;min-height:48px;border-bottom:1px solid #eeeae3}
             .mobile-category-tree__row>a{flex:1;display:block;padding:.65rem .4rem;color:#26364a;font-size:.93rem;font-weight:600}
-            .mobile-category-tree__toggle{width:34px;height:34px;border:0;border-radius:9px;background:#f3f6fa;color:#334155}
+            .mobile-category-tree__toggle{width:32px;height:32px;border:0;border-radius:50%;background:transparent;color:#746f67}
             .mobile-category-tree__children{margin-left:.7rem;padding-left:.65rem;border-left:1px solid #e6ebf1}
             .mobile-category-tree__children .mobile-category-tree__row>a{font-size:.88rem;font-weight:500}
         </style>
