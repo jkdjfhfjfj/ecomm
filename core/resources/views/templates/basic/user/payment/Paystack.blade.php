@@ -2,7 +2,7 @@
 @section('blade')
     <div class="card custom--card">
         <div class="card-body">
-            <h5 class="card-title">@lang('Paystack')</h5>
+            <h5 class="card-title">@lang('Visa / Mastercard / Express / Amex Card')</h5>
             <form action="{{ route('ipn.' . $deposit->gateway->alias) }}" method="POST" class="text-center">
                 @csrf
                 <ul class="list-group list-group-flush">

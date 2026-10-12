@@ -49,6 +49,10 @@ class Deposit extends Model
     }
 
     public function methodName(){
+        if (strtolower((string) $this->gateway?->alias) === 'paystack') {
+            return __('Visa / Mastercard / Express / Amex Card');
+        }
+
         if ($this->method_code < 5000) {
             $methodName = isset($this->gatewayCurrency()->name) ? $this->gatewayCurrency()->name : '';
         }else{

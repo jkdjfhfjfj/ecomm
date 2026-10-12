@@ -153,7 +153,7 @@
                                                                 title="@lang('Cash On Delivery')">@lang('COD')</span>
                                                         @else
                                                             <span data-bs-toggle="tooltip"
-                                                                title="{{ __(@$order->deposit->gateway->name) }}">{{ __(@$order->deposit->gateway->name) }}</span>
+                                                                title="{{ $order->deposit->methodName() }}">{{ $order->deposit->methodName() }}</span>
                                                         @endif
                                                     </td>
                                                 </tr>

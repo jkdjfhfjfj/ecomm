@@ -50,7 +50,7 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label>@lang('Email')</label>
-                        <input type="text" value="{{ @$shippingInformation->email }}" class="form-control form--control" name="email" required>
+                        <input type="email" value="{{ @$shippingInformation->email }}" class="form-control form--control" name="email" autocomplete="email" inputmode="email" required>
                     </div>
                 </div>
             </div>

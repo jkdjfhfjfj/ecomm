@@ -46,6 +46,20 @@ class PaymentController extends Controller {
         $this->validation($request);
 
         $gatewayCurrency = $this->getGatewayCurrency($request);
+        if (strtolower((string) $gatewayCurrency->method?->alias) === 'paystack') {
+            $paymentEmail = auth()->user()?->email
+                ?? data_get(session('shipping_info'), 'email')
+                ?? data_get(session('guest_user_data'), 'email');
+
+            if (!filter_var(trim((string) $paymentEmail), FILTER_VALIDATE_EMAIL)) {
+                $notify[] = ['error', 'A valid email address is required for card payment. Update your email before continuing.'];
+                $emailEditUrl = auth()->check()
+                    ? route('user.profile.setting')
+                    : route('checkout.shipping.info');
+
+                return redirect()->to($emailEditUrl)->withNotify($notify);
+            }
+        }
 
         $hasPhysicalProduct = $this->cartManager->checkPhysicalProductExistence();
 

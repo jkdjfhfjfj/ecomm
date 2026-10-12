@@ -118,7 +118,7 @@
                                     @if ($order->deposit->method_code == 0)
                                         @lang('Cash On Delivery')
                                     @else
-                                        {{ __($order->deposit->gateway->name) }}
+                                        {{ $order->deposit->methodName() }}
                                     @endif
                                 </span>
                             </li>

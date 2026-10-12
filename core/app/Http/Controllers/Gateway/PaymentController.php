@@ -31,6 +31,9 @@ class PaymentController extends Controller {
 
         if (isset($data->error)) {
             $notify[] = ['error', $data->message];
+            if (!empty($data->redirect_url)) {
+                return redirect()->to($data->redirect_url)->withNotify($notify);
+            }
             return back()->withNotify($notify);
         }
         if (isset($data->redirect)) {

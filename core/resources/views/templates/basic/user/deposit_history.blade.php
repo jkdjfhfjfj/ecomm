@@ -15,7 +15,7 @@
             @forelse ($deposits as $deposit)
                 <tr>
                     <td>#{{ $deposit->trx }}</td>
-                    <td>{{ $deposit->gateway ? __($deposit->gateway->name) : '---' }}</td>
+                    <td>{{ $deposit->gateway ? $deposit->methodName() : '---' }}</td>
                     <td>
                         {{ getAmount($deposit->amount) }} {{ gs('cur_text') }}
                     </td>

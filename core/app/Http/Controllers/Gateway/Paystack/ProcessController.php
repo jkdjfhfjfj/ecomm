@@ -16,9 +16,22 @@ class ProcessController extends Controller {
         $paystackAcc = json_decode($deposit->gatewayCurrency()->gateway_parameter);
 
         $alias = $deposit->gateway->alias;
+        $shippingEmail = trim((string) data_get($deposit->order?->shipping_address, 'email', ''));
+        $customerEmail = trim((string) ($deposit->customer?->email ?? ''));
+        $email = filter_var($shippingEmail, FILTER_VALIDATE_EMAIL) ? $shippingEmail : $customerEmail;
+
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            return json_encode([
+                'error' => true,
+                'message' => 'A valid email address is required for card payment. Update the email in your checkout or account details, then try again.',
+                'redirect_url' => auth()->check()
+                    ? route('user.profile.setting')
+                    : route('checkout.shipping.info'),
+            ]);
+        }
 
         $send['key'] = $paystackAcc->public_key;
-        $send['email'] = $deposit->customer->email;
+        $send['email'] = $email;
         $send['amount'] = $deposit->final_amount * 100;
         $send['currency'] = $deposit->method_currency;
         $send['ref'] = $deposit->trx;

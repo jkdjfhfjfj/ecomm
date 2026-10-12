@@ -39,7 +39,11 @@
                                             <img src="{{ getImage(getFilePath('gateway') . '/' . @$item->method->image, getFileSize('gateway')) }}" data-src="{{ getImage(getFilePath('gateway') . '/' . @$item->method->image, getFileSize('gateway')) }}" class="w-100 lazyload" alt="image">
                                         </span>
                                         <span class="payment-name">
-                                            {{ __($item->name) }}
+                                            @if (strtolower((string) $item->method?->alias) === 'paystack')
+                                                @lang('Visa / Mastercard / Express / Amex Card')
+                                            @else
+                                                {{ __($item->name) }}
+                                            @endif
                                         </span>
                                     </span>
                                 </label>
