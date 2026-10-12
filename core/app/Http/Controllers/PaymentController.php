@@ -47,11 +47,20 @@ class PaymentController extends Controller {
 
         $gatewayCurrency = $this->getGatewayCurrency($request);
         if (strtolower((string) $gatewayCurrency->method?->alias) === 'paystack') {
-            $paymentEmail = auth()->user()?->email
-                ?? data_get(session('shipping_info'), 'email')
-                ?? data_get(session('guest_user_data'), 'email');
+            $paymentEmail = null;
+            foreach ([
+                auth()->user()?->email,
+                data_get(session('shipping_info'), 'email'),
+                data_get(session('guest_user_data'), 'email'),
+            ] as $candidateEmail) {
+                $candidateEmail = trim((string) $candidateEmail);
+                if (filter_var($candidateEmail, FILTER_VALIDATE_EMAIL)) {
+                    $paymentEmail = $candidateEmail;
+                    break;
+                }
+            }
 
-            if (!filter_var(trim((string) $paymentEmail), FILTER_VALIDATE_EMAIL)) {
+            if (!$paymentEmail) {
                 $notify[] = ['error', 'A valid email address is required for card payment. Update your email before continuing.'];
                 $emailEditUrl = auth()->check()
                     ? route('user.profile.setting')
