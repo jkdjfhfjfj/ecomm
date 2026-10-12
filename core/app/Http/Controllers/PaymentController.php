@@ -49,32 +49,40 @@ class PaymentController extends Controller {
         $gatewayCurrency = $this->getGatewayCurrency($request);
         $paymentEmail = null;
         if (strtolower((string) $gatewayCurrency->method?->alias) === 'paystack') {
-            $emailCandidates = auth()->check()
-                ? [
-                    auth()->user()?->email,
-                    data_get(session('shipping_info'), 'email'),
-                ]
-                : [
+            if (auth()->check()) {
+                $accountEmail = trim((string) auth()->user()?->email);
+                $paymentEmail = filter_var($accountEmail, FILTER_VALIDATE_EMAIL)
+                    ? $accountEmail
+                    : trim((string) $request->input('payment_email'));
+                if (!filter_var($paymentEmail, FILTER_VALIDATE_EMAIL)) {
+                    $notify[] = ['error', 'Enter a valid email address for this card payment.'];
+                    return back()
+                        ->withErrors(['payment_email' => 'Enter a valid email address for this card payment.'])
+                        ->withInput()
+                        ->withNotify($notify);
+                }
+            } else {
+                $emailCandidates = [
                     $request->input('payment_email'),
                     data_get(session('shipping_info'), 'email'),
                     data_get(session('guest_user_data'), 'email'),
                 ];
 
-            foreach ($emailCandidates as $candidateEmail) {
-                $candidateEmail = trim((string) $candidateEmail);
-                if (filter_var($candidateEmail, FILTER_VALIDATE_EMAIL)) {
-                    $paymentEmail = $candidateEmail;
-                    break;
-                }
-            }
-
-            if (!$paymentEmail) {
-                $notify[] = ['error', 'A valid email address is required for card payment. Update your email before continuing.'];
-                if (!auth()->check()) {
-                    return back()->withInput()->withNotify($notify);
+                foreach ($emailCandidates as $candidateEmail) {
+                    $candidateEmail = trim((string) $candidateEmail);
+                    if (filter_var($candidateEmail, FILTER_VALIDATE_EMAIL)) {
+                        $paymentEmail = $candidateEmail;
+                        break;
+                    }
                 }
 
-                return redirect()->route('user.profile.setting')->withNotify($notify);
+                if (!$paymentEmail) {
+                    $notify[] = ['error', 'Enter a valid email address for this card payment.'];
+                    return back()
+                        ->withErrors(['payment_email' => 'Enter a valid email address for this card payment.'])
+                        ->withInput()
+                        ->withNotify($notify);
+                }
             }
 
             if (!auth()->check()) {
@@ -165,6 +173,10 @@ class PaymentController extends Controller {
 
         if (!$order) {
             $order = $this->saveOrder($subtotal, $coupon, $gatewayCurrency, $cartData, $hasPhysicalProduct);
+        }
+
+        if ($paymentEmail) {
+            session()->put('card_payment_email.' . $order->id, $paymentEmail);
         }
 
         if ($coupon) {

@@ -18,15 +18,16 @@ class ProcessController extends Controller {
         $alias = $deposit->gateway->alias;
         $shippingEmail = trim((string) data_get($deposit->order?->shipping_address, 'email', ''));
         $customerEmail = trim((string) ($deposit->customer?->email ?? ''));
-        $email = filter_var($shippingEmail, FILTER_VALIDATE_EMAIL) ? $shippingEmail : $customerEmail;
+        $selectedEmail = trim((string) session('card_payment_email.' . $deposit->order_id, ''));
+        $email = filter_var($selectedEmail, FILTER_VALIDATE_EMAIL)
+            ? $selectedEmail
+            : (filter_var($shippingEmail, FILTER_VALIDATE_EMAIL) ? $shippingEmail : $customerEmail);
 
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             return json_encode([
                 'error' => true,
                 'message' => 'A valid email address is required for card payment. Update the email in your checkout or account details, then try again.',
-                'redirect_url' => auth()->check()
-                    ? route('user.profile.setting')
-                    : route('checkout.payment.methods'),
+                'redirect_url' => route('checkout.payment.methods'),
             ]);
         }
 

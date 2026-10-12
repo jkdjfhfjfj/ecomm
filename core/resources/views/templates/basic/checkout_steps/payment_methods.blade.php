@@ -1,6 +1,11 @@
 @extends('Template::layouts.checkout')
 
 @section('blade')
+    @php
+        $accountPaymentEmail = trim((string) auth()->user()?->email);
+        $needsManualPaymentEmail = !auth()->check() || !filter_var($accountPaymentEmail, FILTER_VALIDATE_EMAIL);
+        $guestPaymentEmail = old('payment_email', data_get(session('shipping_info'), 'email') ?: data_get(session('guest_user_data'), 'email'));
+    @endphp
     <div class="address-wrapper border-0 p-0">
         <div class="row gy-4">
             <div class="col-lg-8">
@@ -31,7 +36,7 @@
                             @foreach ($gatewayCurrencies as $item)
                                 <label for="data-{{ $loop->index }}" class="payment-option-item">
                                     <div class="form--check">
-                                        <input value="{{ $item->method_code }}" id="data-{{ $loop->index }}" data-gateway="{{ $item }}" class="online_payment form-check-input mt-0" type="radio" name="gateway" form="paymentMethodForm" required>
+                                    <input value="{{ $item->method_code }}" id="data-{{ $loop->index }}" data-gateway="{{ $item }}" class="online_payment form-check-input mt-0" type="radio" name="gateway" form="paymentMethodForm" @checked(old('gateway') == $item->method_code) required>
                                     </div>
 
                                     <span class="payment-option-item-content">
@@ -49,7 +54,7 @@
                                 </label>
                             @endforeach
                         </div>
-                        @guest
+                        @if ($needsManualPaymentEmail)
                             <div class="paystack-guest-email d-none mt-4" id="paystackGuestEmailField">
                                 <label for="paymentEmail" class="form-label fw-semibold">@lang('Email for card payment')</label>
                                 <input
@@ -58,7 +63,7 @@
                                     id="paymentEmail"
                                     name="payment_email"
                                     form="paymentMethodForm"
-                                    value="{{ old('payment_email', data_get(session('shipping_info'), 'email') ?: data_get(session('guest_user_data'), 'email')) }}"
+                                    value="{{ $guestPaymentEmail }}"
                                     placeholder="@lang('you@example.com')"
                                     autocomplete="email"
                                     inputmode="email"
@@ -69,7 +74,7 @@
                                     <small class="text-danger d-block">{{ $message }}</small>
                                 @enderror
                             </div>
-                        @endguest
+                        @endif
                     </div>
                 </div>
 
@@ -162,7 +167,7 @@
 
                     <form action="{{ route('checkout.complete') }}" method="POST" id="paymentMethodForm">
                         @csrf
-                        <input type="hidden" name="currency">
+                        <input type="hidden" name="currency" value="{{ old('currency') }}">
                         <button type="submit" class="btn btn--base h-45">@lang('Complete Order') <i class="la la-angle-right"></i></button>
                     </form>
 
@@ -267,6 +272,9 @@
             var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
                 return new bootstrap.Tooltip(tooltipTriggerEl)
             });
+
+            const selectedGateway = $('[name=gateway]:checked').first();
+            if (selectedGateway.length) selectedGateway.trigger('change');
         })(jQuery);
     </script>
 @endpush
