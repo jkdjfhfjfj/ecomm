@@ -18,6 +18,7 @@ use App\Models\SupportTicket;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Validator;
 
 class SiteController extends Controller {
@@ -26,26 +27,37 @@ class SiteController extends Controller {
         $sections    = Page::where('tempname', activeTemplate())->where('slug', '/')->first();
         $seoContents = $sections->seo_content;
         $seoImage    = @$seoContents->image ? getImage(getFilePath('seo') . '/' . @$seoContents->image, getFileSize('seo')) : null;
-        $homepageFlashOffers = Offer::running()
-            ->where(fn ($query) => $query->where('campaign_type', 'flash')
-                ->orWhereRaw("LOWER(name) LIKE ?", ['%flash sale%']))
+        $hasCampaignType = Schema::hasColumn('offers', 'campaign_type');
+        $flashOfferQuery = Offer::running();
+        if ($hasCampaignType) {
+            $flashOfferQuery->where(fn ($query) => $query->where('campaign_type', 'flash')
+                ->orWhereRaw("LOWER(name) LIKE ?", ['%flash sale%']));
+        } else {
+            $flashOfferQuery->whereRaw("LOWER(name) LIKE ?", ['%flash sale%']);
+        }
+        $homepageFlashOffers = $flashOfferQuery
             ->with('products')
             ->latest('starts_from')
             ->limit(1)
             ->get();
-        $dailyOffer = Offer::running()
-            ->where('campaign_type', 'daily')
+        $dailyOfferQuery = Offer::running();
+        $dailyOfferQuery = $hasCampaignType
+            ? $dailyOfferQuery->where('campaign_type', 'daily')
+            : $dailyOfferQuery->whereRaw("LOWER(name) LIKE ?", ['%daily%']);
+        $dailyOffer = $dailyOfferQuery
             ->whereHas('products', fn ($products) => $products->published()->withDisplayableImage())
             ->with(['products' => fn ($products) => $products->published()->withDisplayableImage()->with(['displayImage', 'brand', 'productVariants'])])
             ->latest('id')
             ->first();
-        $homepageOfferBanners = Offer::running()
-            ->where('show_banner', 1)
-            ->where('campaign_type', '!=', 'daily')
+        $homepageOfferBannerQuery = Offer::running()->where('show_banner', 1);
+        if ($hasCampaignType) {
+            $homepageOfferBannerQuery->where('campaign_type', '!=', 'daily')
+                ->orderByRaw("campaign_type = 'flash' DESC");
+        }
+        $homepageOfferBanners = $homepageOfferBannerQuery
             ->whereRaw("LOWER(COALESCE(name, '')) NOT LIKE ?", ['%daily%'])
             ->whereRaw("LOWER(COALESCE(banner_title, '')) NOT LIKE ?", ['%daily%'])
             ->whereHas('products', fn ($products) => $products->published()->withDisplayableImage())
-            ->orderByRaw("campaign_type = 'flash' DESC")
             ->latest('starts_from')
             ->limit(2)
             ->get();

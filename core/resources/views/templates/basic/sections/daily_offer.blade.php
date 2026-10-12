@@ -220,20 +220,9 @@
                 modal.addEventListener('hidden.bs.modal', handleHidden);
             }
             const scheduleModal = () => {
-                const trigger = document.getElementById('daily-offer-trigger');
-                if (!trigger || !('IntersectionObserver' in window)) return;
-                const openOffer = () => window.setTimeout(showModal, 250);
-                const bounds = trigger.getBoundingClientRect();
-                if (bounds.top < window.innerHeight && bounds.bottom > 0) {
-                    openOffer();
-                    return;
-                }
-                const observer = new IntersectionObserver((entries) => {
-                    if (!entries.some((entry) => entry.isIntersecting)) return;
-                    observer.disconnect();
-                    openOffer();
-                }, { threshold: 0.12 });
-                observer.observe(trigger);
+                // The offer is rendered after the homepage product section, but
+                // it should still open for shoppers who never scroll that far.
+                window.setTimeout(() => showModal(), 1400);
             };
             if (document.readyState === 'loading') {
                 document.addEventListener('DOMContentLoaded', scheduleModal, { once: true });

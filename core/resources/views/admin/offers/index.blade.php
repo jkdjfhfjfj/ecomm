@@ -1,6 +1,76 @@
 @extends('admin.layouts.app')
 
 @section('panel')
+    <div class="row mb-3">
+        <div class="col-lg-12">
+            @if ($missingHomepageSchemaColumns->isNotEmpty())
+                <div class="alert alert-danger">
+                    <strong>@lang('Homepage offer database setup is incomplete.')</strong>
+                    @lang('Missing database columns: :columns. Run the pending Laravel migrations from the HostBuddy build to restore campaign checks and hosted-image filtering.', [
+                        'columns' => $missingHomepageSchemaColumns->join(', '),
+                    ])
+                </div>
+            @elseif ($dailyOfferDiagnostics->where('popup_ready', true)->isEmpty())
+                <div class="alert alert-warning">
+                    <strong>@lang('No daily offer is ready to appear on the homepage.')</strong>
+                    @lang('A daily offer must be enabled, within its start and end dates, and have at least one published product with a usable image.')
+                    <a href="{{ route('admin.offer.create') }}" class="alert-link">@lang('Create or edit a daily offer')</a>.
+                </div>
+            @else
+                <div class="alert alert-success">
+                    <strong>@lang('Homepage daily offer is ready.')</strong>
+                    @lang('The active daily campaign has :count published product(s) with images.', [
+                        'count' => $dailyOfferDiagnostics->firstWhere('popup_ready', true)->displayable_products_count,
+                    ])
+                    @lang('If you dismissed it today, clear “Do not show again today” in this browser or use the “Today’s offer” button to reopen it.')
+                </div>
+            @endif
+
+            @if ($missingHomepageSchemaColumns->isEmpty() && $dailyOfferDiagnostics->isNotEmpty())
+                <div class="card b-radius--10">
+                    <div class="card-header">
+                        <h6 class="mb-0">@lang('Daily offer homepage check')</h6>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table--light style--two table mb-0">
+                            <thead>
+                                <tr>
+                                    <th>@lang('Offer')</th>
+                                    <th>@lang('Enabled')</th>
+                                    <th>@lang('Schedule')</th>
+                                    <th>@lang('Published products with images')</th>
+                                    <th>@lang('Homepage popup')</th>
+                                    <th>@lang('Action')</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($dailyOfferDiagnostics as $dailyDiagnostic)
+                                    <tr>
+                                        <td>{{ $dailyDiagnostic->name }}</td>
+                                        <td>{{ $dailyDiagnostic->status ? __('Yes') : __('No') }}</td>
+                                        <td>{{ $dailyDiagnostic->is_running_now ? __('Running now') : __('Outside active dates') }}</td>
+                                        <td>{{ $dailyDiagnostic->displayable_products_count }}</td>
+                                        <td>
+                                            @if ($dailyDiagnostic->popup_ready)
+                                                <span class="badge badge--success">@lang('Ready')</span>
+                                            @else
+                                                <span class="badge badge--warning">@lang('Not ready')</span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            <a href="{{ route('admin.offer.edit', $dailyDiagnostic->id) }}" class="btn btn-outline--primary btn-sm">
+                                                <i class="la la-pencil"></i>@lang('Edit')
+                                            </a>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            @endif
+        </div>
+    </div>
     <div class="row">
         <div class="col-lg-12">
             <div class="card b-radius--10">

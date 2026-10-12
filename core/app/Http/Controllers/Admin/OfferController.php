@@ -9,13 +9,50 @@ use App\Models\Product;
 use App\Models\Category;
 use App\Rules\FileTypeValidate;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Validator;
 
 class OfferController extends Controller {
     public function index() {
         $pageTitle = "All Offers";
         $offers    = Offer::withCount('products as total_products')->searchable(['name'])->latest()->paginate(getPaginate());
-        return view('admin.offers.index', compact('pageTitle', 'offers'));
+        $missingHomepageSchemaColumns = collect([
+            'offers.campaign_type' => Schema::hasColumn('offers', 'campaign_type'),
+            'products.external_image_url' => Schema::hasColumn('products', 'external_image_url'),
+            'products.external_details' => Schema::hasColumn('products', 'external_details'),
+        ])->filter(fn ($exists) => !$exists)->keys()->values();
+        $dailyCampaignSchemaReady = !$missingHomepageSchemaColumns->contains('offers.campaign_type');
+        $dailyOfferDiagnostics = collect();
+
+        if ($dailyCampaignSchemaReady && $missingHomepageSchemaColumns->isEmpty()) {
+            $dailyOfferDiagnostics = Offer::query()
+                ->where('campaign_type', 'daily')
+                ->withCount([
+                    'products as displayable_products_count' => fn ($products) => $products
+                        ->published()
+                        ->withDisplayableImage(),
+                ])
+                ->latest('id')
+                ->limit(5)
+                ->get()
+                ->each(function ($offer) {
+                    $offer->is_running_now = (bool) $offer->status
+                        && $offer->starts_from
+                        && $offer->ends_at
+                        && $offer->starts_from <= now()
+                        && $offer->ends_at >= now();
+                    $offer->popup_ready = $offer->is_running_now
+                        && $offer->displayable_products_count > 0;
+                });
+        }
+
+        return view('admin.offers.index', compact(
+            'pageTitle',
+            'offers',
+            'dailyCampaignSchemaReady',
+            'missingHomepageSchemaColumns',
+            'dailyOfferDiagnostics'
+        ));
     }
 
     public function create() {

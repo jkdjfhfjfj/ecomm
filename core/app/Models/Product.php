@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Traits\FileExport;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Schema;
 
 class Product extends Model {
     use SoftDeletes, ProductPrice, FileExport;
@@ -63,22 +64,33 @@ class Product extends Model {
 
     public function scopeWithDisplayableImage($query)
     {
-        return $query->where(function ($images) {
+        static $externalImageColumnExists = null;
+        static $externalDetailsColumnExists = null;
+
+        $externalImageColumnExists ??= Schema::hasColumn('products', 'external_image_url');
+        $externalDetailsColumnExists ??= Schema::hasColumn('products', 'external_details');
+
+        return $query->where(function ($images) use ($externalImageColumnExists, $externalDetailsColumnExists) {
             $validMedia = function ($media) {
                 $media->whereNotNull('path')->where('path', '!=', '')
                     ->whereNotNull('file_name')->where('file_name', '!=', '');
             };
 
             $images->whereHas('displayImage', $validMedia)
-                ->orWhereHas('galleryImages', $validMedia)
-                ->orWhere(function ($url) {
+                ->orWhereHas('galleryImages', $validMedia);
+
+            if ($externalImageColumnExists) {
+                $images->orWhere(function ($url) {
                     $url->where('products.external_image_url', 'LIKE', 'http://%')
                         ->orWhere('products.external_image_url', 'LIKE', 'https://%');
-                })
-                ->orWhere(function ($snapshot) {
+                });
+            }
+            if ($externalDetailsColumnExists) {
+                $images->orWhere(function ($snapshot) {
                     $snapshot->whereNotNull('products.external_details')
                         ->where('products.external_details', 'LIKE', '%media_gallery%');
                 });
+            }
         });
     }
 
