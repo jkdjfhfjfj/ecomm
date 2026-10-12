@@ -9,6 +9,7 @@ use App\Lib\ProductManager;
 use App\Models\AdminNotification;
 use App\Models\AppliedCoupon;
 use App\Models\GatewayCurrency;
+use App\Models\Guest;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\ShippingAddress;
@@ -46,13 +47,20 @@ class PaymentController extends Controller {
         $this->validation($request);
 
         $gatewayCurrency = $this->getGatewayCurrency($request);
+        $paymentEmail = null;
         if (strtolower((string) $gatewayCurrency->method?->alias) === 'paystack') {
-            $paymentEmail = null;
-            foreach ([
-                auth()->user()?->email,
-                data_get(session('shipping_info'), 'email'),
-                data_get(session('guest_user_data'), 'email'),
-            ] as $candidateEmail) {
+            $emailCandidates = auth()->check()
+                ? [
+                    auth()->user()?->email,
+                    data_get(session('shipping_info'), 'email'),
+                ]
+                : [
+                    $request->input('payment_email'),
+                    data_get(session('shipping_info'), 'email'),
+                    data_get(session('guest_user_data'), 'email'),
+                ];
+
+            foreach ($emailCandidates as $candidateEmail) {
                 $candidateEmail = trim((string) $candidateEmail);
                 if (filter_var($candidateEmail, FILTER_VALIDATE_EMAIL)) {
                     $paymentEmail = $candidateEmail;
@@ -62,11 +70,30 @@ class PaymentController extends Controller {
 
             if (!$paymentEmail) {
                 $notify[] = ['error', 'A valid email address is required for card payment. Update your email before continuing.'];
-                $emailEditUrl = auth()->check()
-                    ? route('user.profile.setting')
-                    : route('checkout.shipping.info');
+                if (!auth()->check()) {
+                    return back()->withInput()->withNotify($notify);
+                }
 
-                return redirect()->to($emailEditUrl)->withNotify($notify);
+                return redirect()->route('user.profile.setting')->withNotify($notify);
+            }
+
+            if (!auth()->check()) {
+                $shippingInfo = session('shipping_info');
+                if (is_array($shippingInfo)) {
+                    $shippingInfo['email'] = $paymentEmail;
+                    session()->put('shipping_info', $shippingInfo);
+                }
+
+                $guestData = session('guest_user_data');
+                $guestId = data_get($guestData, 'id');
+                if ($guestId) {
+                    $guest = Guest::find($guestId);
+                    if ($guest) {
+                        $guest->email = $paymentEmail;
+                        $guest->save();
+                        session()->put('guest_user_data', $guest);
+                    }
+                }
             }
         }
 

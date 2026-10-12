@@ -26,7 +26,7 @@ class ProcessController extends Controller {
                 'message' => 'A valid email address is required for card payment. Update the email in your checkout or account details, then try again.',
                 'redirect_url' => auth()->check()
                     ? route('user.profile.setting')
-                    : route('checkout.shipping.info'),
+                    : route('checkout.payment.methods'),
             ]);
         }
 

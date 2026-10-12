@@ -33,7 +33,8 @@ class Deposit extends Model
             $order = $deposit->order;
 
             $user = new User();
-            $user->email = $order->guest?->email;
+            $user->email = $order->guest?->email
+                ?: data_get($order->shipping_address, 'email');
             $user->fisrtname = strstr($user->email, '@', true);
             $user->lastname = '';
             $user->country_name = $order->guest?->country_name;

@@ -49,6 +49,27 @@
                                 </label>
                             @endforeach
                         </div>
+                        @guest
+                            <div class="paystack-guest-email d-none mt-4" id="paystackGuestEmailField">
+                                <label for="paymentEmail" class="form-label fw-semibold">@lang('Email for card payment')</label>
+                                <input
+                                    type="email"
+                                    class="form-control"
+                                    id="paymentEmail"
+                                    name="payment_email"
+                                    form="paymentMethodForm"
+                                    value="{{ old('payment_email', data_get(session('shipping_info'), 'email') ?: data_get(session('guest_user_data'), 'email')) }}"
+                                    placeholder="@lang('you@example.com')"
+                                    autocomplete="email"
+                                    inputmode="email"
+                                    aria-describedby="paymentEmailHelp"
+                                >
+                                <small id="paymentEmailHelp" class="form-text text-muted">@lang('We use this address to start your card payment and send the receipt.')</small>
+                                @error('payment_email')
+                                    <small class="text-danger d-block">{{ $message }}</small>
+                                @enderror
+                            </div>
+                        @endguest
                     </div>
                 </div>
 
@@ -158,6 +179,13 @@
             $('[name=gateway]').on('change', function() {
                 let gateway = $(this).data('gateway');
                 $('[name=currency]').val(gateway == 'cod' ? "{{ gs('cur_text') }}" : gateway.currency);
+                const guestEmailField = document.getElementById('paystackGuestEmailField');
+                if (guestEmailField) {
+                    const isPaystack = String(gateway?.method?.alias || '').toLowerCase() === 'paystack';
+                    const emailInput = guestEmailField.querySelector('input[name="payment_email"]');
+                    guestEmailField.classList.toggle('d-none', !isPaystack);
+                    emailInput.required = isPaystack;
+                }
 
                 let processingFeeInfo = '';
                 if (gateway == 'cod') {
