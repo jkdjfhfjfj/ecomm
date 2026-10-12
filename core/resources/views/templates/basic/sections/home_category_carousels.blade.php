@@ -6,7 +6,7 @@
                 $category = $row['category'];
                 $slug = strtolower((string) $category->slug);
                 $name = strtolower(trim((string) $category->name));
-                return str_contains($slug, 'daily-offer') || in_array($name, ['daily offer', 'daily offers'], true);
+                return $slug === 'daily-offers' || $name === 'daily offers';
             })
             ->values();
     @endphp

@@ -26,6 +26,13 @@ class SiteController extends Controller {
         $sections    = Page::where('tempname', activeTemplate())->where('slug', '/')->first();
         $seoContents = $sections->seo_content;
         $seoImage    = @$seoContents->image ? getImage(getFilePath('seo') . '/' . @$seoContents->image, getFileSize('seo')) : null;
+        $homepageFlashOffers = Offer::running()
+            ->where(fn ($query) => $query->where('campaign_type', 'flash')
+                ->orWhereRaw("LOWER(name) LIKE ?", ['%flash sale%']))
+            ->with('products')
+            ->latest('starts_from')
+            ->limit(1)
+            ->get();
         $dailyOffer = Offer::running()
             ->where('campaign_type', 'daily')
             ->whereHas('products', fn ($products) => $products->published()->withDisplayableImage())
@@ -56,10 +63,8 @@ class SiteController extends Controller {
         $homeCategoryRows = Category::query()
             ->whereHas('products', fn ($products) => $products->published()->withDisplayableImage())
             ->whereNotIn('external_id', ['5695'])
-            ->whereRaw("LOWER(name) NOT LIKE ?", ['%daily offer%'])
-            ->whereRaw("LOWER(name) NOT LIKE ?", ['%daily deal%'])
-            ->whereRaw("LOWER(slug) NOT LIKE ?", ['%daily-offer%'])
-            ->whereRaw("LOWER(slug) NOT LIKE ?", ['%daily-deal%'])
+            ->whereRaw("LOWER(TRIM(name)) != ?", ['daily offers'])
+            ->whereRaw("LOWER(TRIM(slug)) != ?", ['daily-offers'])
             ->orderByDesc('is_featured')
             ->orderByDesc('feature_in_banner')
             ->orderBy('position')
@@ -67,7 +72,7 @@ class SiteController extends Controller {
             ->get()
             ->map(fn (Category $category) => ['category' => $category])
             ->values();
-        return view('Template::home', compact('pageTitle', 'sections', 'seoContents', 'seoImage', 'homeProducts', 'homeCategoryRows', 'dailyOffer', 'homepageOfferBanners'));
+        return view('Template::home', compact('pageTitle', 'sections', 'seoContents', 'seoImage', 'homeProducts', 'homeCategoryRows', 'dailyOffer', 'homepageOfferBanners', 'homepageFlashOffers'));
     }
 
     public function about() {
@@ -98,10 +103,8 @@ class SiteController extends Controller {
     public function categories() {
         $pageTitle = 'Categories';
         $categories = Category::isParent()
-            ->whereRaw("LOWER(name) NOT LIKE ?", ['%daily offer%'])
-            ->whereRaw("LOWER(name) NOT LIKE ?", ['%daily deal%'])
-            ->whereRaw("LOWER(slug) NOT LIKE ?", ['%daily-offer%'])
-            ->whereRaw("LOWER(slug) NOT LIKE ?", ['%daily-deal%'])
+            ->whereRaw("LOWER(TRIM(name)) != ?", ['daily offers'])
+            ->whereRaw("LOWER(TRIM(slug)) != ?", ['daily-offers'])
             ->with('allSubcategories')
             ->orderBy('name')
             ->get();

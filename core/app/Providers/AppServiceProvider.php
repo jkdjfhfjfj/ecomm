@@ -58,10 +58,8 @@ class AppServiceProvider extends ServiceProvider {
         $viewShare['emptyMessage'] = 'Data not found';
 
         $viewShare['parentCategories'] = Category::isParent()
-            ->whereRaw("LOWER(name) NOT LIKE ?", ['%daily offer%'])
-            ->whereRaw("LOWER(name) NOT LIKE ?", ['%daily deal%'])
-            ->whereRaw("LOWER(slug) NOT LIKE ?", ['%daily-offer%'])
-            ->whereRaw("LOWER(slug) NOT LIKE ?", ['%daily-deal%'])
+            ->whereRaw("LOWER(TRIM(name)) != ?", ['daily offers'])
+            ->whereRaw("LOWER(TRIM(slug)) != ?", ['daily-offers'])
             ->with([
                 'allSubcategories' => function($q) {
                     $q->orderBy('position');

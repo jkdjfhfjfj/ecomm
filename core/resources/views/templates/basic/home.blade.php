@@ -1,7 +1,13 @@
 @extends('Template::layouts.master')
 @section('content')
     @include('Template::sections.banner')
-    @include('Template::sections.homepage_offer_banners', ['offerPlacement' => 'flash'])
+    @if ($homepageFlashOffers->isNotEmpty())
+        @foreach ($homepageFlashOffers as $flashOffer)
+            @include('Template::sections.offer', ['data' => $flashOffer])
+        @endforeach
+    @else
+        @include('Template::sections.homepage_offer_banners', ['offerPlacement' => 'flash'])
+    @endif
     @include('Template::sections.home_category_carousels')
     @include('Template::sections.homepage_offer_banners', ['offerPlacement' => 'other'])
     @include('Template::sections.catalog_products')
@@ -10,18 +16,19 @@
     @include('Template::sections.recent_viewed')
 
     @if ($sections->secs != null)
-        @foreach (json_decode($sections->secs) as $sec)
+        @foreach (collect(json_decode($sections->secs) ?: []) as $sec)
+            @php
+                $cmsSectionData = is_string($sec) ? getSectionData($sec, false, true) : null;
+            @endphp
             @if (in_array($sec, ['banner', 'homepage_offer_banners', 'catalog_products', 'home_category_carousels', 'recent_viewed', 'daily_offer'], true))
+                @continue
+            @elseif ($cmsSectionData && (($cmsSectionData['data']->campaign_type ?? null) === 'flash' || str_contains(strtolower((string) ($cmsSectionData['data']->name ?? '')), 'flash sale')))
                 @continue
             @elseif (View::exists('Template::sections.' . $sec))
                 @include('Template::sections.' . $sec)
             @else
-                @php
-                    $sectionData = getSectionData($sec, isFrontend: true);
-                @endphp
-
-                @if ($sectionData && array_key_exists('section', $sectionData))
-                    @include($sectionData['section'], ['data' => @$sectionData['data']])
+                @if ($cmsSectionData && array_key_exists('section', $cmsSectionData))
+                    @include($cmsSectionData['section'], ['data' => @$cmsSectionData['data']])
                 @endif
             @endif
         @endforeach

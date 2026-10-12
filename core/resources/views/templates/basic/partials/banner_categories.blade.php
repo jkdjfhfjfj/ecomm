@@ -3,8 +3,8 @@
         ->orderBy('position')
         ->get()
         ->unique('slug')
-        ->reject(fn ($category) => str_contains(strtolower((string) $category->slug), 'daily-offer')
-            || in_array(strtolower(trim((string) $category->name)), ['daily offer', 'daily offers'], true))
+        ->reject(fn ($category) => strtolower(trim((string) $category->slug)) === 'daily-offers'
+            || strtolower(trim((string) $category->name)) === 'daily offers')
         ->filter(fn ($category) => filter_var($category->external_image_url, FILTER_VALIDATE_URL) || filled($category->image))
         ->values();
 

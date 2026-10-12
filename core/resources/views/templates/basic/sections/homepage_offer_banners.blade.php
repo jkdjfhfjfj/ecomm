@@ -1,9 +1,11 @@
 @php
     $offerPlacement = $offerPlacement ?? 'other';
     $homepageOfferList = $homepageOfferBanners ?? collect();
+    $isFlashOffer = fn ($offer) => $offer->campaign_type === 'flash'
+        || str_contains(strtolower((string) $offer->name), 'flash sale');
     $offersToShow = $offerPlacement === 'flash'
-        ? $homepageOfferList->where('campaign_type', 'flash')->take(1)
-        : $homepageOfferList->reject(fn ($offer) => $offer->campaign_type === 'flash');
+        ? $homepageOfferList->filter($isFlashOffer)->take(1)
+        : $homepageOfferList->reject($isFlashOffer);
 @endphp
 @if ($offersToShow->isNotEmpty())
     <section class="homepage-offers" id="{{ $offerPlacement === 'flash' ? 'homepage-flash-sale' : 'homepage-promotion-banners' }}" aria-label="{{ $offerPlacement === 'flash' ? __('Flash sale') : __('Current promotions') }}">

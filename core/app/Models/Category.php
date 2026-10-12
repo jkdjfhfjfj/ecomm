@@ -28,10 +28,8 @@ class Category extends Model
     public function allSubcategories()
     {
         return $this->subcategories()
-            ->whereRaw("LOWER(name) NOT LIKE ?", ['%daily offer%'])
-            ->whereRaw("LOWER(name) NOT LIKE ?", ['%daily deal%'])
-            ->whereRaw("LOWER(slug) NOT LIKE ?", ['%daily-offer%'])
-            ->whereRaw("LOWER(slug) NOT LIKE ?", ['%daily-deal%'])
+            ->whereRaw("LOWER(TRIM(name)) != ?", ['daily offers'])
+            ->whereRaw("LOWER(TRIM(slug)) != ?", ['daily-offers'])
             ->withCount('products')
             ->with('allSubcategories');
     }
