@@ -4,6 +4,7 @@
     @include('Template::sections.home_category_carousels')
     @include('Template::sections.homepage_offer_banners')
     @include('Template::sections.catalog_products')
+    <div id="daily-offer-trigger" aria-hidden="true" style="height:1px"></div>
     @include('Template::sections.daily_offer')
     @include('Template::sections.recent_viewed')
 

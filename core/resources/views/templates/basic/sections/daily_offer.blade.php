@@ -220,10 +220,10 @@
                 modal.addEventListener('hidden.bs.modal', handleHidden);
             }
             const scheduleModal = () => {
-                const latestProducts = document.getElementById('latest-products');
-                if (!latestProducts || !('IntersectionObserver' in window)) return;
+                const trigger = document.getElementById('daily-offer-trigger');
+                if (!trigger || !('IntersectionObserver' in window)) return;
                 const openOffer = () => window.setTimeout(showModal, 250);
-                const bounds = latestProducts.getBoundingClientRect();
+                const bounds = trigger.getBoundingClientRect();
                 if (bounds.top < window.innerHeight && bounds.bottom > 0) {
                     openOffer();
                     return;
@@ -233,7 +233,7 @@
                     observer.disconnect();
                     openOffer();
                 }, { threshold: 0.12 });
-                observer.observe(latestProducts);
+                observer.observe(trigger);
             };
             if (document.readyState === 'loading') {
                 document.addEventListener('DOMContentLoaded', scheduleModal, { once: true });

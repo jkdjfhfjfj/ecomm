@@ -108,8 +108,6 @@
     <script>
         'use strict';
         (function($) {
-            $('select[name=country]').val("{{ $user->address->country }}");
-
             $("#file-input").on('change', function() {
                 readURL(this);
             });

@@ -54,15 +54,7 @@
         </div>
     </div>
     <div class="mobile-menu-body">
-        <nav class="mobile-menu-quick-links" aria-label="@lang('Main pages')">
-                <a href="{{ route('home') }}">@lang('Home')</a>
-                <a href="{{ route('about') }}">@lang('About')</a>
-                <a href="{{ route('contact') }}">@lang('Contact us')</a>
-        </nav>
         <nav class="mobile-category-tree" aria-label="@lang('Shop by category')">
-            <div class="mobile-category-tree__heading">
-                <strong>@lang('Shop by category')</strong>
-            </div>
             <ul class="mobile-category-tree__roots">
                 @foreach ($parentCategories as $category)
                     @include('Template::partials.menu.mobile_category_tree_item', ['category' => $category])
@@ -75,6 +67,11 @@
                 </li>
             </ul>
         </nav>
+        <nav class="mobile-menu-quick-links" aria-label="@lang('Main pages')">
+            <a href="{{ route('home') }}"><i class="las la-home" aria-hidden="true"></i><span>@lang('Home')</span></a>
+            <a href="{{ route('about') }}"><i class="las la-info-circle" aria-hidden="true"></i><span>@lang('About')</span></a>
+            <a href="{{ route('contact') }}"><i class="las la-envelope" aria-hidden="true"></i><span>@lang('Contact us')</span></a>
+        </nav>
     </div>
 </div>
 
@@ -82,6 +79,9 @@
     @push('style')
         <style>
             .mobile-menu-body{overflow-y:auto;max-height:calc(100dvh - 74px);padding:1rem 1.25rem calc(2rem + env(safe-area-inset-bottom))}
+            .mobile-menu-quick-links{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.4rem;padding:1rem 0 calc(.75rem + env(safe-area-inset-bottom));margin:1.1rem 0 0;border-top:1px solid #e9e5dc;border-bottom:0}
+            .mobile-menu-quick-links a{display:flex;align-items:center;justify-content:center;gap:.4rem;min-width:0;min-height:0;padding:.65rem .3rem;margin:0;border:0;border-radius:0;background:transparent;color:#39362f;font-size:.78rem;font-weight:650;text-decoration:none}
+            .mobile-menu-quick-links a i{color:#9b493d;font-size:1rem}
             .mobile-category-tree{border:0;border-radius:0;background:transparent;padding:0}
             .mobile-category-tree__heading{display:flex;align-items:baseline;justify-content:space-between;gap:.75rem;padding:.35rem 0 .85rem;border-bottom:1px solid #e9e5dc}
             .mobile-category-tree__heading strong{font-size:1.05rem;color:#252521}
