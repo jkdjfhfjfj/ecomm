@@ -9,13 +9,13 @@
     <form method="POST" action="{{ route('user.login') }}" class="sign-in-form">
         @csrf
         <div class="form-group">
-            <label class="form--label" for="{{$idPrefix}}login-username">@lang('Username')</label>
-            <input type="text" class="form--control" name="username" id="{{$idPrefix}}login-username" value="{{ old('email') }}">
+            <label class="form--label" for="{{$idPrefix}}login-email">@lang('Email address')</label>
+            <input type="email" class="form--control" name="email" id="{{$idPrefix}}login-email" value="{{ old('email') }}" autocomplete="username" required>
         </div>
 
         <div class="form-group">
             <label class="form--label" for="{{$idPrefix}}login-password">@lang('Password')</label>
-            <input type="password" class="form--control" name="password" id="{{$idPrefix}}login-password">
+            <input type="password" class="form--control" name="password" id="{{$idPrefix}}login-password" autocomplete="current-password" required>
         </div>
 
         <div class="form-group">

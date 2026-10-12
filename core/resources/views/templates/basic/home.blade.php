@@ -5,6 +5,7 @@
     @include('Template::sections.homepage_offer_banners')
     @include('Template::sections.catalog_products')
     @include('Template::sections.daily_offer')
+    @include('Template::sections.recent_viewed')
 
     @if ($sections->secs != null)
         @foreach (json_decode($sections->secs) as $sec)
@@ -23,8 +24,6 @@
             @endif
         @endforeach
     @endif
-
-    @include('Template::sections.recent_viewed')
 
 @endsection
 

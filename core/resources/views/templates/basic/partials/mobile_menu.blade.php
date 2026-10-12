@@ -54,6 +54,11 @@
         </div>
     </div>
     <div class="mobile-menu-body">
+        <nav class="mobile-menu-quick-links" aria-label="@lang('Main pages')">
+            <a href="{{ route('home') }}"><i class="las la-home" aria-hidden="true"></i><span>@lang('Home')</span></a>
+            <a href="{{ route('about') }}"><i class="las la-info-circle" aria-hidden="true"></i><span>@lang('About')</span></a>
+            <a href="{{ route('contact') }}"><i class="las la-envelope" aria-hidden="true"></i><span>@lang('Contact us')</span></a>
+        </nav>
         <nav class="mobile-category-tree" aria-label="@lang('Shop by category')">
             <div class="mobile-category-tree__heading">
                 <div>

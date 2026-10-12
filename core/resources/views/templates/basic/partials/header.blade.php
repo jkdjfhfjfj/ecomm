@@ -23,10 +23,13 @@
              @endauth
              <div class="storefront-appbar__account">@include('Template::partials.user_auth_options')</div>
              <button type="button" class="storefront-appbar__cart cart-button" aria-label="@lang('Open cart')">
-                 <i class="las la-shopping-bag" aria-hidden="true"></i>
+                  <span class="storefront-appbar__cart-icon">
+                      <i class="las la-shopping-bag" aria-hidden="true"></i>
+                      <span class="cartItemCount storefront-appbar__cart-badge" aria-live="polite" aria-atomic="true">0</span>
+                  </span>
                  <span class="storefront-appbar__cart-copy">
                      <span class="storefront-appbar__cart-total">{{ gs('cur_sym') }}<span class="cartSubtotal">0</span></span>
-                     <span class="storefront-appbar__cart-items">(<span class="cartItemCount">0</span>) @lang('items')</span>
+                      <span class="storefront-appbar__cart-items">(<span class="cartItemCount">0</span>) @lang('items')</span>
                  </span>
              </button>
          </div>

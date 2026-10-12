@@ -12,16 +12,15 @@
     }
 
     const setCartCount = (count = null) => {
-
         if (count === null) {
-            getCartCount().then((response) => setCartCount(response));
+            getCartCount()
+                .done((response) => setCartCount(response))
+                .fail(() => setCartCount(0));
+            return;
         }
 
-        if (count > 0) {
-            cartCountElement.text(count).removeClass('d-none');
-        } else {
-            cartCountElement.text(0).addClass('d-none');
-        }
+        const normalizedCount = Math.max(0, Number.parseInt(count, 10) || 0);
+        cartCountElement.text(normalizedCount).removeClass('d-none');
     }
 
     const setCartSubtotal = (amount = null) => {

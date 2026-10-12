@@ -25,8 +25,8 @@
                         <form method="POST" action="{{ route('user.login') }}">
                             @csrf
                             <div class="form-group">
-                                <label class="form--label">@lang('Username')</label>
-                                <input class="form--control" type="text" name="username" value="{{ old('username') }}" placeholder="@lang('Username')" required autofocus>
+                                <label class="form--label" for="login-email">@lang('Email address')</label>
+                                <input id="login-email" class="form--control" type="email" name="email" value="{{ old('email') }}" placeholder="@lang('Email address')" autocomplete="username" required autofocus>
                             </div>
                             <div class="form-group">
                                 <label class="form--label" for="password">@lang('Password')</label>

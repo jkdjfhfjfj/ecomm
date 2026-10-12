@@ -1,5 +1,5 @@
 <div class="dropdown notification-dropdown">
-    <button type="button" class="primary--layer ecommerce" data-bs-toggle="dropdown" data-display="static" aria-haspopup="true" aria-expanded="false" id="noti-button">
+    <button type="button" class="primary--layer ecommerce" data-bs-toggle="dropdown" data-bs-display="static" aria-haspopup="true" aria-expanded="false" aria-label="@lang('Open notifications')" aria-controls="noti-menu" id="noti-button">
         <span class="ecommerce__icon">
             <i class="las la-bell @if ($unread) icon-left-right @endif"></i>
             @if ($unread)
@@ -9,7 +9,7 @@
         <span class="ecommerce__text">@lang('Notification')</span>
     </button>
 
-    <div class="dropdown-menu dropdown-menu--md dropdown-menu-right">
+    <div class="dropdown-menu dropdown-menu--md dropdown-menu-right" id="noti-menu">
 
         @if($unread)
         <div class="notification-inner-header">

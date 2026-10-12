@@ -62,11 +62,7 @@ class LoginController extends Controller
 
     public function findUsername()
     {
-        $login = request()->input('username');
-
-        $fieldType = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
-        request()->merge([$fieldType => $login]);
-        return $fieldType;
+        return 'email';
     }
 
     public function username()
@@ -78,7 +74,7 @@ class LoginController extends Controller
     {
 
         $validator = Validator::make($request->all(), [
-            $this->username() => 'required|string',
+            $this->username() => 'required|email',
             'password' => 'required|string',
         ]);
         if ($validator->fails()) {
