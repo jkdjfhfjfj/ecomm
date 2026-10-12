@@ -1,13 +1,16 @@
 @extends('Template::layouts.master')
 @section('content')
-    @include('Template::sections.banner')
     @include('Template::sections.homepage_offer_banners')
+    @include('Template::sections.banner')
+    @include('Template::sections.catalog_products')
     @include('Template::sections.daily_offer')
     @include('Template::sections.home_category_carousels')
 
     @if ($sections->secs != null)
         @foreach (json_decode($sections->secs) as $sec)
-            @if (View::exists('Template::sections.' . $sec))
+            @if (in_array($sec, ['banner', 'homepage_offer_banners', 'catalog_products', 'home_category_carousels', 'recent_viewed', 'daily_offer'], true))
+                @continue
+            @elseif (View::exists('Template::sections.' . $sec))
                 @include('Template::sections.' . $sec)
             @else
                 @php
@@ -21,7 +24,7 @@
         @endforeach
     @endif
 
-    @include('Template::sections.catalog_products')
+    @include('Template::sections.recent_viewed')
 
 @endsection
 

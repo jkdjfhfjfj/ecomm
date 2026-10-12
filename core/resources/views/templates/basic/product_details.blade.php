@@ -154,7 +154,7 @@
 
                                             @if ($description)
                                                 <div class="description-item">
-                                                    @php echo $product->description @endphp
+                                                    {!! $product->description !!}
                                                 </div>
                                             @endif
 
@@ -163,9 +163,7 @@
                                                     @foreach ($product->extra_descriptions as $description)
                                                         <h4>{{ __(@$description['key']) }}</h4>
                                                         <p>
-                                                            @php
-                                                                echo @$description['value'];
-                                                            @endphp
+                                                            {!! data_get($description, 'value') !!}
                                                         </p>
                                                     @endforeach
                                                 </div>

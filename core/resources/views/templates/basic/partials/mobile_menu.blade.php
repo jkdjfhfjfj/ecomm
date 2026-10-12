@@ -43,7 +43,7 @@
 </ul>
 
 
-<div class="site-sidebar mobile-menu sidebar-nav d-lg-none">
+<div class="site-sidebar mobile-menu sidebar-nav">
     <button type="button" class="sidebar-close-btn" aria-label="@lang('Close category menu')">
         <i class="las la-times"></i>
     </button>

@@ -112,8 +112,11 @@ if [ "${CPANEL_CODE_ONLY_REINSTALL:-0}" = "1" ]; then
     # application cache store, which may itself be backed by MySQL.
     find "$APP/bootstrap/cache" -maxdepth 1 -type f \
         \( -name 'config.php' -o -name 'routes-*.php' \) -delete
-    find "$APP/storage/framework/views" -maxdepth 1 -type f -name '*.php' -delete
     echo "Code-only reinstall complete: migrations, seeders, imports, and application cache were left untouched."
 fi
+
+# Blade templates changed by a build must not be shadowed by compiled views
+# left over from an earlier release. This touches generated files only.
+find "$APP/storage/framework/views" -maxdepth 1 -type f -name '*.php' -delete
 
 echo "Laravel production dependencies and public assets are prepared."
