@@ -50,7 +50,7 @@
 
     <div class="mobile-menu-header">
         <div class="d-block d-lg-none">
-            @include('Template::partials.menu.language_menu')
+            @include('Template::partials.menu.language_menu', ['drawer' => true])
         </div>
     </div>
     <div class="mobile-menu-body">
@@ -79,6 +79,16 @@
     @push('style')
         <style>
             .mobile-menu.sidebar-nav{display:flex!important;flex-direction:column;height:100dvh;padding:32px 0 0!important;overflow:hidden}
+            .mobile-menu-header{flex:0 0 auto;padding:1rem 1.25rem .85rem;border-bottom:1px solid #eee9e1;background:#fbfaf7}
+            .dropdown--lang-drawer{position:relative;width:100%}
+            .dropdown--lang-drawer .language-selector-label{display:block;margin:0 0 .45rem;color:#81796d;font-size:.68rem;font-weight:750;letter-spacing:.12em;text-transform:uppercase}
+            .dropdown--lang-drawer>.dropdown-toggle{display:flex;align-items:center;gap:.7rem;width:100%;min-height:52px;padding:.65rem .85rem;border:1px solid #e6e0d6;border-radius:12px;background:#fff;color:#252521;font-size:.95rem;font-weight:650;text-align:left;box-shadow:0 2px 8px rgba(37,37,33,.04)}
+            .dropdown--lang-drawer>.dropdown-toggle::after{margin-left:auto;color:#81796d}
+            .dropdown--lang-drawer .dropdown-flag{width:24px;height:24px;flex:0 0 24px;border-radius:50%;object-fit:cover}
+            .dropdown--lang-drawer .language-selector-name{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+            .dropdown--lang-drawer>.dropdown-menu{position:absolute!important;top:calc(100% + .4rem)!important;right:0!important;left:0!important;z-index:1055;width:100%;max-height:min(42dvh,300px);margin:0;padding:.35rem;overflow-y:auto;transform:none!important;border:1px solid #e9e4dc;border-radius:12px;background:#fff;box-shadow:0 14px 32px rgba(31,29,25,.16)}
+            .dropdown--lang-drawer .dropdown-item{display:flex;align-items:center;gap:.7rem;min-height:46px;padding:.6rem .7rem;border-radius:8px;color:#38352f;font-size:.92rem}
+            .dropdown--lang-drawer .dropdown-item:hover,.dropdown--lang-drawer .dropdown-item:focus{background:#f6f2eb;color:#252521}
             .mobile-menu-body{flex:1 1 auto;min-height:0;overflow-y:auto;max-height:none!important;padding:1rem 1.25rem}
             .mobile-menu-quick-links{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:.25rem;flex:0 0 auto;padding:.55rem .7rem calc(.55rem + env(safe-area-inset-bottom));margin:auto 0 0;border-top:1px solid #e9e5dc;border-bottom:0;background:#fbfaf7}
             .mobile-menu-quick-links a{display:flex!important;flex-direction:column;align-items:center;justify-content:center;gap:.2rem;min-width:0;min-height:52px;padding:.35rem .2rem;margin:0;border:0;border-radius:0;background:transparent;color:#39362f;font-size:.74rem;font-weight:650;text-decoration:none}
