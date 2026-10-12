@@ -3,6 +3,18 @@ set -eu
 
 ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)"
 APP="$ROOT/core"
+PAYMENT_MODEL="$APP/app/Models/Deposit.php"
+PAYMENT_VIEW="$APP/resources/views/templates/basic/checkout_steps/payment_methods.blade.php"
+PAYMENT_PROCESS="$APP/app/Http/Controllers/Gateway/Paystack/ProcessController.php"
+
+if ! grep -Fq 'Visa / Mastercard / Express / Amex Card' "$PAYMENT_MODEL" \
+    || ! grep -Fq 'Visa / Mastercard / Express / Amex Card' "$PAYMENT_VIEW" \
+    || ! grep -Fq 'FILTER_VALIDATE_EMAIL' "$PAYMENT_PROCESS"; then
+    echo "Build source is missing the expected card-payment label or email validation." >&2
+    exit 1
+fi
+
+SOURCE_COMMIT="$(git -C "$ROOT" rev-parse --short HEAD 2>/dev/null || printf 'unknown')"
 
 if [ "$(php -r 'echo PHP_VERSION_ID;')" -lt 80300 ]; then
     echo "PHP 8.3 or newer is required." >&2
@@ -119,4 +131,7 @@ fi
 # left over from an earlier release. This touches generated files only.
 find "$APP/storage/framework/views" -maxdepth 1 -type f -name '*.php' -delete
 
+printf 'commit=%s\nbuilt_at_utc=%s\n' "$SOURCE_COMMIT" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+    > "$ROOT/deployment-build.txt"
+echo "HostBuddy build source commit: $SOURCE_COMMIT (verify at /deployment-build.txt)"
 echo "Laravel production dependencies and public assets are prepared."
