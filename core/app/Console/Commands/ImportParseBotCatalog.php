@@ -19,7 +19,7 @@ use RuntimeException;
 
 class ImportParseBotCatalog extends Command
 {
-    protected $signature = 'parsebot:import-catalog {--credit-limit=250 : Maximum Parse.bot request attempts for this run (daily limit: 250)} {--all-pages : Fetch category pages round-robin up to the credit limit} {--details-only : Enrich products already in the local database without fetching category listings} {--sync-stored-details : Populate product columns from details already saved locally without API calls} {--categories-only : Save category records and hosted category image URLs without scraper requests} {--category-ids= : Comma-separated source category IDs to import} {--listings-only : Skip product detail requests and save listing data only}';
+    protected $signature = 'parsebot:import-catalog {--credit-limit=250 : Maximum Parse.bot request attempts for this run (daily limit: 250)} {--all-pages : Fetch category pages round-robin up to the credit limit} {--details-only : Enrich products already in the local database without fetching category listings} {--sync-stored-details : Populate product columns from details already saved locally without API calls} {--categories-only : Save category records and hosted category image URLs without scraper requests} {--category-ids= : Comma-separated source category IDs to import} {--listings-only : Skip product detail requests and save listing data only} {--new-product-limit= : Stop after this many new unique source products have been inserted}';
     protected $description = 'Import Jomashop category listings, optionally paginating fairly across categories within a Parse.bot credit cap.';
 
     private const SOURCE = 'parsebot_jomashop';
@@ -58,7 +58,10 @@ class ImportParseBotCatalog extends Command
     private const DAILY_REQUEST_CAP = 250;
     private array $sourceAttributeCache = [];
     private array $sourceAttributeValueCache = [];
+    private array $knownExternalIds = [];
     private string $apiKey = '';
+    private ?int $newProductLimit = null;
+    private int $newProductsImported = 0;
 
     public function handle(): int
     {
@@ -107,6 +110,15 @@ class ImportParseBotCatalog extends Command
             return self::FAILURE;
         }
 
+        $newProductLimitOption = trim((string) $this->option('new-product-limit'));
+        if ($newProductLimitOption !== '') {
+            if (!ctype_digit($newProductLimitOption) || (int) $newProductLimitOption < 1 || (int) $newProductLimitOption > 50000) {
+                $this->error('The new product limit must be between 1 and 50000.');
+                return self::FAILURE;
+            }
+            $this->newProductLimit = (int) $newProductLimitOption;
+        }
+
         $remainingToday = self::DAILY_REQUEST_CAP - $this->dailyRequestsUsedToday();
         if ($remainingToday < 1) {
             $this->error('The Parse.bot daily request limit of 250 has been reached. Try again after the daily reset.');
@@ -117,6 +129,13 @@ class ImportParseBotCatalog extends Command
         if ($this->option('details-only')) {
             return $this->enrichExistingProducts($baseUrl, $limit);
         }
+
+        $this->knownExternalIds = Product::withTrashed()
+            ->where('external_source', self::SOURCE)
+            ->whereNotNull('external_id')
+            ->pluck('external_id')
+            ->mapWithKeys(fn ($id) => [(string) $id => true])
+            ->all();
 
         $categoriesToImport = self::CATEGORIES;
         $categoryIdsOption = trim((string) $this->option('category-ids'));
@@ -187,6 +206,9 @@ class ImportParseBotCatalog extends Command
                 if ($identity === '') {
                     continue;
                 }
+                if (!$this->rememberNewSourceProduct($identity)) {
+                    continue;
+                }
                 $products[$identity]['listing'] = $item;
                 $products[$identity]['category_ids'][$sourceId] = $category->id;
                 $product = $this->saveProduct($identity, $item, []);
@@ -204,7 +226,7 @@ class ImportParseBotCatalog extends Command
 
         $fetchedPages = $fetchedCategories;
         if ($this->option('all-pages')) {
-            while ($calls < $limit) {
+            while ($calls < $limit && !$this->newProductLimitReached()) {
                 $madeProgress = false;
                 foreach ($pageCounts as $sourceId => $totalPages) {
                     if ($calls >= $limit) {
@@ -246,16 +268,22 @@ class ImportParseBotCatalog extends Command
                         if ($identity === '') {
                             continue;
                         }
+                        if (!$this->rememberNewSourceProduct($identity)) {
+                            continue;
+                        }
                         $products[$identity]['listing'] = $item;
                         $products[$identity]['category_ids'][$sourceId] = $sourceCategories[$sourceId];
                         $product = $this->saveProduct($identity, $item, []);
                         $this->attachCategories($product, [$sourceId => $sourceCategories[$sourceId]]);
                     }
 
-                    $listingProgress[$sourceId]['next_page'] = $page + 1;
+                    $listingProgress[$sourceId]['next_page'] = $this->newProductLimitReached() ? $page : $page + 1;
                     $this->saveListingProgress($listingProgress);
+                    if ($this->newProductLimitReached()) {
+                        break;
+                    }
                 }
-                if (!$madeProgress) {
+                if (!$madeProgress || $this->newProductLimitReached()) {
                     break;
                 }
             }
@@ -265,7 +293,7 @@ class ImportParseBotCatalog extends Command
         $this->info('Unique products in those pages: ' . count($products) . '.');
 
         if ($this->option('listings-only')) {
-            $this->info("Imported/updated " . count($products) . " listing products; API requests attempted: {$calls}/{$limit}.");
+            $this->info("Imported/updated " . count($products) . " listing products; added {$this->newProductsImported} new unique products; API requests attempted: {$calls}/{$limit}.");
             return self::SUCCESS;
         }
 
@@ -302,8 +330,28 @@ class ImportParseBotCatalog extends Command
             }
         }
 
-        $this->info("Imported/updated " . count($products) . " products; API requests attempted: {$calls}/{$limit}.");
+        $this->info("Imported/updated " . count($products) . " products; added {$this->newProductsImported} new unique products; API requests attempted: {$calls}/{$limit}.");
         return self::SUCCESS;
+    }
+
+    private function rememberNewSourceProduct(string $externalId): bool
+    {
+        if (isset($this->knownExternalIds[$externalId])) {
+            return true;
+        }
+        if ($this->newProductLimitReached()) {
+            return false;
+        }
+
+        $this->knownExternalIds[$externalId] = true;
+        $this->newProductsImported++;
+        return true;
+    }
+
+    private function newProductLimitReached(): bool
+    {
+        return $this->newProductLimit !== null
+            && $this->newProductsImported >= $this->newProductLimit;
     }
 
     private function enrichExistingProducts(string $baseUrl, int $limit): int
