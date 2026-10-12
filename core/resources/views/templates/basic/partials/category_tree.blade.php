@@ -3,6 +3,11 @@
         $prefix .= '-';
     @endphp
     @foreach ($subcategories as $subcategory)
+        @php
+            $subcategoryName = strtolower(trim((string) $subcategory->name));
+            $subcategorySlug = strtolower(trim((string) $subcategory->slug));
+        @endphp
+        @continue(str_contains($subcategoryName, 'daily offer') || str_contains($subcategoryName, 'daily deal') || str_contains($subcategorySlug, 'daily-offer') || str_contains($subcategorySlug, 'daily-deal'))
         <li>
             <div class="text-nowrap">
                 @if ($prefix != '-')

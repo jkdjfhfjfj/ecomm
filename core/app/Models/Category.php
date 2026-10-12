@@ -27,7 +27,13 @@ class Category extends Model
 
     public function allSubcategories()
     {
-        return $this->subcategories()->withCount('products')->with('allSubcategories');
+        return $this->subcategories()
+            ->whereRaw("LOWER(name) NOT LIKE ?", ['%daily offer%'])
+            ->whereRaw("LOWER(name) NOT LIKE ?", ['%daily deal%'])
+            ->whereRaw("LOWER(slug) NOT LIKE ?", ['%daily-offer%'])
+            ->whereRaw("LOWER(slug) NOT LIKE ?", ['%daily-deal%'])
+            ->withCount('products')
+            ->with('allSubcategories');
     }
 
     public function coupons()

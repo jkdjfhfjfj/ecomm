@@ -56,30 +56,16 @@ class SiteController extends Controller {
         $homeCategoryRows = Category::query()
             ->whereHas('products', fn ($products) => $products->published()->withDisplayableImage())
             ->whereNotIn('external_id', ['5695'])
-            ->whereNotIn('slug', ['daily-offers'])
-            ->whereRaw("LOWER(name) NOT LIKE ?", ['%daily%'])
-            ->whereRaw("LOWER(slug) NOT LIKE ?", ['%daily%'])
+            ->whereRaw("LOWER(name) NOT LIKE ?", ['%daily offer%'])
+            ->whereRaw("LOWER(name) NOT LIKE ?", ['%daily deal%'])
+            ->whereRaw("LOWER(slug) NOT LIKE ?", ['%daily-offer%'])
+            ->whereRaw("LOWER(slug) NOT LIKE ?", ['%daily-deal%'])
             ->orderByDesc('is_featured')
             ->orderByDesc('feature_in_banner')
             ->orderBy('position')
             ->limit(8)
             ->get()
-            ->map(function (Category $category) {
-                $products = Product::published()
-                    ->shopPageProducts()
-                    ->withDisplayableImage()
-                    ->whereHas('categories', fn ($query) => $query->where('categories.id', $category->id))
-                    ->with(['displayImage', 'brand', 'productVariants'])
-                    ->latest('id')
-                    ->limit(10)
-                    ->get()
-                    ->filter(fn (Product $product) => $product->hasDisplayableImage())
-                    ->take(12)
-                    ->values();
-
-                return ['category' => $category, 'products' => $products];
-            })
-            ->filter(fn (array $row) => $row['products']->isNotEmpty())
+            ->map(fn (Category $category) => ['category' => $category])
             ->values();
         return view('Template::home', compact('pageTitle', 'sections', 'seoContents', 'seoImage', 'homeProducts', 'homeCategoryRows', 'dailyOffer', 'homepageOfferBanners'));
     }
@@ -111,7 +97,14 @@ class SiteController extends Controller {
 
     public function categories() {
         $pageTitle = 'Categories';
-        $categories = Category::isParent()->with('allSubcategories')->orderBy('name')->get();
+        $categories = Category::isParent()
+            ->whereRaw("LOWER(name) NOT LIKE ?", ['%daily offer%'])
+            ->whereRaw("LOWER(name) NOT LIKE ?", ['%daily deal%'])
+            ->whereRaw("LOWER(slug) NOT LIKE ?", ['%daily-offer%'])
+            ->whereRaw("LOWER(slug) NOT LIKE ?", ['%daily-deal%'])
+            ->with('allSubcategories')
+            ->orderBy('name')
+            ->get();
 
         $sections = Page::where('tempname', activeTemplate())->where('slug', 'categories')->first();
         $seoContents = $sections->seo_content;

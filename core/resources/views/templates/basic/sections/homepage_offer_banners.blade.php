@@ -1,8 +1,15 @@
-@if (($homepageOfferBanners ?? collect())->isNotEmpty())
-    <section class="homepage-offers" id="homepage-promotion-banners" aria-label="@lang('Current promotions')">
+@php
+    $offerPlacement = $offerPlacement ?? 'other';
+    $homepageOfferList = $homepageOfferBanners ?? collect();
+    $offersToShow = $offerPlacement === 'flash'
+        ? $homepageOfferList->where('campaign_type', 'flash')->take(1)
+        : $homepageOfferList->reject(fn ($offer) => $offer->campaign_type === 'flash');
+@endphp
+@if ($offersToShow->isNotEmpty())
+    <section class="homepage-offers" id="{{ $offerPlacement === 'flash' ? 'homepage-flash-sale' : 'homepage-promotion-banners' }}" aria-label="{{ $offerPlacement === 'flash' ? __('Flash sale') : __('Current promotions') }}">
         <div class="container">
             <div class="homepage-offers-grid">
-                @foreach ($homepageOfferBanners as $offer)
+                @foreach ($offersToShow as $offer)
                     @php
                         $offerEnd = $offer->ends_at?->timestamp * 1000;
                         $campaignLabel = match ($offer->campaign_type) {
@@ -18,7 +25,7 @@
                             @if ($offer->banner_message)
                                 <p>{{ $offer->banner_message }}</p>
                             @endif
-                            @if ($offer->show_countdown && $offerEnd)
+                            @if (($offer->show_countdown || $offer->campaign_type === 'flash') && $offerEnd)
                                 <div class="homepage-offer-countdown" data-offer-countdown="{{ $offerEnd }}" aria-label="@lang('Time left in offer')">
                                     <span><b data-days>00</b><small>@lang('Days')</small></span>
                                     <span><b data-hours>00</b><small>@lang('Hours')</small></span>
@@ -66,6 +73,8 @@
     <script>
         (() => {
             document.querySelectorAll('[data-offer-countdown]').forEach((timer) => {
+                if (timer.dataset.countdownBound) return;
+                timer.dataset.countdownBound = 'true';
                 const target = Number(timer.dataset.offerCountdown);
                 const update = () => {
                     const remaining = Math.max(0, target - Date.now());

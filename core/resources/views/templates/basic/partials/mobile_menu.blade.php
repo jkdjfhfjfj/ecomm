@@ -67,21 +67,22 @@
                 </li>
             </ul>
         </nav>
-        <nav class="mobile-menu-quick-links" aria-label="@lang('Main pages')">
-            <a href="{{ route('home') }}"><i class="las la-home" aria-hidden="true"></i><span>@lang('Home')</span></a>
-            <a href="{{ route('about') }}"><i class="las la-info-circle" aria-hidden="true"></i><span>@lang('About')</span></a>
-            <a href="{{ route('contact') }}"><i class="las la-envelope" aria-hidden="true"></i><span>@lang('Contact us')</span></a>
-        </nav>
     </div>
+    <nav class="mobile-menu-quick-links" aria-label="@lang('Main pages')">
+        <a href="{{ route('home') }}"><i class="las la-home" aria-hidden="true"></i><span>@lang('Home')</span></a>
+        <a href="{{ route('about') }}"><i class="las la-info-circle" aria-hidden="true"></i><span>@lang('About')</span></a>
+        <a href="{{ route('contact') }}"><i class="las la-envelope" aria-hidden="true"></i><span>@lang('Contact us')</span></a>
+    </nav>
 </div>
 
 @once
     @push('style')
         <style>
-            .mobile-menu-body{overflow-y:auto;max-height:calc(100dvh - 74px);padding:1rem 1.25rem calc(2rem + env(safe-area-inset-bottom))}
-            .mobile-menu-quick-links{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.4rem;padding:1rem 0 calc(.75rem + env(safe-area-inset-bottom));margin:1.1rem 0 0;border-top:1px solid #e9e5dc;border-bottom:0}
-            .mobile-menu-quick-links a{display:flex;align-items:center;justify-content:center;gap:.4rem;min-width:0;min-height:0;padding:.65rem .3rem;margin:0;border:0;border-radius:0;background:transparent;color:#39362f;font-size:.78rem;font-weight:650;text-decoration:none}
-            .mobile-menu-quick-links a i{color:#9b493d;font-size:1rem}
+            .mobile-menu.sidebar-nav{display:flex!important;flex-direction:column;height:100dvh;padding:32px 0 0!important;overflow:hidden}
+            .mobile-menu-body{flex:1 1 auto;min-height:0;overflow-y:auto;max-height:none!important;padding:1rem 1.25rem}
+            .mobile-menu-quick-links{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:.25rem;flex:0 0 auto;padding:.55rem .7rem calc(.55rem + env(safe-area-inset-bottom));margin:auto 0 0;border-top:1px solid #e9e5dc;border-bottom:0;background:#fbfaf7}
+            .mobile-menu-quick-links a{display:flex!important;flex-direction:column;align-items:center;justify-content:center;gap:.2rem;min-width:0;min-height:52px;padding:.35rem .2rem;margin:0;border:0;border-radius:0;background:transparent;color:#39362f;font-size:.74rem;font-weight:650;text-decoration:none}
+            .mobile-menu-quick-links a i{display:block!important;visibility:visible!important;opacity:1!important;color:#9b493d;font-size:1.2rem;line-height:1}
             .mobile-category-tree{border:0;border-radius:0;background:transparent;padding:0}
             .mobile-category-tree__heading{display:flex;align-items:baseline;justify-content:space-between;gap:.75rem;padding:.35rem 0 .85rem;border-bottom:1px solid #e9e5dc}
             .mobile-category-tree__heading strong{font-size:1.05rem;color:#252521}

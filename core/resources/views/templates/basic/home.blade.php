@@ -1,8 +1,9 @@
 @extends('Template::layouts.master')
 @section('content')
     @include('Template::sections.banner')
+    @include('Template::sections.homepage_offer_banners', ['offerPlacement' => 'flash'])
     @include('Template::sections.home_category_carousels')
-    @include('Template::sections.homepage_offer_banners')
+    @include('Template::sections.homepage_offer_banners', ['offerPlacement' => 'other'])
     @include('Template::sections.catalog_products')
     <div id="daily-offer-trigger" aria-hidden="true" style="height:1px"></div>
     @include('Template::sections.daily_offer')
