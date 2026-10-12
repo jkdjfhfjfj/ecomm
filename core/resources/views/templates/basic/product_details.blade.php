@@ -99,7 +99,9 @@
                                                                     <h6 class="mb-2">{{ __($specificationGroup['group_name']) }}</h6>
                                                                     <ul>
                                                                         @foreach ($specificationGroup['attributes'] ?? [] as $attribute)
-                                                                            @php($specification = collect($product->specification)->firstWhere('key', $attribute))
+                                                                            @php
+                                                                                $specification = collect($product->specification)->firstWhere('key', $attribute);
+                                                                            @endphp
                                                                             @if (data_get($specification, 'value'))
                                                                                 <li><span>{{ __($attribute) }}</span><span>{{ data_get($specification, 'value') }}</span></li>
                                                                             @endif
@@ -111,8 +113,10 @@
                                                     @else
                                                         <ul>
                                                             @foreach (collect($product->specification) as $fieldKey => $specification)
-                                                                @php($key = data_get($specification, 'key', $fieldKey))
-                                                                @php($value = data_get($specification, 'value', $specification))
+                                                                @php
+                                                                    $key = data_get($specification, 'key', $fieldKey);
+                                                                    $value = data_get($specification, 'value', $specification);
+                                                                @endphp
                                                                 @if (is_scalar($key) && is_scalar($value) && trim((string) $value) !== '')
                                                                     <li><span>{{ __((string) $key) }}</span><span>{{ (string) $value }}</span></li>
                                                                 @endif
@@ -129,8 +133,10 @@
                                             <div class="specification-wrapper">
                                                 <ul>
                                                     @foreach ($product->attributeValues as $attributeValue)
-                                                        @php($attribute = $product->attributes->firstWhere('id', $attributeValue->attribute_id))
-                                                        @php($value = $attributeValue->value ?: $attributeValue->name)
+                                                        @php
+                                                            $attribute = $product->attributes->firstWhere('id', $attributeValue->attribute_id);
+                                                            $value = $attributeValue->value ?: $attributeValue->name;
+                                                        @endphp
                                                         @if ($value)
                                                             <li>
                                                                 <span>{{ $attribute?->name ?? __('Option') }}</span>
