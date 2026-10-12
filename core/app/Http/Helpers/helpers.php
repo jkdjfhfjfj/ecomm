@@ -90,7 +90,25 @@ function verifyCaptcha() {
 
 function loadExtension($key) {
     $extension = Extension::where('act', $key)->where('status', Status::ENABLE)->first();
-    return $extension ? $extension->generateScript() : '';
+    if (!$extension) {
+        return '';
+    }
+
+    $script = $extension->generateScript();
+    if ($key === 'tawk-chat') {
+        // Keep Tawk's mobile launcher above the store's fixed bottom navigation.
+        $script = '<script>
+            window.Tawk_API = window.Tawk_API || {};
+            window.Tawk_API.customStyle = {
+                visibility: {
+                    desktop: { position: "br", xOffset: "18px", yOffset: "18px" },
+                    mobile: { position: "br", xOffset: "14px", yOffset: "92px" }
+                }
+            };
+        </script>' . $script;
+    }
+
+    return $script;
 }
 
 function getTrx($length = 12) {

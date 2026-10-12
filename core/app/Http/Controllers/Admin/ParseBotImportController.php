@@ -37,14 +37,21 @@ class ParseBotImportController extends Controller
     public function saveFallbackKey(Request $request)
     {
         $request->validate(['api_key' => ['required', 'string', 'min:8', 'max:500']]);
-        $settings = Frontend::where('data_keys', self::SETTINGS_KEY)->first() ?? new Frontend();
+        $settings = Frontend::firstOrNew(['data_keys' => self::SETTINGS_KEY]);
         $settings->data_keys = self::SETTINGS_KEY;
         $values = (array) ($settings->data_values ?? []);
         $values['encrypted_api_key'] = Crypt::encryptString(trim($request->input('api_key')));
         $settings->data_values = (object) $values;
         $settings->save();
 
-        return back()->with('success', 'Encrypted fallback key saved. The deployment environment key remains authoritative when configured.');
+        $settings->refresh();
+        if (!filled(data_get($settings->data_values, 'encrypted_api_key'))) {
+            $notify[] = ['error', 'The fallback key could not be saved. Please try again.'];
+            return back()->withNotify($notify);
+        }
+
+        $notify[] = ['success', 'Encrypted fallback key saved. The deployment environment key remains active when configured.'];
+        return back()->withNotify($notify);
     }
 
     public function run(Request $request)

@@ -31,8 +31,13 @@
                         <strong>{{ $fallbackKeyConfigured ? __('configured') : __('not configured') }}</strong>
                     </p>
                     <p class="small text-muted">
-                        @lang('The key is encrypted with APP_KEY and never shown again. If the deployment environment key is set, rotate it in the deployment secrets/settings; this fallback is used only when that key is absent.')
+                        @lang('The key is encrypted with APP_KEY and never shown again. The importer always uses PARSE_BOT_API_KEY from deployment secrets when it is set; the saved fallback is used only when that environment key is absent.')
                     </p>
+                    @if ($environmentKeyConfigured)
+                        <div class="alert alert-warning" role="status">
+                            @lang('A deployment key is currently active. Saving this fallback does not replace it; update PARSE_BOT_API_KEY in deployment secrets to change the active key.')
+                        </div>
+                    @endif
                     <form method="POST" action="{{ route('admin.products.parsebot.key') }}">
                         @csrf
                         <label class="form-label" for="parsebot-api-key">@lang('Save encrypted fallback key')</label>

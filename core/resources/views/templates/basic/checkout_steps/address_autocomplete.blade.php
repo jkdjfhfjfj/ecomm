@@ -17,6 +17,7 @@
         denied: @json(__('Location access was blocked. You can enter the address manually.')),
         notFound: @json(__('No address was found for your location.')),
         error: @json(__('Could not find your address right now. You can enter it manually.')),
+        selected: @json(__('Address selected')),
     };
     const requests = new WeakMap();
     async function readJsonResponse(response) {
@@ -32,6 +33,7 @@
     }
 
     function fillAddress(input, place) {
+        input.dataset.geoAddressSelecting = '1';
         input.value = place.address || place.label || '';
         const form = input.closest('form') || document;
         ['city', 'state', 'zip'].forEach((name) => {
@@ -56,6 +58,7 @@
         }
         input.dispatchEvent(new Event('input', { bubbles: true }));
         input.dispatchEvent(new Event('change', { bubbles: true }));
+        delete input.dataset.geoAddressSelecting;
     }
 
     function setupInput(input) {
@@ -122,6 +125,7 @@
     document.addEventListener('input', (event) => {
         const input = event.target;
         if (!(input instanceof HTMLInputElement) || input.name !== 'address') return;
+        if (input.dataset.geoAddressSelecting === '1') return;
         setupInput(input);
         const field = input.closest('.geo-address-control');
         let menu = field.querySelector('.geo-address-suggestions');
@@ -145,17 +149,24 @@
                 const url = new URL(suggestionsEndpoint, window.location.origin);
                 url.searchParams.set('text', text);
                 const response = await fetch(url, { headers: { Accept: 'application/json' }, signal: controller.signal });
-                if (!response.ok) return;
+                if (!response.ok) {
+                    menu.hidden = true;
+                    status.textContent = labels.error;
+                    return;
+                }
                 const { suggestions = [] } = await readJsonResponse(response);
+                if (requests.get(input)?.controller !== controller) return;
                 menu.replaceChildren();
                 suggestions.forEach((place) => {
                     const option = document.createElement('button');
                     option.type = 'button';
                     option.setAttribute('role', 'option');
                     option.textContent = place.label;
+                    option.addEventListener('pointerdown', (event) => event.preventDefault());
                     option.addEventListener('click', () => {
                         fillAddress(input, place);
                         menu.hidden = true;
+                        status.textContent = `${labels.selected}: ${place.label}`;
                     });
                     menu.append(option);
                 });

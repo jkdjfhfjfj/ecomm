@@ -1,6 +1,20 @@
 @extends('admin.layouts.app')
 
 @section('panel')
+    @if ($extensions->contains('act', 'tawk-chat'))
+        <div class="alert alert-info mb-4">
+            <h5 class="mb-2"><i class="las la-comments"></i> @lang('Free live support chat with Tawk.to')</h5>
+            <ol class="mb-2 ps-3">
+                <li>@lang('Create a free account at') <a href="https://www.tawk.to/" target="_blank" rel="noopener noreferrer">tawk.to</a> @lang('and add your website as a property.')</li>
+                <li>@lang('In Tawk.to, open Administration → Channels → Chat Widget and copy the widget ID path shown in the embed URL after embed.tawk.to/ (property ID/widget ID).')</li>
+                <li>@lang('On this page, use Configure for Tawk.to, paste that path into the widget ID field, and save.')</li>
+                <li>@lang('Use Enable on the Tawk.to row to show chat on the storefront. Disable it here any time to remove the widget.')</li>
+            </ol>
+            <div class="small">
+                @lang('The mobile launcher is offset above the fixed shop navigation so it does not cover Category, Wishlist, Compare, or Account controls. The chat panel itself opens only after a shopper taps the launcher.')
+            </div>
+        </div>
+    @endif
     <div class="row">
         <div class="col-md-12">
             <div class="card">
@@ -32,12 +46,14 @@
                                         <div class="button--group">
                                             <button type="button" class="btn btn-sm btn-outline--primary ms-1 mb-2 editBtn"
                                                     data-name="{{ __($extension->name) }}"
+                                                    data-provider="{{ $extension->act }}"
                                                     data-shortcode="{{ json_encode($extension->shortcode) }}"
                                                     data-action="{{ route('admin.extensions.update', $extension->id) }}">
                                                 <i class="la la-cogs"></i> @lang('Configure')
                                             </button>
                                             <button type="button" class="btn btn-sm btn-outline--dark ms-1 mb-2 helpBtn"
                                                     data-description="{{ __($extension->description) }}"
+                                                    data-provider="{{ $extension->act }}"
                                                     data-support="{{ __($extension->support) }}">
                                                 <i class="la la-question"></i> @lang('Help')
                                             </button>
@@ -136,18 +152,31 @@
             $(document).on('click', '.editBtn',function () {
                 var modal = $('#editModal');
                 var shortcode = $(this).data('shortcode');
+                var provider = $(this).data('provider');
 
                 modal.find('.extension-name').text($(this).data('name'));
                 modal.find('form').attr('action', $(this).data('action'));
 
                 var html = '';
                 $.each(shortcode, function (key, item) {
-                    html += `<div class="form-group">
-                        <label class="col-md-12 control-label fw-bold">${item.title}</label>
-                        <div class="col-md-12">
-                            <input name="${key}" class="form-control" placeholder="--" value="${item.value}" required>
-                        </div>
-                    </div>`;
+                    const label = key === 'app_key' && provider === 'tawk-chat'
+                        ? @json(__('Tawk.to widget ID path (property ID/widget ID)'))
+                        : item.title;
+                    const placeholder = key === 'app_key' && provider === 'tawk-chat'
+                        ? 'property-id/widget-id'
+                        : '--';
+                    const group = $('<div>', { class: 'form-group' });
+                    $('<label>', { class: 'col-md-12 control-label fw-bold', text: label }).appendTo(group);
+                    $('<div>', { class: 'col-md-12' }).append(
+                        $('<input>', {
+                            name: key,
+                            class: 'form-control',
+                            placeholder: placeholder,
+                            value: item.value,
+                            required: true
+                        })
+                    ).appendTo(group);
+                    html += group.prop('outerHTML');
                 })
                 modal.find('.modal-body').html(html);
 
@@ -157,9 +186,18 @@
             $(document).on('click', '.helpBtn',function () {
                 var modal = $('#helpModal');
                 var path = "{{ asset(getFilePath('extensions')) }}";
-                modal.find('.modal-body').html(`<div class="mb-2">${$(this).data('description')}</div>`);
+                const provider = $(this).data('provider');
+                if (provider === 'tawk-chat') {
+                    modal.find('.modal-body').html(`
+                        <p>@lang('Tawk.to provides the hosted live-chat service. Create a property in your Tawk.to dashboard, then copy the path from the widget embed URL after embed.tawk.to/ . It looks like property-id/widget-id.')</p>
+                        <p>@lang('Paste that path in Configure. Save the setting, then enable Tawk.to in the extension list. You can disable it here without removing the saved configuration.')</p>
+                        <p>@lang('No Tawk API key is needed for the storefront widget.')</p>
+                    `);
+                    return modal.modal('show');
+                }
+                modal.find('.modal-body').text($(this).data('description'));
                 if ($(this).data('support') != 'na') {
-                    modal.find('.modal-body').append(`<img src="${path}/${$(this).data('support')}" alt="Image">`);
+                    $('<img>', { src: `${path}/${$(this).data('support')}`, alt: 'Image' }).appendTo(modal.find('.modal-body'));
                 }
                 modal.modal('show');
             });
