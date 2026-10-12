@@ -1,10 +1,10 @@
 @extends('Template::layouts.master')
 @section('content')
-    @include('Template::sections.homepage_offer_banners')
     @include('Template::sections.banner')
+    @include('Template::sections.home_category_carousels')
+    @include('Template::sections.homepage_offer_banners')
     @include('Template::sections.catalog_products')
     @include('Template::sections.daily_offer')
-    @include('Template::sections.home_category_carousels')
 
     @if ($sections->secs != null)
         @foreach (json_decode($sections->secs) as $sec)
