@@ -1,5 +1,5 @@
 @if (isset($homeProducts) && $homeProducts->isNotEmpty())
-    <section class="site-section my-60">
+    <section class="site-section my-60" id="latest-products">
         <div class="container">
             <div class="section-header left-style">
                 <h3 class="title">@lang('Latest Products')</h3>

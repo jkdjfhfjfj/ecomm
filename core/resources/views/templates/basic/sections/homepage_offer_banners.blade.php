@@ -1,5 +1,5 @@
 @if (($homepageOfferBanners ?? collect())->isNotEmpty())
-    <section class="homepage-offers" aria-label="@lang('Current promotions')">
+    <section class="homepage-offers" id="homepage-promotion-banners" aria-label="@lang('Current promotions')">
         <div class="container">
             <div class="homepage-offers-grid">
                 @foreach ($homepageOfferBanners as $offer)

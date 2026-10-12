@@ -61,13 +61,18 @@
         </nav>
         <nav class="mobile-category-tree" aria-label="@lang('Shop by category')">
             <div class="mobile-category-tree__heading">
-                    <strong>@lang('Shop by category')</strong>
-                    <a href="{{ route('brands') }}">@lang('Shop by brand') <span aria-hidden="true">→</span></a>
+                <strong>@lang('Shop by category')</strong>
             </div>
             <ul class="mobile-category-tree__roots">
                 @foreach ($parentCategories as $category)
                     @include('Template::partials.menu.mobile_category_tree_item', ['category' => $category])
                 @endforeach
+                <li class="mobile-category-tree__item mobile-category-tree__brand-item">
+                    <div class="mobile-category-tree__row">
+                        <a href="{{ route('brands') }}">@lang('Shop by brand')</a>
+                        <span aria-hidden="true"><i class="las la-arrow-right"></i></span>
+                    </div>
+                </li>
             </ul>
         </nav>
     </div>
@@ -80,11 +85,13 @@
             .mobile-category-tree{border:0;border-radius:0;background:transparent;padding:0}
             .mobile-category-tree__heading{display:flex;align-items:baseline;justify-content:space-between;gap:.75rem;padding:.35rem 0 .85rem;border-bottom:1px solid #e9e5dc}
             .mobile-category-tree__heading strong{font-size:1.05rem;color:#252521}
-            .mobile-category-tree__heading>a{padding:0;background:transparent;color:#9b493d;font-size:.8rem;font-weight:650;white-space:nowrap;text-decoration:none}
             .mobile-category-tree__roots,.mobile-category-tree__children{list-style:none;margin:0;padding:0}
             .mobile-category-tree__item{margin:0}
             .mobile-category-tree__row{display:flex;align-items:center;gap:.4rem;min-height:48px;border-bottom:1px solid #eeeae3}
-            .mobile-category-tree__row>a{flex:1;display:block;padding:.65rem .4rem;color:#26364a;font-size:.93rem;font-weight:600}
+            .mobile-category-tree__row>a{flex:1;display:block;padding:.65rem .4rem;color:#252521;font-size:.93rem;font-weight:600;text-decoration:none}
+            .mobile-category-tree__brand-item .mobile-category-tree__row{margin-top:4px;border-top:1px solid #eeeae3}
+            .mobile-category-tree__brand-item .mobile-category-tree__row>a{color:#9b493d}
+            .mobile-category-tree__brand-item .mobile-category-tree__row>span{padding:0 .5rem;color:#9b493d}
             .mobile-category-tree__toggle{width:32px;height:32px;border:0;border-radius:50%;background:transparent;color:#746f67}
             .mobile-category-tree__children{margin-left:.7rem;padding-left:.65rem;border-left:1px solid #e6ebf1}
             .mobile-category-tree__children .mobile-category-tree__row>a{font-size:.88rem;font-weight:500}

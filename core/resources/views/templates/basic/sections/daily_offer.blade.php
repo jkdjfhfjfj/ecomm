@@ -76,9 +76,9 @@
         .daily-deal-cta { display:inline-block; padding:11px 19px; border-radius:7px; background:#f15a36; color:#fff; font-weight:700; text-decoration:none; }
         .daily-deal-cta:hover { background:#dd4828; color:#fff; }
         .daily-deal-carousel { position:relative; flex:0 0 36%; max-width:300px; min-width:0; }
-        .daily-deal-image { display:flex; flex-direction:column; align-items:center; justify-content:center; height:220px; }
+        .daily-deal-image { box-sizing:border-box; display:flex; flex-direction:column; align-items:center; justify-content:center; height:220px; padding:8px 8px 18px; }
         .daily-deal-image[hidden] { display:none!important; }
-        .daily-deal-image img { width:100%; height:calc(100% - 24px); object-fit:contain; filter:drop-shadow(0 16px 24px rgba(0,0,0,.2)); }
+        .daily-deal-image img { display:block; width:100%; height:calc(100% - 24px); max-height:100%; object-fit:contain; object-position:center; filter:drop-shadow(0 16px 24px rgba(0,0,0,.2)); }
         .daily-deal-product-name { display:block; max-width:100%; overflow:hidden; color:#fff; font-size:11px; line-height:1.25; text-align:center; text-overflow:ellipsis; white-space:nowrap; }
         .daily-deal-carousel-arrow { position:absolute; top:42%; display:grid; place-items:center; width:32px; height:32px; border:0; border-radius:50%; background:#ffffffdd; color:#182333; }
         .daily-deal-carousel-prev { left:-8px; }
@@ -95,7 +95,8 @@
             .daily-offer-dialog { width:calc(100% - 2rem); max-width:390px; margin:1rem auto; }
             .daily-offer-content { max-height:calc(100dvh - 2rem); overflow-y:auto; border-radius:14px; }
             .daily-offer-card { min-height:0; flex-direction:column-reverse; align-items:stretch; gap:7px; padding:28px 16px 16px; }
-            .daily-offer-image { flex:0 0 auto; align-self:center; width:100%; height:clamp(105px,20vh,145px); }
+            .daily-deal-image { flex:0 0 auto; align-self:center; width:100%; height:clamp(105px,20vh,145px); padding:8px 18px 18px; }
+            .daily-deal-image img { width:100%; height:calc(100% - 20px); object-fit:contain; object-position:center; }
             .daily-deal-carousel { flex:0 0 auto; width:100%; max-width:220px; align-self:center; }
             .daily-deal-carousel-arrow { width:28px; height:28px; }
             .daily-offer-card h2 { font-size:clamp(22px,7vw,30px); }
@@ -218,7 +219,22 @@
                 modal.addEventListener('shown.bs.modal', handleShown);
                 modal.addEventListener('hidden.bs.modal', handleHidden);
             }
-            const scheduleModal = () => window.setTimeout(showModal, 650);
+            const scheduleModal = () => {
+                const latestProducts = document.getElementById('latest-products');
+                if (!latestProducts || !('IntersectionObserver' in window)) return;
+                const openOffer = () => window.setTimeout(showModal, 250);
+                const bounds = latestProducts.getBoundingClientRect();
+                if (bounds.top < window.innerHeight && bounds.bottom > 0) {
+                    openOffer();
+                    return;
+                }
+                const observer = new IntersectionObserver((entries) => {
+                    if (!entries.some((entry) => entry.isIntersecting)) return;
+                    observer.disconnect();
+                    openOffer();
+                }, { threshold: 0.12 });
+                observer.observe(latestProducts);
+            };
             if (document.readyState === 'loading') {
                 document.addEventListener('DOMContentLoaded', scheduleModal, { once: true });
             } else {
