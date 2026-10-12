@@ -50,6 +50,20 @@
                                         <small class="text-muted">@lang('Shown on the homepage banner. The button links to this offer.')</small>
                                     </div>
                                 </div>
+                                <div class="form-group row">
+                                    <div class="col-md-3"><label for="coupon_code">@lang('Popup Coupon')</label></div>
+                                    <div class="col-md-9">
+                                        <select id="coupon_code" class="form-control" name="coupon_code">
+                                            <option value="">@lang('No coupon')</option>
+                                            @foreach ($availableCoupons as $coupon)
+                                                <option value="{{ $coupon->coupon_code }}" @selected(old('coupon_code', @$offer->coupon_code) === $coupon->coupon_code)>
+                                                    {{ $coupon->coupon_code }}{{ $coupon->coupon_name ? ' — ' . $coupon->coupon_name : '' }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        <small class="text-muted">@lang('Choose an active coupon from Coupons. Shoppers can copy it from the daily-offer popup.')</small>
+                                    </div>
+                                </div>
 
                                 <div class="form-group row">
                                     <div class="col-md-3">

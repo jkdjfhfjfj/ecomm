@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Offer;
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\Coupon;
 use App\Rules\FileTypeValidate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
@@ -57,7 +58,8 @@ class OfferController extends Controller {
 
     public function create() {
         $pageTitle = "Create New Offer";
-        return view('admin.offers.create', compact('pageTitle'));
+        $availableCoupons = Coupon::activeAndValid()->orderBy('coupon_code')->get(['coupon_code', 'coupon_name']);
+        return view('admin.offers.create', compact('pageTitle', 'availableCoupons'));
     }
 
     public function save(Request $request, $id) {
@@ -74,6 +76,7 @@ class OfferController extends Controller {
             'banner_title'   => 'nullable|string|max:120',
             'banner_message' => 'nullable|string|max:1000',
             'banner_button_text' => 'nullable|string|max:40',
+            'coupon_code'    => 'nullable|string|max:40|exists:coupons,coupon_code',
             'show_banner'    => 'nullable|in:1',
             'show_countdown' => 'nullable|in:1',
         ]);
@@ -115,6 +118,7 @@ class OfferController extends Controller {
         $offer->banner_title  = $request->banner_title;
         $offer->banner_message = $request->banner_message;
         $offer->banner_button_text = $request->banner_button_text;
+        $offer->coupon_code   = $request->coupon_code;
         $offer->discount_type  = $request->discount_type;
         $offer->amount         = $request->amount;
         $offer->starts_from    = $request->starts_from;
@@ -150,7 +154,8 @@ class OfferController extends Controller {
     public function edit($id) {
         $pageTitle = "Edit Offer";
         $offer     = Offer::with(['products'])->findOrFail($id);
-        return view('admin.offers.create', compact('pageTitle', 'offer'));
+        $availableCoupons = Coupon::activeAndValid()->orderBy('coupon_code')->get(['coupon_code', 'coupon_name']);
+        return view('admin.offers.create', compact('pageTitle', 'offer', 'availableCoupons'));
     }
 
     public function productsForOffer(Request $request) {

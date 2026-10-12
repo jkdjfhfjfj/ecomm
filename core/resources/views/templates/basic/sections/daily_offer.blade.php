@@ -20,6 +20,19 @@
                         <span class="daily-deal-eyebrow">{{ $dailyOffer->banner_title ? __('DAILY OFFER') : __('TODAY’S DAILY OFFER') }}</span>
                         <h2 id="dailyOfferTitle">{{ $dailyOffer->banner_title ?: $dailyOffer->name }}</h2>
                         <p>{{ $dailyOffer->banner_message ?: __('Special picks, limited time. Shop before this offer ends.') }}</p>
+                        @if ($dailyOffer->coupon_code)
+                            <div class="daily-offer-coupon">
+                                <div>
+                                    <span class="daily-offer-coupon-label">@lang('Use coupon')</span>
+                                    <code>{{ $dailyOffer->coupon_code }}</code>
+                                </div>
+                                <button type="button" class="daily-offer-copy-button" data-copy-coupon="{{ $dailyOffer->coupon_code }}">
+                                    <i class="las la-copy" aria-hidden="true"></i>
+                                    <span>@lang('Copy code')</span>
+                                </button>
+                                <span class="daily-offer-copy-status" role="status" aria-live="polite"></span>
+                            </div>
+                        @endif
                         <div class="daily-deal-timer" aria-label="@lang('Time left in this offer')">
                             <span><strong data-time-days>00</strong><small>@lang('Days')</small></span>
                             <span><strong data-time-hours>00</strong><small>@lang('Hours')</small></span>
@@ -65,6 +78,12 @@
         .daily-offer-content { position: relative; overflow: hidden; border: 0; border-radius: 18px; background: #fff; box-shadow: 0 24px 70px rgba(13,24,38,.3); }
         .daily-offer-card { position:relative; overflow:hidden; display:flex; align-items:center; justify-content:space-between; gap:30px; min-height:300px; padding:42px 48px; color:#fff; background:radial-gradient(circle at 78% 34%,rgba(255,255,255,.18),transparent 31%),linear-gradient(115deg,#182333 0%,#293b4d 55%,#f05a35 145%); }
         .daily-offer-copy { position:relative; z-index:1; max-width:520px; }
+        .daily-offer-coupon { position:relative; display:flex; align-items:center; justify-content:space-between; gap:12px; max-width:360px; margin:0 0 18px; padding:10px 12px; border:1px dashed rgba(255,255,255,.55); border-radius:10px; background:rgba(255,255,255,.1); }
+        .daily-offer-coupon-label { display:block; margin-bottom:3px; color:rgba(255,255,255,.76); font-size:10px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; }
+        .daily-offer-coupon code { color:#fff; font-size:17px; font-weight:800; letter-spacing:.08em; }
+        .daily-offer-copy-button { flex:0 0 auto; display:inline-flex; align-items:center; gap:6px; padding:9px 12px; border:0; border-radius:7px; background:#fff; color:#172536; font-weight:750; cursor:pointer; }
+        .daily-offer-copy-button:hover,.daily-offer-copy-button:focus-visible { background:#f4f6f8; }
+        .daily-offer-copy-status { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; }
         .daily-deal-eyebrow { display:inline-block; margin-bottom:12px; color:#ffc9a8; font-size:12px; font-weight:800; letter-spacing:.16em; }
         .daily-offer-card h2 { margin:0 0 8px; color:#fff; font-size:clamp(27px,4vw,42px); font-weight:800; }
         .daily-offer-card p { margin:0 0 19px; color:rgba(255,255,255,.86); }
@@ -101,6 +120,9 @@
             .daily-deal-carousel-arrow { width:28px; height:28px; }
             .daily-offer-card h2 { font-size:clamp(22px,7vw,30px); }
             .daily-offer-card p { margin-bottom:12px; font-size:.9rem; }
+            .daily-offer-coupon { max-width:none; margin-bottom:12px; padding:8px 10px; }
+            .daily-offer-coupon code { font-size:15px; }
+            .daily-offer-copy-button { padding:8px 10px; font-size:13px; }
             .daily-deal-timer { margin-bottom:14px; }
             .daily-deal-timer { gap:5px; }
             .daily-deal-timer span { min-width:0; flex:1; padding:8px 4px 6px; }
@@ -136,6 +158,35 @@
             modal.querySelector('.daily-deal-carousel-prev')?.addEventListener('click', () => showSlide(activeSlide - 1));
             modal.querySelector('.daily-deal-carousel-next')?.addEventListener('click', () => showSlide(activeSlide + 1));
             dots.forEach((dot) => dot.addEventListener('click', () => showSlide(Number(dot.dataset.slideTo))));
+            modal.querySelectorAll('[data-copy-coupon]').forEach((button) => {
+                button.addEventListener('click', async () => {
+                    const code = button.dataset.copyCoupon || '';
+                    const status = modal.querySelector('.daily-offer-copy-status');
+                    try {
+                        if (navigator.clipboard && window.isSecureContext) {
+                            await navigator.clipboard.writeText(code);
+                        } else {
+                            const field = document.createElement('textarea');
+                            field.value = code;
+                            field.setAttribute('readonly', '');
+                            field.style.position = 'fixed';
+                            field.style.opacity = '0';
+                            document.body.appendChild(field);
+                            field.select();
+                            const copied = document.execCommand('copy');
+                            field.remove();
+                            if (!copied) throw new Error('Clipboard copy failed');
+                        }
+                        button.querySelector('span').textContent = @json(__('Copied'));
+                        if (status) status.textContent = @json(__('Coupon code copied to clipboard'));
+                        window.setTimeout(() => {
+                            button.querySelector('span').textContent = @json(__('Copy code'));
+                        }, 1800);
+                    } catch (error) {
+                        if (status) status.textContent = @json(__('Copy was unavailable. Select the visible code to copy it.'));
+                    }
+                });
+            });
             const readStorage = (storage, key) => {
                 try { return storage.getItem(key); } catch (error) { return null; }
             };
