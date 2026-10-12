@@ -220,9 +220,9 @@
                 modal.addEventListener('hidden.bs.modal', handleHidden);
             }
             const scheduleModal = () => {
-                // The offer is rendered after the homepage product section, but
-                // it should still open for shoppers who never scroll that far.
-                window.setTimeout(() => showModal(), 1400);
+                // Open as soon as the homepage is ready; do not require shoppers
+                // to scroll to the offer section or wait through a long delay.
+                window.setTimeout(() => showModal(), 0);
             };
             if (document.readyState === 'loading') {
                 document.addEventListener('DOMContentLoaded', scheduleModal, { once: true });

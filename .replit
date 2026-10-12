@@ -47,4 +47,4 @@ packages = ["mysql80"]
 [userenv]
 
 [userenv.development]
-REPLIT_USE_REMOTE_DATABASE = "1"
+REPLIT_USE_REMOTE_DATABASE = "0"
